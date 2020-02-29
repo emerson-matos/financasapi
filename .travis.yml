@@ -3,7 +3,7 @@
 
 # We will use Ubuntu 18.04 (bionic beaver). List of options:
 # https://docs.travis-ci.com/user/reference/overview/#linux
-dist: xenial
+dist: trusty
 
 # This enables the 'defaults' to test java applications:
 language: java
@@ -26,12 +26,18 @@ language: java
 after_success:
   - bash <(curl -s https://codecov.io/bash)
   
+addons:
+  sonarcloud:
+      organization: "emegson"
+      token:
+        secure: "YLHlye6hr8IILdV1mTNfF2amkJq4Hawj64HzI+yJJGRndX3sqIFAIY7yxnITB1kQuMeIw1Gc/7I/tcADuQik6j5Qx9+9IrykClnCYrJBOEKHxMb8/3eMHrMI520V4UXcX2r+UGY2Yd6kZcYKvTa7gya7iVQ2zRVXk/GJx6+gzVMivEYacwmFDJ6sq+lUZSi2sHwVskj/saXB+/rA7Gy6VVakQJXGa1RB5o2dxV6HOkMHGEZtPJc1Uw1M2vXypaXg4sdFr2hdusdIrouQ76U9FxQmlcDiE4dbT+GVIDM7hhMHGnm61CkKrIqqY95BQexpBMryCxdb76AuWzOX1vdkhbJvUDDJYO3RCsQwaVZavvOZ1sbVj8sDmFcwKEIKwyMCm/ry++TO4/VvdUdn+y1XKKSKKLgOSDFxm1nP60J2yFNdx6SJGarFMscE4fVuWvs1WrEQg5EHr9VlNj+6X9n4p3SYdY9/27ARHCm9L+K2lpXIN6UpqGpeFcQSKAqv6yGK1GyriNi4b1KNTCTGe3uaT13doULICzSxPWXTeR3DD1cavgbrw1Kqj6UmxiUqYxKYHP27cm3jVHogoPODsR1kJQQzjgs0E14valwBgtfmXNNgSh4KaLvZ6iCJo3TBM4jkWuy9RDUfabAAzSwfOpM5Sc0X+h+LU2hbZT0SBieZy9s="
+        
 jobs:
   include:
     - stage: unit tests
-      script: echo "Running unit tests (1)"
-    - stage: unit tests
-      script: echo "Running unit tests (2)"
+      script: mvn clean
+    # - stage: unit tests
+      # script: echo "Running unit tests (2)"
     # - stage: deploy to staging
       # script: skip
       # deploy: &heroku
