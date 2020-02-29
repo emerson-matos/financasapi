@@ -10,14 +10,21 @@
 		<!-- lookup parent from repository -->
 	</parent>
 	<groupId>br.com.controle.financeiro</groupId>
-	<artifactId>controlefinanceiro</artifactId>
+	<artifactId>gestao-financeira</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>controlefinanceiro</name>
-	<description>Aplicação para salvar e tratar a gestão financeira</description>
+	<name>Controle Financeiro</name>
+	<description>Aplicação para auxiliar na gestão financeira</description>
+	<url>https://github.com/emegson/financasapi</url>
 
 	<properties>
 		<java.version>1.8</java.version>
 	</properties>
+
+	<scm>
+		<connection>scm:git:git@github.com:emegson/financasapi.git</connection>
+		<developerConnection>scm:git:git@github.com:emegson/financasapi.git</developerConnection>
+		<url>https://github.com/emegson/financasapi</url>
+	</scm>
 
 	<dependencies>
 		<dependency>
@@ -57,28 +64,36 @@
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
 			</plugin>
-			<plugin>
-				<groupId>org.jacoco</groupId>
-				<artifactId>jacoco-maven-plugin</artifactId>
-				<version>0.8.2</version>
-				<executions>
-					<execution>
-						<goals>
-							<goal>
-								prepare-agent
-							</goal>
-						</goals>
-					</execution>
-					<execution>
-						<id>report</id>
-						<phase>test</phase>
-						<goals>
-							<goal>report</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
 		</plugins>
 	</build>
-
+	<profiles>
+		<profile>
+			<id>coverage</id>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.jacoco</groupId>
+						<artifactId>jacoco-maven-plugin</artifactId>
+						<version>0.8.2</version>
+						<executions>
+							<execution>
+								<goals>
+									<goal>
+								prepare-agent
+									</goal>
+								</goals>
+							</execution>
+							<execution>
+								<id>report</id>
+								<phase>test</phase>
+								<goals>
+									<goal>report</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+	</profiles>
 </project>
