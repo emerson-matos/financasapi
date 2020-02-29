@@ -1,0 +1,15 @@
+codecov:
+    require_ci_to_pass:yes
+
+coverage:
+    status:
+        project:
+            default:
+                target: 80%
+                threold: 0%
+                base: auto
+            controller:
+                paths: br/com/controle/financeiro/controller*
+    precision: 2
+    round: down
+    range: "80..100"
