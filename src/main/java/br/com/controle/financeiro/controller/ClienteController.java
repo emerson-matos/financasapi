@@ -20,17 +20,17 @@ import org.springframework.web.bind.annotation.RestController;
 import br.com.controle.financeiro.controller.linkbuilder.ClientResourceAssembler;
 import br.com.controle.financeiro.model.entity.Client;
 import br.com.controle.financeiro.model.exception.ClientNotFoundException;
-import br.com.controle.financeiro.model.repository.ClienteRepository;
+import br.com.controle.financeiro.model.repository.ClientRepository;
 
 @RestController
-@RequestMapping("cliente")
-public class ClienteController {
+@RequestMapping("client")
+public class ClientController {
 
-	private final ClienteRepository clientRepository;
+	private final ClientRepository clientRepository;
 
 	private final ClientResourceAssembler clientResourceAssembler;
 
-	public ClienteController(ClienteRepository clientRepository, ClientResourceAssembler clientResourceAssembler) {
+	public ClienteController(ClientRepository clientRepository, ClientResourceAssembler clientResourceAssembler) {
 		this.clientRepository = clientRepository;
 		this.clientResourceAssembler = clientResourceAssembler;
 	}
@@ -39,17 +39,17 @@ public class ClienteController {
 	public Resources<Resource<Client>> allClients() {
 		System.out.println(getClass() + " allClients");
 
-		List<Resource<Client>> clientes = clientRepository.findAll().stream().map(clientResourceAssembler::toResource)
+		List<Resource<Client>> clients = clientRepository.findAll().stream().map(clientResourceAssembler::toResource)
 				.collect(Collectors.toList());
 
-		return new Resources<>(clientes, linkTo(methodOn(ClienteController.class).allClients()).withSelfRel());
+		return new Resources<>(clientes, linkTo(methodOn(ClientController.class).allClients()).withSelfRel());
 	}
 
 	@PostMapping({ "/", "" })
-	public Client newClient(@RequestBody Client cliente) {
+	public Client newClient(@RequestBody Client client) {
 		System.out.println(getClass() + " newClient");
 		try {
-			return clientRepository.save(cliente);
+			return clientRepository.save(client);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
