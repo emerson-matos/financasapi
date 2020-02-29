@@ -19,21 +19,5 @@ jobs:
   include:
   - stage: unit tests
     script: mvn clean jacoco:prepare-agent install jacoco:report sonar:sonar -Dsonar.projectKey=emegson_financasapi
-  - stage: deploy to staging
-    script: skip
-    deploy:
-      provider: heroku
-      app: filhoemer-stages-staging
-      api_key: 
-        secure: aeJKVVFE+M4CIhdAtjTQzctFPra0QX85ie3EJ4SkKLFbh8TJ+/YcrY4O4zE65CEcts1VFAAUWJElB52PsF+n7DjD+85mw7zfMRCgM0rlwsHQnF+hu2PxbQdAV+bA/WwCNW3jwzzJVQx6FrGHGWGTP8d1DJBqW9I2nSIbbOY5Zzl4wPOmW/gElAgyQMGU5UszSowr1Ztu9+gz1I71578iVPF6hNdU8SKolNC9cnibtvZgyLIWRxNe57ctoGCQSwIilfXFqurMKRtdHO8hyeL2cbJW+LnIIAz3DMYUedB7Zidt7Ct7cruQ26vI/hjx8nOlIP00w926zDsukR8Zo1KPZowyGziRgSoAQnig7Z2NVmlL25YNedlxmIFFpv/1uoxA75muewWNLZW5OY5fEeUc+rXUV4bq+9rB4LOCsHEk85+2JingvJWIjqLLC9b94q297RgU7RUTCreJXbvoSzGQfQ51DzbHfiQnpQp+uEQdiEq9OJkmIjMF7uxQEYc25qY1XOMn5RfVwM+DadZ/wcBqSq+fG8qTBypE5xCqseb4+RltVP7Bd47nV3jGVRAoEhP13yuL3hLJ76dc+PlAxH+lXnrLhxDDCKIZ+h++JNq1xpOZijkaKSjunr1wEWAN+aznhc2oMSSnRvj77h1eJ2MA+HjJFaz4aECZIbqBdsNmedo=
-  - stage: test staging
-    script: curl https://filhoemer-staging.herokuapp.com
-  - stage: deploy to production
-    script: skip
-    deploy:
-      provider: heroku
-      app: sf-stages-production
-      api_key:
-        secure: aeJKVVFE+M4CIhdAtjTQzctFPra0QX85ie3EJ4SkKLFbh8TJ+/YcrY4O4zE65CEcts1VFAAUWJElB52PsF+n7DjD+85mw7zfMRCgM0rlwsHQnF+hu2PxbQdAV+bA/WwCNW3jwzzJVQx6FrGHGWGTP8d1DJBqW9I2nSIbbOY5Zzl4wPOmW/gElAgyQMGU5UszSowr1Ztu9+gz1I71578iVPF6hNdU8SKolNC9cnibtvZgyLIWRxNe57ctoGCQSwIilfXFqurMKRtdHO8hyeL2cbJW+LnIIAz3DMYUedB7Zidt7Ct7cruQ26vI/hjx8nOlIP00w926zDsukR8Zo1KPZowyGziRgSoAQnig7Z2NVmlL25YNedlxmIFFpv/1uoxA75muewWNLZW5OY5fEeUc+rXUV4bq+9rB4LOCsHEk85+2JingvJWIjqLLC9b94q297RgU7RUTCreJXbvoSzGQfQ51DzbHfiQnpQp+uEQdiEq9OJkmIjMF7uxQEYc25qY1XOMn5RfVwM+DadZ/wcBqSq+fG8qTBypE5xCqseb4+RltVP7Bd47nV3jGVRAoEhP13yuL3hLJ76dc+PlAxH+lXnrLhxDDCKIZ+h++JNq1xpOZijkaKSjunr1wEWAN+aznhc2oMSSnRvj77h1eJ2MA+HjJFaz4aECZIbqBdsNmedo=
   - stage: test production
-    script: curl https://filhoemer-production.herokuapp.com/
+    script: curl https://filhoemer.herokuapp.com/healthCheck
