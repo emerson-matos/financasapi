@@ -1,12 +1,9 @@
 package br.com.controle.financeiro.model.entity;
 
-import java.util.ArrayList;
-
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 
 @Entity
@@ -15,25 +12,25 @@ public class ContaBancaria {
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Long idConta;
-	
+
 	private String agencia;
 	private String numero;
 	private String dac;
 	private Client dono;
-	
+
 	@OneToOne
 	private Instituicao instituicao;
 
 	public ContaBancaria() {
 		super();
 	}
-	
+
 	public ContaBancaria(Client dono, Instituicao instituicao) {
 		super();
 		this.dono = dono;
 		this.instituicao = instituicao;
 	}
-	
+
 	public Client getDono() {
 		return dono;
 	}

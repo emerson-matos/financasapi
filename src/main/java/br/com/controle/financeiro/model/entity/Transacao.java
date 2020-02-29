@@ -9,8 +9,6 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
 
 @Entity
 public class Transacao implements Serializable {
@@ -22,29 +20,29 @@ public class Transacao implements Serializable {
     private Long idDespesa;
 
     private String nome;
-    
+
     private Date dataTransacao;
     private double valor;
-    
+
     @ManyToOne
-    @JoinColumn(name="idResponsavel")
+    @JoinColumn(name = "idResponsavel")
     private Client responsavel;
 
     @ManyToOne
-    @JoinColumn(name="idConta")
+    @JoinColumn(name = "idConta")
     private ContaBancaria conta;
-    
+
     @ManyToOne
-    @JoinColumn(name="idCartao")
+    @JoinColumn(name = "idCartao")
     private Cartao cartao;
-    
+
     public Transacao() {
-    	super();
+        super();
     }
-    
+
     public Transacao(double valor, String nome, Date data, Client responsavel, ContaBancaria conta, Cartao cartao) {
-    	super();
-    	this.setNome(nome);
+        super();
+        this.setNome(nome);
         this.setDataTransacao(data);
         this.setResponsavel(responsavel);
         this.setValor(valor);
@@ -53,22 +51,22 @@ public class Transacao implements Serializable {
     }
 
     public void setCartao(Cartao cartao) {
-		this.cartao = cartao;
+        this.cartao = cartao;
     }
-    
+
     public Cartao getCartao() {
-    	return this.cartao;
+        return this.cartao;
     }
 
-	public void setContaBancaria(ContaBancaria conta) {
-    	this.conta = conta;
-	}
-	
-	public ContaBancaria getContaBancaria() {
-		return this.conta;
-	}
+    public void setContaBancaria(ContaBancaria conta) {
+        this.conta = conta;
+    }
 
-	public double getValor() {
+    public ContaBancaria getContaBancaria() {
+        return this.conta;
+    }
+
+    public double getValor() {
         return valor;
     }
 

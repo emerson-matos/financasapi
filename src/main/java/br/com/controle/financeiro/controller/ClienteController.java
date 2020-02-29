@@ -1,10 +1,11 @@
 package br.com.controle.financeiro.controller;
 
+import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
+import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
+
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import static org.springframework.hateoas.mvc.ControllerLinkBuilder.*;
 import org.springframework.hateoas.Resource;
 import org.springframework.hateoas.Resources;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -26,23 +27,22 @@ import br.com.controle.financeiro.model.repository.ClienteRepository;
 public class ClienteController {
 
 	private final ClienteRepository clientRepository;
-	
+
 	private final ClientResourceAssembler clientResourceAssembler;
 
-	public ClienteController(ClienteRepository clientRepository, ClientResourceAssembler clientResourceAssembler){
+	public ClienteController(ClienteRepository clientRepository, ClientResourceAssembler clientResourceAssembler) {
 		this.clientRepository = clientRepository;
 		this.clientResourceAssembler = clientResourceAssembler;
 	}
+
 	@GetMapping({ "/", "" })
 	public Resources<Resource<Client>> allClients() {
 		System.out.println(getClass() + " allClients");
-		
-		List<Resource<Client>> clientes = clientRepository.findAll().stream()
-			    .map(clientResourceAssembler::toResource)
-			    .collect(Collectors.toList());
 
-			  return new Resources<>(clientes,
-					  linkTo(methodOn(ClienteController.class).allClients()).withSelfRel());
+		List<Resource<Client>> clientes = clientRepository.findAll().stream().map(clientResourceAssembler::toResource)
+				.collect(Collectors.toList());
+
+		return new Resources<>(clientes, linkTo(methodOn(ClienteController.class).allClients()).withSelfRel());
 	}
 
 	@PostMapping({ "/", "" })
