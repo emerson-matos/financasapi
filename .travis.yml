@@ -11,8 +11,13 @@ language: java
 services:
   - postgresql
 
+cache:
+  - directories:
+    - '$HOME/.m2/repository'
+    - '$HOME/.sonar/cache'
+
 before_script:
-  - psql -c 'create database controle;' -U ${SPRING_DATASOURCE_USERNAME}
+  - psql -c 'create database controle;' -U $SPRING_DATASOURCE_USERNAME
 # We can specify a list of JDKs to be used for testing
 # A list of available JDKs in Trusty can be seed in:
 # https://docs.travis-ci.com/user/reference/xenial/#jvm-clojure-groovy-java-scala-support
@@ -28,8 +33,8 @@ before_script:
 
 # This is to enable CodeCov's coverage
 # If a build is successful, the code is submitted for coverage analysis
-# after_success:
-  # - bash <(curl -s https://codecov.io/bash)
+after_success:
+  - bash <(curl -s https://codecov.io/bash)
   
 addons:
   sonarcloud:
@@ -42,7 +47,7 @@ jobs:
     # - stage: unit tests
       # script: mvn clean
     - stage: unit tests
-      script: mvn clean org.jacoco:jacoco-maven-plugin:prepare-agent install sonar:sonar -Dsonar.projectKey=emegson_financasapi
+      script: mvn clean org.jacoco:jacoco-maven-plugin:prepare-agent install org.jacoco:jacoco-maven-plugin:report sonar:sonar -Dsonar.projectKey=emegson_financasapi
     # - stage: deploy to staging
       # script: skip
       # deploy: &heroku
