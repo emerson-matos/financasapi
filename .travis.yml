@@ -23,8 +23,8 @@ language: java
 
 # This is to enable CodeCov's coverage
 # If a build is successful, the code is submitted for coverage analysis
-after_success:
-  - bash <(curl -s https://codecov.io/bash)
+# after_success:
+  # - bash <(curl -s https://codecov.io/bash)
   
 addons:
   sonarcloud:
@@ -34,10 +34,10 @@ addons:
         
 jobs:
   include:
-    - stage: unit tests
-      script: mvn clean
     # - stage: unit tests
-      # script: echo "Running unit tests (2)"
+      # script: mvn clean
+    - stage: unit tests
+      script: mvn clean org.jacoco:jacoco-maven-plugin:prepare-agent install sonar:sonar -Dsonar.projectKey=emegson_financasapi
     # - stage: deploy to staging
       # script: skip
       # deploy: &heroku
