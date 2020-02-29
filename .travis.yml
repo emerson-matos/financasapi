@@ -6,7 +6,7 @@
 dist: xenial
 
 # This enables the 'defaults' to test java applications:
-language: java
+# language: java
 
 # We can specify a list of JDKs to be used for testing
 # A list of available JDKs in Trusty can be seed in:
