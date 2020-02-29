@@ -11,12 +11,6 @@ language: java
 services:
   - postgresql
 
-env:
-  global:
-      - SPRING_DATASOURCE_USERNAME = "postgres"
-      - SPRING_DATASOURCE_URL = "jdbc:postgresql://localhost:5432/controle"
-      - SPRING_DATASOURCE_PASSWORD = ""
-
 before_script:
   - psql -c 'create database controle;' -U ${SPRING_DATASOURCE_USERNAME}
 # We can specify a list of JDKs to be used for testing
