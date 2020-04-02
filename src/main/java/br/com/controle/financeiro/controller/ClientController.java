@@ -12,14 +12,19 @@ import org.slf4j.LoggerFactory;
 import org.springframework.hateoas.Resource;
 import org.springframework.hateoas.Resources;
 import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-import br.com.controle.financeiro.controller.linkbuilder.ClientResourceAssembler;
+import br.com.controle.financeiro.controller.linkbuilder.ClientDTOResourceAssembler;
+import br.com.controle.financeiro.model.dto.ClientDTO;
 import br.com.controle.financeiro.model.entity.Client;
 import br.com.controle.financeiro.model.exception.ClientNotFoundException;
 import br.com.controle.financeiro.model.repository.ClientRepository;
@@ -32,54 +37,56 @@ public class ClientController {
 
 	private final ClientRepository clientRepository;
 
-	private final ClientResourceAssembler clientResourceAssembler;
+	private final ClientDTOResourceAssembler clientDTOResourceAssembler;
 
 	public ClientController(final ClientRepository clientRepository,
-			final ClientResourceAssembler clientResourceAssembler) {
+			final ClientDTOResourceAssembler clientDTOResourceAssembler) {
 		this.clientRepository = clientRepository;
-		this.clientResourceAssembler = clientResourceAssembler;
+		this.clientDTOResourceAssembler = clientDTOResourceAssembler;
 	}
 
 	@RequestMapping(path = "", method = RequestMethod.GET)
-	public Resources<Resource<Client>> allClients() {
+	public Resources<Resource<ClientDTO>> allClients() {
 		log.debug("finding allClients");
 
-		final List<Resource<Client>> clients = clientRepository.findAll().stream()
-				.map(clientResourceAssembler::toResource).collect(Collectors.toList());
+		final List<Resource<ClientDTO>> clients = clientRepository.findAll().stream().map(ClientDTO::fromClient)
+				.map(clientDTOResourceAssembler::toResource).collect(Collectors.toList());
 
 		return new Resources<>(clients, linkTo(methodOn(ClientController.class).allClients()).withSelfRel());
 	}
 
 	@ResponseStatus(HttpStatus.CREATED)
-	@RequestMapping(path = "", method = RequestMethod.POST)
-	public Resource<Client> newClient(@RequestBody final Client client) throws URISyntaxException {
+	@PostMapping(path = "")
+	public Resource<ClientDTO> newClient(@RequestBody final ClientDTO client) throws URISyntaxException {
 		log.debug("creating newClient");
-		return clientResourceAssembler.toResource(clientRepository.save(client));
+		ClientDTO clientDTO = ClientDTO.fromClient(clientRepository.save(client.toClient()));
+		return clientDTOResourceAssembler.toResource(clientDTO);
 	}
 
-	@RequestMapping(path = "/{id}", method = RequestMethod.GET)
-	public Resource<Client> oneClient(@PathVariable(value = "id") final long id) {
-		log.debug("searching oneClient " + id);
-		final Client c = clientRepository.findById(id).orElseThrow(() -> new ClientNotFoundException(id));
-		return clientResourceAssembler.toResource(c);
+	@GetMapping(path = "/{id}")
+	public Resource<ClientDTO> oneClient(@PathVariable(value = "id") final long id) {
+		log.debug("searching oneClient {}", id);
+		Client client = clientRepository.findById(id).orElseThrow(() -> new ClientNotFoundException(id));
+		return clientDTOResourceAssembler.toResource(ClientDTO.fromClient(client));
 	}
 
-	@RequestMapping(path = "/{id}", method = RequestMethod.PUT)
-	public Client replaceClient(@RequestBody final Client newClient, @PathVariable final Long id) {
-		System.out.println(getClass() + " replaceClient");
-		return clientRepository.findById(id).map(client -> {
+	@PutMapping(path = "/{id}")
+	public ClientDTO replaceClient(@RequestBody final ClientDTO newClient, @PathVariable final Long id) {
+		log.info("replaceClient");
+		Client savedClient = clientRepository.findById(id).map(client -> {
 			client.setName(newClient.getName());
 			return clientRepository.save(client);
 		}).orElseGet(() -> {
 			newClient.setId(id);
-			return clientRepository.save(newClient);
+			return clientRepository.save(newClient.toClient());
 		});
+		return ClientDTO.fromClient(savedClient);
 	}
 
 	@ResponseStatus(HttpStatus.NO_CONTENT)
-	@RequestMapping(path = "/{id}", method = RequestMethod.DELETE)
+	@DeleteMapping(path = "/{id}")
 	public void deleteClient(@PathVariable final Long id) {
-		log.debug("trying to deleteClient " + id);
+		log.debug("trying to deleteClient {}", id);
 		clientRepository.deleteById(id);
 	}
 }
