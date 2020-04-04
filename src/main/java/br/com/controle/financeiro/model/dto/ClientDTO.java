@@ -46,7 +46,7 @@ public class ClientDTO implements Serializable {
 	}
 
 	public Client toClient() {
-		return new Client(this.name);
+		return new Client(this.name, this.clientId);
 	}
 
 }

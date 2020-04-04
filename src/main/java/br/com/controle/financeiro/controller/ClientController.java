@@ -3,7 +3,6 @@ package br.com.controle.financeiro.controller;
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
 
-import java.net.URISyntaxException;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -19,7 +18,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -45,7 +43,7 @@ public class ClientController {
 		this.clientDTOResourceAssembler = clientDTOResourceAssembler;
 	}
 
-	@RequestMapping(path = "", method = RequestMethod.GET)
+	@GetMapping
 	public Resources<Resource<ClientDTO>> allClients() {
 		log.debug("finding allClients");
 
@@ -56,8 +54,8 @@ public class ClientController {
 	}
 
 	@ResponseStatus(HttpStatus.CREATED)
-	@PostMapping(path = "")
-	public Resource<ClientDTO> newClient(@RequestBody final ClientDTO client) throws URISyntaxException {
+	@PostMapping
+	public Resource<ClientDTO> newClient(@RequestBody final ClientDTO client) {
 		log.debug("creating newClient");
 		ClientDTO clientDTO = ClientDTO.fromClient(clientRepository.save(client.toClient()));
 		return clientDTOResourceAssembler.toResource(clientDTO);
