@@ -13,7 +13,7 @@ public class BankAccount implements Serializable {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
-	private Long idConta;
+	private Long accountId;
 
 	private String agency;
 	private String number;
@@ -71,6 +71,14 @@ public class BankAccount implements Serializable {
 
 	public void setDac(final String dac) {
 		this.dac = dac;
+	}
+
+	public Long getId() {
+		return accountId;
+	}
+
+	public void setId(Long accountId) {
+		this.accountId = accountId;
 	}
 
 }

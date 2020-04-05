@@ -97,4 +97,16 @@ public class Transaction implements Serializable {
         this.name = name;
     }
 
+    public Long getId() {
+        return expenseId;
+    }
+
+    public void setId(Long expenseId) {
+        this.expenseId = expenseId;
+    }
+
+    public BankAccount getAccount() {
+        return account;
+    }
+
 }

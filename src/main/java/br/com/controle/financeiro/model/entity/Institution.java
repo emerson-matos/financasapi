@@ -25,11 +25,11 @@ public class Institution implements Serializable {
 		this.name = name;
 	}
 
-	public Long getInstitutionId() {
+	public Long getId() {
 		return institutionId;
 	}
 
-	public void setIdInstituicao(final Long institutionId) {
+	public void setId(final Long institutionId) {
 		this.institutionId = institutionId;
 	}
 

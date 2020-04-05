@@ -10,7 +10,12 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
+import br.com.controle.financeiro.model.exception.BankAccountNotFoundException;
+import br.com.controle.financeiro.model.exception.CardNotFoundException;
 import br.com.controle.financeiro.model.exception.ClientNotFoundException;
+import br.com.controle.financeiro.model.exception.InstitutionNotFoundException;
+import br.com.controle.financeiro.model.exception.NotFoundException;
+import br.com.controle.financeiro.model.exception.TransactionNotFoundException;
 
 @ControllerAdvice
 public class RestResponseEntityExceptionHandler extends ResponseEntityExceptionHandler {
@@ -18,9 +23,11 @@ public class RestResponseEntityExceptionHandler extends ResponseEntityExceptionH
 	private static final Logger log = LoggerFactory.getLogger(RestResponseEntityExceptionHandler.class);
 
 	@ResponseBody
-	@ExceptionHandler(ClientNotFoundException.class)
+	@ExceptionHandler({ ClientNotFoundException.class, InstitutionNotFoundException.class,
+			CardNotFoundException.class, BankAccountNotFoundException.class,
+			TransactionNotFoundException.class })
 	@ResponseStatus(HttpStatus.NOT_FOUND)
-	ResponseEntity<Object> clientNotFoundHandler(ClientNotFoundException ex) {
+	ResponseEntity<Object> objectNotFoundHandler(NotFoundException ex) {
 		log.info("handleException");
 		log.error(ex.getMessage(), ex);
 		return handleExceptionInternal(ex, null, null, HttpStatus.NOT_FOUND, null);

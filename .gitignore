@@ -52,3 +52,7 @@ buildNumber.properties
 .history
 
 # End of https://www.gitignore.io/api/java,maven,visualstudiocode
+
+### Docker
+postgres/
+pgadming/

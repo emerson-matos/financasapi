@@ -68,4 +68,12 @@ public class Card implements Serializable {
 		this.name = name;
 	}
 
+	public Long getId() {
+		return cardId;
+	}
+
+	public void setId(Long cardId) {
+		this.cardId = cardId;
+	}
+
 }

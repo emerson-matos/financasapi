@@ -3,7 +3,6 @@ package br.com.controle.financeiro.controller;
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
 
-import java.net.URISyntaxException;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -12,10 +11,13 @@ import org.slf4j.LoggerFactory;
 import org.springframework.hateoas.Resource;
 import org.springframework.hateoas.Resources;
 import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -28,7 +30,7 @@ import br.com.controle.financeiro.model.repository.ClientRepository;
 @RequestMapping("/client")
 public class ClientController {
 
-	private static final Logger log = LoggerFactory.getLogger(ClientController.class);
+	private static final Logger LOG = LoggerFactory.getLogger(ClientController.class);
 
 	private final ClientRepository clientRepository;
 
@@ -40,9 +42,9 @@ public class ClientController {
 		this.clientResourceAssembler = clientResourceAssembler;
 	}
 
-	@RequestMapping(path = "", method = RequestMethod.GET)
+	@GetMapping
 	public Resources<Resource<Client>> allClients() {
-		log.debug("finding allClients");
+		LOG.debug("finding allClients");
 
 		final List<Resource<Client>> clients = clientRepository.findAll().stream()
 				.map(clientResourceAssembler::toResource).collect(Collectors.toList());
@@ -51,22 +53,22 @@ public class ClientController {
 	}
 
 	@ResponseStatus(HttpStatus.CREATED)
-	@RequestMapping(path = "", method = RequestMethod.POST)
-	public Resource<Client> newClient(@RequestBody final Client client) throws URISyntaxException {
-		log.debug("creating newClient");
+	@PostMapping
+	public Resource<Client> newClient(@RequestBody final Client client) {
+		LOG.debug("creating newClient");
 		return clientResourceAssembler.toResource(clientRepository.save(client));
 	}
 
-	@RequestMapping(path = "/{id}", method = RequestMethod.GET)
+	@GetMapping(path = "/{id}")
 	public Resource<Client> oneClient(@PathVariable(value = "id") final long id) {
-		log.debug("searching oneClient " + id);
+		LOG.debug("searching oneClient ${}", id);
 		final Client c = clientRepository.findById(id).orElseThrow(() -> new ClientNotFoundException(id));
 		return clientResourceAssembler.toResource(c);
 	}
 
-	@RequestMapping(path = "/{id}", method = RequestMethod.PUT)
+	@PutMapping(path = "/{id}")
 	public Client replaceClient(@RequestBody final Client newClient, @PathVariable final Long id) {
-		System.out.println(getClass() + " replaceClient");
+		LOG.info("replaceClient");
 		return clientRepository.findById(id).map(client -> {
 			client.setName(newClient.getName());
 			return clientRepository.save(client);
@@ -77,9 +79,9 @@ public class ClientController {
 	}
 
 	@ResponseStatus(HttpStatus.NO_CONTENT)
-	@RequestMapping(path = "/{id}", method = RequestMethod.DELETE)
+	@DeleteMapping(path = "/{id}")
 	public void deleteClient(@PathVariable final Long id) {
-		log.debug("trying to deleteClient " + id);
+		LOG.debug("trying to deleteClient ${}", id);
 		clientRepository.deleteById(id);
 	}
 }
