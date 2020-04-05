@@ -11,6 +11,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.hateoas.Resource;
 import org.springframework.hateoas.Resources;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -47,14 +48,14 @@ public class ClientController {
 	public Resources<Resource<ClientDTO>> allClients() {
 		log.debug("finding allClients");
 
-		final List<Resource<ClientDTO>> clients = clientRepository.findAll().stream().map(ClientDTO::fromClient)
-				.map(clientDTOResourceAssembler::toResource).collect(Collectors.toList());
+		final List<ClientDTO> clients = clientRepository.findAll().stream().map(ClientDTO::fromClient).collect(Collectors.toList());
+		List<Resource<ClientDTO>> cr = clients.stream().map(clientDTOResourceAssembler::toResource).collect(Collectors.toList());
 
-		return new Resources<>(clients, linkTo(methodOn(ClientController.class).allClients()).withSelfRel());
+		return new Resources<>(cr, linkTo(methodOn(ClientController.class).allClients()).withSelfRel());
 	}
 
 	@ResponseStatus(HttpStatus.CREATED)
-	@PostMapping
+	@PostMapping(consumes = {MediaType.APPLICATION_JSON_UTF8_VALUE})
 	public Resource<ClientDTO> newClient(@RequestBody final ClientDTO client) {
 		log.debug("creating newClient");
 		ClientDTO clientDTO = ClientDTO.fromClient(clientRepository.save(client.toClient()));
