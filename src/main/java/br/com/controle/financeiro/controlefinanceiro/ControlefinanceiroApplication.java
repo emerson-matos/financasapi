@@ -9,8 +9,8 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
 @SpringBootApplication
 @ComponentScan({ "br.com.controle.financeiro" })
-@EntityScan({ "br.com.controle.financeiro.model" })
-@EnableJpaRepositories({ "br.com.controle.financeiro.model" })
+@EntityScan({ "br.com.controle.financeiro.model.entity" })
+@EnableJpaRepositories({ "br.com.controle.financeiro.model.repository" })
 public class ControlefinanceiroApplication extends SpringBootServletInitializer {
 
 	public static void main(String... args) {
