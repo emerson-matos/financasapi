@@ -8,13 +8,13 @@ import org.springframework.hateoas.ResourceAssembler;
 import org.springframework.stereotype.Component;
 
 import br.com.controle.financeiro.controller.CardController;
-import br.com.controle.financeiro.model.entity.Card;
+import br.com.controle.financeiro.model.dto.CardDTO;
 
 @Component
-public class CardResourceAssembler implements ResourceAssembler<Card, Resource<Card>> {
+public class CardDTOResourceAssembler implements ResourceAssembler<CardDTO, Resource<CardDTO>> {
 
 	@Override
-	public Resource<Card> toResource(Card entity) {
+	public Resource<CardDTO> toResource(CardDTO entity) {
 		return new Resource<>(entity, linkTo(methodOn(CardController.class).oneCard(entity.getId())).withSelfRel(),
 				linkTo(methodOn(CardController.class).allCards()).withRel("cards"));
 	}

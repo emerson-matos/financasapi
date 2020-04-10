@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.Resource;
 import org.springframework.hateoas.Resources;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -22,7 +23,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-import br.com.controle.financeiro.controller.linkbuilder.InstitutionResourceAssembler;
+import br.com.controle.financeiro.controller.linkbuilder.InstitutionDTOResourceAssembler;
+import br.com.controle.financeiro.model.dto.InstitutionDTO;
 import br.com.controle.financeiro.model.entity.Institution;
 import br.com.controle.financeiro.model.exception.InstitutionNotFoundException;
 import br.com.controle.financeiro.model.repository.InstitutionRepository;
@@ -37,42 +39,50 @@ public class InstitutionController {
 	private InstitutionRepository institutionRepository;
 
 	@Autowired
-	private InstitutionResourceAssembler institutionResourceAssembler;
+	private InstitutionDTOResourceAssembler institutionDTOResourceAssembler;
 
 	@GetMapping
-	public Resources<Resource<Institution>> allInstitutions() {
+	public Resources<Resource<InstitutionDTO>> allInstitutions() {
 		LOG.debug("finding allInstitutions");
 
-		final List<Resource<Institution>> institutions = institutionRepository.findAll().stream()
-				.map(institutionResourceAssembler::toResource).collect(Collectors.toList());
+		final List<Resource<InstitutionDTO>> institutions = institutionRepository.findAll().stream()
+				.map(InstitutionDTO::fromInstitution).map(institutionDTOResourceAssembler::toResource)
+				.collect(Collectors.toList());
 
-		return new Resources<>(institutions, linkTo(methodOn(InstitutionController.class).allInstitutions()).withSelfRel());
+		return new Resources<>(institutions,
+				linkTo(methodOn(InstitutionController.class).allInstitutions()).withSelfRel());
 	}
 
 	@ResponseStatus(HttpStatus.CREATED)
-	@PostMapping
-	public Resource<Institution> newInstitution(@RequestBody final Institution institution) {
+	@PostMapping(consumes = { MediaType.APPLICATION_JSON_UTF8_VALUE })
+	public Resource<InstitutionDTO> newInstitution(@RequestBody final InstitutionDTO institution) {
 		LOG.debug("creating newInstitution");
-		return institutionResourceAssembler.toResource(institutionRepository.save(institution));
+		InstitutionDTO savedInstitution = InstitutionDTO
+				.fromInstitution(institutionRepository.save(institution.toInstitution()));
+		return institutionDTOResourceAssembler.toResource(savedInstitution);
 	}
 
 	@GetMapping(path = "/{id}")
-	public Resource<Institution> oneInstitution(@PathVariable(value = "id") final long id) {
+	public Resource<InstitutionDTO> oneInstitution(@PathVariable(value = "id") final long id) {
 		LOG.debug("searching oneInstitution ${}", id);
-		final Institution c = institutionRepository.findById(id).orElseThrow(() -> new InstitutionNotFoundException(id));
-		return institutionResourceAssembler.toResource(c);
+		final Institution institution = institutionRepository.findById(id)
+				.orElseThrow(() -> new InstitutionNotFoundException(id));
+		return institutionDTOResourceAssembler.toResource(InstitutionDTO.fromInstitution(institution));
 	}
 
 	@PutMapping(path = "/{id}")
-	public Institution replaceInstitution(@RequestBody final Institution newInstitution, @PathVariable final Long id) {
+	public Resource<InstitutionDTO> replaceInstitution(@RequestBody final InstitutionDTO newInstitution,
+			@PathVariable final Long id) {
 		LOG.info("replaceInstitution");
-		return institutionRepository.findById(id).map(inst -> {
+		Institution savedInstitution = institutionRepository.findById(id).map(inst -> {
 			inst.setName(newInstitution.getName());
 			return institutionRepository.save(inst);
 		}).orElseGet(() -> {
 			newInstitution.setId(id);
-			return institutionRepository.save(newInstitution);
+			return institutionRepository.save(newInstitution.toInstitution());
 		});
+
+		return institutionDTOResourceAssembler.toResource(InstitutionDTO.fromInstitution(savedInstitution));
 	}
 
 	@ResponseStatus(HttpStatus.NO_CONTENT)

@@ -11,6 +11,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.hateoas.Resource;
 import org.springframework.hateoas.Resources;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -21,7 +22,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-import br.com.controle.financeiro.controller.linkbuilder.TransactionResourceAssembler;
+import br.com.controle.financeiro.controller.linkbuilder.TransactionDTOResourceAssembler;
+import br.com.controle.financeiro.model.dto.TransactionDTO;
 import br.com.controle.financeiro.model.entity.Transaction;
 import br.com.controle.financeiro.model.exception.TransactionNotFoundException;
 import br.com.controle.financeiro.model.repository.TransactionRepository;
@@ -34,48 +36,56 @@ public class TransactionController {
 
 	private final TransactionRepository transactionRepository;
 
-	private final TransactionResourceAssembler transactionResourceAssembler;
+	private final TransactionDTOResourceAssembler transactionDTOResourceAssembler;
 
 	public TransactionController(final TransactionRepository transactionRepository,
-			final TransactionResourceAssembler transactionResourceAssembler) {
+			final TransactionDTOResourceAssembler transactionDTOResourceAssembler) {
 		this.transactionRepository = transactionRepository;
-		this.transactionResourceAssembler = transactionResourceAssembler;
+		this.transactionDTOResourceAssembler = transactionDTOResourceAssembler;
 	}
 
 	@GetMapping
-	public Resources<Resource<Transaction>> allTransactions() {
+	public Resources<Resource<TransactionDTO>> allTransactions() {
 		LOG.debug("finding allTransactions");
 
-		final List<Resource<Transaction>> transactions = transactionRepository.findAll().stream()
-				.map(transactionResourceAssembler::toResource).collect(Collectors.toList());
+		final List<Resource<TransactionDTO>> transactions = transactionRepository.findAll().stream()
+				.map(TransactionDTO::fromTransaction).map(transactionDTOResourceAssembler::toResource)
+				.collect(Collectors.toList());
 
-		return new Resources<>(transactions, linkTo(methodOn(TransactionController.class).allTransactions()).withSelfRel());
+		return new Resources<>(transactions,
+				linkTo(methodOn(TransactionController.class).allTransactions()).withSelfRel());
 	}
 
 	@ResponseStatus(HttpStatus.CREATED)
-	@PostMapping
-	public Resource<Transaction> newTransaction(@RequestBody final Transaction transaction) {
+	@PostMapping(consumes = { MediaType.APPLICATION_JSON_UTF8_VALUE })
+	public Resource<TransactionDTO> newTransaction(@RequestBody final TransactionDTO transaction) {
 		LOG.debug("creating newTransaction");
-		return transactionResourceAssembler.toResource(transactionRepository.save(transaction));
+		TransactionDTO savedTransacation = TransactionDTO
+				.fromTransaction(transactionRepository.save(transaction.toTransaction()));
+		return transactionDTOResourceAssembler.toResource(savedTransacation);
 	}
 
 	@GetMapping(path = "/{id}")
-	public Resource<Transaction> oneTransaction(@PathVariable(value = "id") final long id) {
+	public Resource<TransactionDTO> oneTransaction(@PathVariable(value = "id") final long id) {
 		LOG.debug("searching oneTransaction ${}", id);
-		final Transaction c = transactionRepository.findById(id).orElseThrow(() -> new TransactionNotFoundException(id));
-		return transactionResourceAssembler.toResource(c);
+		final Transaction transaction = transactionRepository.findById(id)
+				.orElseThrow(() -> new TransactionNotFoundException(id));
+		return transactionDTOResourceAssembler.toResource(TransactionDTO.fromTransaction(transaction));
 	}
 
 	@PutMapping(path = "/{id}")
-	public Transaction replaceTransaction(@RequestBody final Transaction newTransaction, @PathVariable final Long id) {
+	public Resource<TransactionDTO> replaceTransaction(@RequestBody final TransactionDTO newTransaction,
+			@PathVariable final Long id) {
 		LOG.info("replaceTransaction");
-		return transactionRepository.findById(id).map(transaction -> {
+		Transaction savedTransaction = transactionRepository.findById(id).map(transaction -> {
 			transaction.setName(newTransaction.getName());
 			return transactionRepository.save(transaction);
 		}).orElseGet(() -> {
 			newTransaction.setId(id);
-			return transactionRepository.save(newTransaction);
+			return transactionRepository.save(newTransaction.toTransaction());
 		});
+
+		return transactionDTOResourceAssembler.toResource(TransactionDTO.fromTransaction(savedTransaction));
 	}
 
 	@ResponseStatus(HttpStatus.NO_CONTENT)

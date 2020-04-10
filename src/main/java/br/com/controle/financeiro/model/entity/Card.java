@@ -28,6 +28,15 @@ public class Card implements Serializable {
 		super();
 	}
 
+	public Card(final Long id, final String name, final String number, final Client owner, final Institution institution) {
+		super();
+		this.cardId = id;
+		this.name = name;
+		this.number = number;
+		this.owner = owner;
+		this.institution = institution;
+	}
+
 	public Card(final String name, final String number, final Client owner, final Institution institution) {
 		super();
 		this.name = name;

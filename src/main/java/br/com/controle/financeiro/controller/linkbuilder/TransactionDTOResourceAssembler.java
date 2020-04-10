@@ -8,13 +8,13 @@ import org.springframework.hateoas.ResourceAssembler;
 import org.springframework.stereotype.Component;
 
 import br.com.controle.financeiro.controller.TransactionController;
-import br.com.controle.financeiro.model.entity.Transaction;
+import br.com.controle.financeiro.model.dto.TransactionDTO;
 
 @Component
-public class TransactionResourceAssembler implements ResourceAssembler<Transaction, Resource<Transaction>> {
+public class TransactionDTOResourceAssembler implements ResourceAssembler<TransactionDTO, Resource<TransactionDTO>> {
 
 	@Override
-	public Resource<Transaction> toResource(Transaction entity) {
+	public Resource<TransactionDTO> toResource(TransactionDTO entity) {
 		return new Resource<>(entity, linkTo(methodOn(TransactionController.class).oneTransaction(entity.getId())).withSelfRel(),
 				linkTo(methodOn(TransactionController.class).allTransactions()).withRel("transaction"));
 	}

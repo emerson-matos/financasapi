@@ -27,10 +27,14 @@ public class BankAccount implements Serializable {
 		super();
 	}
 
-	public BankAccount(final Client owner, final Institution institution) {
+	public BankAccount(final Client owner, final Institution institution, final String agency, final String number, final String dac, final Long accountId) {
 		super();
 		this.owner = owner;
 		this.institution = institution;
+		this.agency = agency;
+		this.number = number;
+		this.accountId = accountId;
+		this.dac = dac;
 	}
 
 	public Client getOwner() {
@@ -41,11 +45,11 @@ public class BankAccount implements Serializable {
 		this.owner = owner;
 	}
 
-	public Institution getInstituicao() {
+	public Institution getInstitution() {
 		return institution;
 	}
 
-	public void setInstituicao(final Institution institution) {
+	public void setInstitution(final Institution institution) {
 		this.institution = institution;
 	}
 

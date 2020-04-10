@@ -11,6 +11,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.hateoas.Resource;
 import org.springframework.hateoas.Resources;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -21,7 +22,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-import br.com.controle.financeiro.controller.linkbuilder.CardResourceAssembler;
+import br.com.controle.financeiro.controller.linkbuilder.CardDTOResourceAssembler;
+import br.com.controle.financeiro.model.dto.CardDTO;
 import br.com.controle.financeiro.model.entity.Card;
 import br.com.controle.financeiro.model.exception.CardNotFoundException;
 import br.com.controle.financeiro.model.repository.CardRepository;
@@ -34,48 +36,51 @@ public class CardController {
 
 	private final CardRepository cardRepository;
 
-	private final CardResourceAssembler cardResourceAssembler;
+	private final CardDTOResourceAssembler cardDTOResourceAssembler;
 
 	public CardController(final CardRepository cardRepository,
-			final CardResourceAssembler cardResourceAssembler) {
+			final CardDTOResourceAssembler cardDTOResourceAssembler) {
 		this.cardRepository = cardRepository;
-		this.cardResourceAssembler = cardResourceAssembler;
+		this.cardDTOResourceAssembler = cardDTOResourceAssembler;
 	}
 
 	@GetMapping
-	public Resources<Resource<Card>> allCards() {
+	public Resources<Resource<CardDTO>> allCards() {
 		LOG.debug("finding allCards");
 
-		final List<Resource<Card>> cards = cardRepository.findAll().stream()
-				.map(cardResourceAssembler::toResource).collect(Collectors.toList());
+		final List<Resource<CardDTO>> cards = cardRepository.findAll().stream().map(CardDTO::fromCard)
+				.map(cardDTOResourceAssembler::toResource).collect(Collectors.toList());
 
 		return new Resources<>(cards, linkTo(methodOn(CardController.class).allCards()).withSelfRel());
 	}
 
 	@ResponseStatus(HttpStatus.CREATED)
-	@PostMapping
-	public Resource<Card> newCard(@RequestBody final Card card) {
+	@PostMapping(consumes = { MediaType.APPLICATION_JSON_UTF8_VALUE })
+	public Resource<CardDTO> newCard(@RequestBody final CardDTO card) {
 		LOG.debug("creating newCard");
-		return cardResourceAssembler.toResource(cardRepository.save(card));
+		CardDTO savedCard = CardDTO.fromCard(cardRepository.save(card.toCard()));
+		return cardDTOResourceAssembler.toResource(savedCard);
 	}
 
 	@GetMapping(path = "/{id}")
-	public Resource<Card> oneCard(@PathVariable(value = "id") final long id) {
+	public Resource<CardDTO> oneCard(@PathVariable(value = "id") final long id) {
 		LOG.debug("searching oneCard ${}", id);
-		final Card c = cardRepository.findById(id).orElseThrow(() -> new CardNotFoundException(id));
-		return cardResourceAssembler.toResource(c);
+		final Card savedCard = cardRepository.findById(id).orElseThrow(() -> new CardNotFoundException(id));
+		return cardDTOResourceAssembler.toResource(CardDTO.fromCard(savedCard));
 	}
 
 	@PutMapping(path = "/{id}")
-	public Card replaceCard(@RequestBody final Card newCard, @PathVariable final Long id) {
+	public Resource<CardDTO> replaceCard(@RequestBody final CardDTO newCard, @PathVariable final Long id) {
 		LOG.info("replaceCard");
-		return cardRepository.findById(id).map(card -> {
+		Card savedCard = cardRepository.findById(id).map(card -> {
 			card.setName(newCard.getName());
 			return cardRepository.save(card);
 		}).orElseGet(() -> {
 			newCard.setId(id);
-			return cardRepository.save(newCard);
+			return cardRepository.save(newCard.toCard());
 		});
+
+		return cardDTOResourceAssembler.toResource(CardDTO.fromCard(savedCard));
 	}
 
 	@ResponseStatus(HttpStatus.NO_CONTENT)

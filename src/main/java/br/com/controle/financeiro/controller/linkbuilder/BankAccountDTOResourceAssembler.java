@@ -8,15 +8,15 @@ import org.springframework.hateoas.ResourceAssembler;
 import org.springframework.stereotype.Component;
 
 import br.com.controle.financeiro.controller.BankAccountController;
-import br.com.controle.financeiro.model.entity.BankAccount;
+import br.com.controle.financeiro.model.dto.BankAccountDTO;
 
 @Component
-public class BankAccountResourceAssembler implements ResourceAssembler<BankAccount, Resource<BankAccount>> {
+public class BankAccountDTOResourceAssembler implements ResourceAssembler<BankAccountDTO, Resource<BankAccountDTO>> {
 
 	@Override
-	public Resource<BankAccount> toResource(BankAccount entity) {
+	public Resource<BankAccountDTO> toResource(BankAccountDTO entity) {
 		return new Resource<>(entity, linkTo(methodOn(BankAccountController.class).oneBankAccount(entity.getId())).withSelfRel(),
-				linkTo(methodOn(BankAccountController.class).allBankAccounts()).withRel("clients"));
+				linkTo(methodOn(BankAccountController.class).allBankAccounts()).withRel("bankaccount"));
 	}
 
 }

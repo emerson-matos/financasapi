@@ -57,7 +57,7 @@ public class ClientController {
 	}
 
 	@ResponseStatus(HttpStatus.CREATED)
-	@PostMapping(consumes = {MediaType.APPLICATION_JSON_UTF8_VALUE})
+	@PostMapping(consumes = { MediaType.APPLICATION_JSON_UTF8_VALUE })
 	public Resource<ClientDTO> newClient(@RequestBody final ClientDTO client) {
 		LOG.debug("creating newClient");
 		ClientDTO clientDTO = ClientDTO.fromClient(clientRepository.save(client.toClient()));
@@ -72,7 +72,7 @@ public class ClientController {
 	}
 
 	@PutMapping(path = "/{id}")
-	public ClientDTO replaceClient(@RequestBody final ClientDTO newClient, @PathVariable final Long id) {
+	public Resource<ClientDTO> replaceClient(@RequestBody final ClientDTO newClient, @PathVariable final Long id) {
 		LOG.info("replaceClient");
 		Client savedClient = clientRepository.findById(id).map(client -> {
 			client.setName(newClient.getName());
@@ -81,7 +81,8 @@ public class ClientController {
 			newClient.setId(id);
 			return clientRepository.save(newClient.toClient());
 		});
-		return ClientDTO.fromClient(savedClient);
+
+		return clientDTOResourceAssembler.toResource(ClientDTO.fromClient(savedClient));
 	}
 
 	@ResponseStatus(HttpStatus.NO_CONTENT)

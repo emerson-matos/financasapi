@@ -1,6 +1,7 @@
 package br.com.controle.financeiro.model.entity;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.Date;
 
 import javax.persistence.Entity;
@@ -20,7 +21,7 @@ public class Transaction implements Serializable {
     private String name;
 
     private Date transactionDate;
-    private double value;
+    private BigDecimal value;
 
     @ManyToOne
     @JoinColumn(name = "ownerId")
@@ -38,9 +39,21 @@ public class Transaction implements Serializable {
         super();
     }
 
-    public Transaction(final double value, final String name, final Date date, final Client owner,
+    public Transaction(final BigDecimal value, final String name, final Date date, final Client owner,
             final BankAccount account, final Card card) {
         super();
+        this.setName(name);
+        this.setTransactionDate(date);
+        this.setOwner(owner);
+        this.setValue(value);
+        this.setBankAccount(account);
+        this.setCard(card);
+    }
+
+    public Transaction(final BigDecimal value, final String name, final Date date, final Client owner,
+            final BankAccount account, final Card card, final Long expenseId) {
+        super();
+        this.setId(expenseId);
         this.setName(name);
         this.setTransactionDate(date);
         this.setOwner(owner);
@@ -65,7 +78,7 @@ public class Transaction implements Serializable {
         return this.account;
     }
 
-    public double getValue() {
+    public BigDecimal getValue() {
         return value;
     }
 
@@ -77,7 +90,7 @@ public class Transaction implements Serializable {
         this.owner = owner;
     }
 
-    public void setValue(final double value) {
+    public void setValue(final BigDecimal value) {
         this.value = value;
     }
 
