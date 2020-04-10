@@ -16,7 +16,7 @@ public class BankAccountDTOResourceAssembler implements ResourceAssembler<BankAc
 	@Override
 	public Resource<BankAccountDTO> toResource(BankAccountDTO entity) {
 		return new Resource<>(entity, linkTo(methodOn(BankAccountController.class).oneBankAccount(entity.getId())).withSelfRel(),
-				linkTo(methodOn(BankAccountController.class).allBankAccounts()).withRel("bankaccount"));
+				linkTo(methodOn(BankAccountController.class).allBankAccounts()).withRel("bankaccounts"));
 	}
 
 }

@@ -16,7 +16,7 @@ public class InstitutionDTOResourceAssembler implements ResourceAssembler<Instit
 	@Override
 	public Resource<InstitutionDTO> toResource(InstitutionDTO entity) {
 		return new Resource<>(entity, linkTo(methodOn(InstitutionController.class).oneInstitution(entity.getId())).withSelfRel(),
-				linkTo(methodOn(InstitutionController.class).allInstitutions()).withRel("institution"));
+				linkTo(methodOn(InstitutionController.class).allInstitutions()).withRel("institutions"));
 	}
 
 }

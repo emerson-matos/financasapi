@@ -16,7 +16,7 @@ public class TransactionDTOResourceAssembler implements ResourceAssembler<Transa
 	@Override
 	public Resource<TransactionDTO> toResource(TransactionDTO entity) {
 		return new Resource<>(entity, linkTo(methodOn(TransactionController.class).oneTransaction(entity.getId())).withSelfRel(),
-				linkTo(methodOn(TransactionController.class).allTransactions()).withRel("transaction"));
+				linkTo(methodOn(TransactionController.class).allTransactions()).withRel("transactions"));
 	}
 
 }
