@@ -4,6 +4,9 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonProperty.Access;
+
 import br.com.controle.financeiro.model.entity.BankAccount;
 import br.com.controle.financeiro.model.entity.Card;
 import br.com.controle.financeiro.model.entity.Client;
@@ -15,9 +18,24 @@ public class TransactionDTO implements Serializable {
 	private String name;
 	private Date transactionDate;
 	private BigDecimal value;
-	private Long owner;
-	private Long account;
-	private Long card;
+
+	@JsonProperty(access = Access.WRITE_ONLY)
+	private Long ownerId;
+	
+	@JsonProperty(access = Access.WRITE_ONLY)
+	private Long accountId;
+
+	@JsonProperty(access = Access.WRITE_ONLY)
+	private Long cardId;
+
+	@JsonProperty(access = Access.READ_ONLY)
+	private Client owner;
+
+	@JsonProperty(access = Access.READ_ONLY)
+	private BankAccount account;
+	
+	@JsonProperty(access = Access.READ_ONLY)
+	private Card card;
 
 	public TransactionDTO() {
 		super();
@@ -29,10 +47,10 @@ public class TransactionDTO implements Serializable {
 		this.setId(id);
 		this.setName(name);
 		this.setTransactionDate(date);
-		this.setOwner(owner);
+		this.setOwnerId(owner);
 		this.setValue(value);
-		this.setBankAccount(account);
-		this.setCard(card);
+		this.setBankAccountId(account);
+		this.setCardId(card);
 	}
 
 	public static TransactionDTO fromTransaction(Transaction t) {
@@ -41,27 +59,43 @@ public class TransactionDTO implements Serializable {
 	}
 
 	public Transaction toTransaction() {
-		Card cardObj = new Card().withId(this.card);
-		BankAccount accountObj = new BankAccount().withId(this.account);
-		Client client = new Client().withId(owner);
+		Card cardObj = new Card().withId(this.cardId);
+		BankAccount accountObj = new BankAccount().withId(this.accountId);
+		Client client = new Client().withId(this.ownerId);
 
 		return new Transaction(this.getValue(), this.getName(), this.getTransactionDate(), client, accountObj, cardObj,
 				this.getId());
 	}
 
-	public void setCard(final Long card) {
+	public void setCard(final Card card) {
 		this.card = card;
 	}
 
-	public Long getCard() {
+	public Card getCard() {
 		return this.card;
 	}
 
-	public void setBankAccount(final Long account) {
+	public void setCardId(final Long id) {
+		this.cardId = id;
+	}
+
+	public Long getCardId() {
+		return this.cardId;
+	}
+
+	public void setBankAccountId(final Long accountId) {
+		this.accountId = accountId;
+	}
+
+	public Long getBankAccountId() {
+		return this.accountId;
+	}
+
+	public void setBankAccount(final BankAccount account) {
 		this.account = account;
 	}
 
-	public Long getBankAccount() {
+	public BankAccount getBankAccount() {
 		return this.account;
 	}
 
@@ -69,11 +103,19 @@ public class TransactionDTO implements Serializable {
 		return value;
 	}
 
-	public Long getOwner() {
+	public Long getOwnerId() {
+		return ownerId;
+	}
+
+	public void setOwnerId(final Long owner) {
+		this.ownerId = owner;
+	}
+
+	public Client getOwner() {
 		return owner;
 	}
 
-	public void setOwner(final Long owner) {
+	public void setOwner(final Client owner) {
 		this.owner = owner;
 	}
 

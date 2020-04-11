@@ -2,7 +2,9 @@ package br.com.controle.financeiro.model.entity;
 
 import java.io.Serializable;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -19,12 +21,10 @@ public class Card implements Serializable {
 	private String name;
 	private String number;
 
-	@ManyToOne
-	@JoinColumn(name = "client_id")
+	@ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.DETACH)	@JoinColumn(name = "client_id")
 	private Client owner;
 
-	@ManyToOne
-	@JoinColumn(name = "institution_id")
+	@ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.DETACH)	@JoinColumn(name = "institution_id")
 	private Institution institution;
 
 	public Card() {

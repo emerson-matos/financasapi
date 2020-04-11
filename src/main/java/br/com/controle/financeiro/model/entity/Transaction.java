@@ -4,7 +4,9 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -23,16 +25,13 @@ public class Transaction implements Serializable {
     private Date transactionDate;
     private BigDecimal value;
 
-    @ManyToOne
-    @JoinColumn(name = "client_id")
+    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.DETACH)    @JoinColumn(name = "client_id")
     private Client owner;
 
-    @ManyToOne
-    @JoinColumn(name = "account_id")
+    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.DETACH)    @JoinColumn(name = "account_id")
     private BankAccount account;
 
-    @ManyToOne
-    @JoinColumn(name = "card_id")
+    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.DETACH)    @JoinColumn(name = "card_id")
     private Card card;
 
     public Transaction() {

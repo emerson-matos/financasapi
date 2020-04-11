@@ -2,6 +2,9 @@ package br.com.controle.financeiro.model.dto;
 
 import java.io.Serializable;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonProperty.Access;
+
 import br.com.controle.financeiro.model.entity.Card;
 import br.com.controle.financeiro.model.entity.Client;
 import br.com.controle.financeiro.model.entity.Institution;
@@ -13,23 +16,32 @@ public class CardDTO implements Serializable {
 	private String name;
 	private String number;
 
-	private Long owner;
+	@JsonProperty(access = Access.WRITE_ONLY)
+	private Long ownerId;
 
-	private Long institution;
+	@JsonProperty(access = Access.WRITE_ONLY)
+	private Long institutionId;
 
-	public CardDTO() {
+	@JsonProperty(access = Access.READ_ONLY)
+	private Client owner;
+
+	@JsonProperty(access = Access.READ_ONLY)
+	private Institution institution;
+
+
+	public CardDTO(){
 		super();
 	}
 
-	public CardDTO(final String name, final String number, final Long owner, final Long institution) {
+	public CardDTO(final String name, final String number, final Long ownerId, final Long institutionId) {
 		super();
 		this.name = name;
 		this.number = number;
-		this.owner = owner;
-		this.institution = institution;
+		this.ownerId = ownerId;
+		this.institutionId = institutionId;
 	}
 
-	private CardDTO(final Long id, final String name, final String number, final Long owner, final Long institution) {
+	private CardDTO(final Long id, final String name, final String number, final Client owner, final Institution institution) {
 		super();
 		this.cardId = id;
 		this.name = name;
@@ -39,15 +51,14 @@ public class CardDTO implements Serializable {
 	}
 
 	public static CardDTO fromCard(final Card card) {
-		return new CardDTO(card.getId(), card.getName(), card.getNumber(), card.getOwner().getId(), card.getInstitution().getId());
+		return new CardDTO(card.getId(), card.getName(), card.getNumber(), card.getOwner(), card.getInstitution());
 	}
 
 	public Card toCard() {
-		Client client = new Client().withId(this.owner);
-		Institution instObj = new Institution().withId(this.institution);
+		Client client = new Client().withId(this.ownerId);
+		Institution instObj = new Institution().withId(this.institutionId);
 		return new Card(this.cardId, this.name, this.number, client, instObj);
 	}
-
 
 	public Long getId() {
 		return this.cardId;
@@ -73,19 +84,35 @@ public class CardDTO implements Serializable {
 		this.number = number;
 	}
 
-	public Long getOwner() {
+	public Client getOwner() {
 		return this.owner;
 	}
 
-	public void setOwner(final Long owner) {
-		this.owner = owner;
+	public void setOwner(final Client client) {
+		this.owner = client;
 	}
 
-	public Long getInstitution() {
+	public Institution getInstitution() {
 		return this.institution;
 	}
 
-	public void setName(final Long institution) {
+	public void setInstitution(final Institution institution) {
 		this.institution = institution;
+	}
+
+	public Long getOwnerId() {
+		return this.ownerId;
+	}
+
+	public void setOwnerId(final Long owner) {
+		this.ownerId = owner;
+	}
+
+	public Long getInstitutionId() {
+		return this.institutionId;
+	}
+
+	public void setInstitutionId(final Long id) {
+		this.institutionId = id;
 	}
 }

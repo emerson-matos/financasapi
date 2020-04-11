@@ -20,13 +20,13 @@ public class BankAccountDTO implements Serializable {
 
 	@JsonProperty(access = Access.WRITE_ONLY)
 	private Long ownerId;
-	
+
 	@JsonProperty(access = Access.WRITE_ONLY)
 	private Long institutionId;
-	
+
 	@JsonProperty(access = Access.READ_ONLY)
 	private Client owner;
-	
+
 	@JsonProperty(access = Access.READ_ONLY)
 	private Institution institution;
 
@@ -45,7 +45,6 @@ public class BankAccountDTO implements Serializable {
 	}
 
 	public BankAccountDTO(Long id, String agency, String number, String dac, Client owner, Institution institution) {
-
 		super();
 		this.agency = agency;
 		this.accountId = id;
