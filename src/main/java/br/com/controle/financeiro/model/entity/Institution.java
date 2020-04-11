@@ -13,7 +13,9 @@ public class Institution implements Serializable {
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Long institutionId;
+
 	private String name;
+
 	private String identifier;
 
 	public Institution() {
@@ -54,5 +56,10 @@ public class Institution implements Serializable {
 
 	public void setIdentifier(final String identifier) {
 		this.identifier = identifier;
+	}
+
+	public Institution withId(Long id) {
+		this.setId(id);
+		return this;
 	}
 }

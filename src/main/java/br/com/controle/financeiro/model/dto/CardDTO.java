@@ -13,15 +13,15 @@ public class CardDTO implements Serializable {
 	private String name;
 	private String number;
 
-	private Client owner;
+	private Long owner;
 
-	private Institution institution;
+	private Long institution;
 
 	public CardDTO() {
 		super();
 	}
 
-	public CardDTO(final String name, final String number, final Client owner, final Institution institution) {
+	public CardDTO(final String name, final String number, final Long owner, final Long institution) {
 		super();
 		this.name = name;
 		this.number = number;
@@ -29,7 +29,7 @@ public class CardDTO implements Serializable {
 		this.institution = institution;
 	}
 
-	private CardDTO(final Long id, final String name, final String number, final Client owner, final Institution institution) {
+	private CardDTO(final Long id, final String name, final String number, final Long owner, final Long institution) {
 		super();
 		this.cardId = id;
 		this.name = name;
@@ -39,11 +39,13 @@ public class CardDTO implements Serializable {
 	}
 
 	public static CardDTO fromCard(final Card card) {
-		return new CardDTO(card.getId(), card.getName(), card.getNumber(), card.getOwner(), card.getInstitution());
+		return new CardDTO(card.getId(), card.getName(), card.getNumber(), card.getOwner().getId(), card.getInstitution().getId());
 	}
 
 	public Card toCard() {
-		return new Card(this.cardId, this.name, this.number, this.owner, this.institution);
+		Client client = new Client().withId(this.owner);
+		Institution instObj = new Institution().withId(this.institution);
+		return new Card(this.cardId, this.name, this.number, client, instObj);
 	}
 
 
@@ -71,19 +73,19 @@ public class CardDTO implements Serializable {
 		this.number = number;
 	}
 
-	public Client getOwner() {
+	public Long getOwner() {
 		return this.owner;
 	}
 
-	public void setOwner(final Client owner) {
+	public void setOwner(final Long owner) {
 		this.owner = owner;
 	}
 
-	public Institution getInstitution() {
+	public Long getInstitution() {
 		return this.institution;
 	}
 
-	public void setName(final Institution institution) {
+	public void setName(final Long institution) {
 		this.institution = institution;
 	}
 }

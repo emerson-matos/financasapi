@@ -29,6 +29,10 @@ public class ClientDTO implements Serializable {
 		return new ClientDTO(client.getId(), client.getName());
 	}
 
+	public Client toClient() {
+		return new Client(this.name, this.clientId);
+	}
+
 	public Long getId() {
 		return this.clientId;
 	}
@@ -43,10 +47,6 @@ public class ClientDTO implements Serializable {
 
 	public void setName(final String name) {
 		this.name = name;
-	}
-
-	public Client toClient() {
-		return new Client(this.name, this.clientId);
 	}
 
 }

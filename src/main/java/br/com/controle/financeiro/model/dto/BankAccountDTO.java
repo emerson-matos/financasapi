@@ -2,6 +2,10 @@ package br.com.controle.financeiro.model.dto;
 
 import java.io.Serializable;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonView;
+import com.fasterxml.jackson.annotation.JsonProperty.Access;
+
 import br.com.controle.financeiro.model.entity.BankAccount;
 import br.com.controle.financeiro.model.entity.Client;
 import br.com.controle.financeiro.model.entity.Institution;
@@ -13,25 +17,35 @@ public class BankAccountDTO implements Serializable {
 	private String agency;
 	private String number;
 	private String dac;
-	private Client owner;
 
+	@JsonProperty(access = Access.WRITE_ONLY)
+	private Long ownerId;
+	
+	@JsonProperty(access = Access.WRITE_ONLY)
+	private Long institutionId;
+	
+	@JsonProperty(access = Access.READ_ONLY)
+	private Client owner;
+	
+	@JsonProperty(access = Access.READ_ONLY)
 	private Institution institution;
 
 	public BankAccountDTO() {
 		super();
 	}
 
-	public BankAccountDTO(final String agency, final String number, final String dac, final Client owner, final Institution institution) {
+	public BankAccountDTO(final String agency, final String number, final String dac, final Long owner,
+			final Long institution) {
 		super();
 		this.agency = agency;
 		this.number = number;
 		this.dac = dac;
-		this.owner = owner;
-		this.institution = institution;
+		this.ownerId = owner;
+		this.institutionId = institution;
 	}
 
-	private BankAccountDTO(final Long id, final String agency, final String number, final String dac,
-			final Client owner, final Institution institution) {
+	public BankAccountDTO(Long id, String agency, String number, String dac, Client owner, Institution institution) {
+
 		super();
 		this.agency = agency;
 		this.accountId = id;
@@ -41,13 +55,15 @@ public class BankAccountDTO implements Serializable {
 		this.institution = institution;
 	}
 
-	public static BankAccountDTO fromBankAccount(BankAccount client) {
-		return new BankAccountDTO(client.getId(), client.getAgency(), client.getNumber(), client.getDac(),
-				client.getOwner(), client.getInstitution());
+	public static BankAccountDTO fromBankAccount(BankAccount account) {
+		return new BankAccountDTO(account.getId(), account.getAgency(), account.getNumber(), account.getDac(),
+				account.getOwner(), account.getInstitution());
 	}
 
 	public BankAccount toBankAccount() {
-		return new BankAccount(this.owner, this.institution, this.agency, this.number, this.dac, this.accountId);
+		Client client = new Client().withId(this.ownerId);
+		Institution instObj = new Institution().withId(institutionId);
+		return new BankAccount(client, instObj, this.agency, this.number, this.dac, this.accountId);
 	}
 
 	public Long getId() {
@@ -80,6 +96,22 @@ public class BankAccountDTO implements Serializable {
 
 	public void setDac(final String dac) {
 		this.dac = dac;
+	}
+
+	public Long getOwnerId() {
+		return this.ownerId;
+	}
+
+	public void setOwner(final Long owner) {
+		this.ownerId = owner;
+	}
+
+	public Long getInstitutionId() {
+		return this.institutionId;
+	}
+
+	public void setInstitution(final Long institutionId) {
+		this.institutionId = institutionId;
 	}
 
 	public Client getOwner() {

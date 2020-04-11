@@ -2,11 +2,14 @@ package br.com.controle.financeiro.model.entity;
 
 import java.io.Serializable;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.OneToOne;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 
 @Entity
 public class BankAccount implements Serializable {
@@ -18,16 +21,21 @@ public class BankAccount implements Serializable {
 	private String agency;
 	private String number;
 	private String dac;
+
+	@ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.DETACH)
+	@JoinColumn(name = "client_id")
 	private Client owner;
 
-	@OneToOne
+	@ManyToOne(fetch = FetchType.EAGER)
+	@JoinColumn(name = "institution_id")
 	private Institution institution;
 
 	public BankAccount() {
 		super();
 	}
 
-	public BankAccount(final Client owner, final Institution institution, final String agency, final String number, final String dac, final Long accountId) {
+	public BankAccount(final Client owner, final Institution institution, final String agency, final String number,
+			final String dac, final Long accountId) {
 		super();
 		this.owner = owner;
 		this.institution = institution;
@@ -83,6 +91,11 @@ public class BankAccount implements Serializable {
 
 	public void setId(Long accountId) {
 		this.accountId = accountId;
+	}
+
+	public BankAccount withId(Long id) {
+		this.setId(id);
+		return this;
 	}
 
 }

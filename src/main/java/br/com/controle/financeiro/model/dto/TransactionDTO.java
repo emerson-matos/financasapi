@@ -15,16 +15,16 @@ public class TransactionDTO implements Serializable {
 	private String name;
 	private Date transactionDate;
 	private BigDecimal value;
-	private Client owner;
-	private BankAccount account;
-	private Card card;
+	private Long owner;
+	private Long account;
+	private Long card;
 
 	public TransactionDTO() {
 		super();
 	}
 
-	public TransactionDTO(final BigDecimal value, final String name, final Date date, final Client owner,
-			final BankAccount account, final Card card, final Long id) {
+	public TransactionDTO(final BigDecimal value, final String name, final Date date, final Long owner,
+			final Long account, final Long card, final Long id) {
 		super();
 		this.setId(id);
 		this.setName(name);
@@ -36,28 +36,32 @@ public class TransactionDTO implements Serializable {
 	}
 
 	public static TransactionDTO fromTransaction(Transaction t) {
-		return new TransactionDTO(t.getValue(), t.getName(), t.getTransactionDate(), t.getOwner(), t.getAccount(),
-				t.getCard(), t.getId());
+		return new TransactionDTO(t.getValue(), t.getName(), t.getTransactionDate(), t.getOwner().getId(),
+				t.getAccount().getId(), t.getCard().getId(), t.getId());
 	}
 
 	public Transaction toTransaction() {
-		return new Transaction(this.getValue(), this.getName(), this.getTransactionDate(), this.getOwner(), this.getAccount(),
-		this.getCard(), this.getId());
+		Card cardObj = new Card().withId(this.card);
+		BankAccount accountObj = new BankAccount().withId(this.account);
+		Client client = new Client().withId(owner);
+
+		return new Transaction(this.getValue(), this.getName(), this.getTransactionDate(), client, accountObj, cardObj,
+				this.getId());
 	}
 
-	public void setCard(final Card card) {
+	public void setCard(final Long card) {
 		this.card = card;
 	}
 
-	public Card getCard() {
+	public Long getCard() {
 		return this.card;
 	}
 
-	public void setBankAccount(final BankAccount account) {
+	public void setBankAccount(final Long account) {
 		this.account = account;
 	}
 
-	public BankAccount getBankAccount() {
+	public Long getBankAccount() {
 		return this.account;
 	}
 
@@ -65,11 +69,11 @@ public class TransactionDTO implements Serializable {
 		return value;
 	}
 
-	public Client getOwner() {
+	public Long getOwner() {
 		return owner;
 	}
 
-	public void setOwner(final Client owner) {
+	public void setOwner(final Long owner) {
 		this.owner = owner;
 	}
 
@@ -99,10 +103,6 @@ public class TransactionDTO implements Serializable {
 
 	public void setId(Long expenseId) {
 		this.expenseId = expenseId;
-	}
-
-	public BankAccount getAccount() {
-		return account;
 	}
 
 }

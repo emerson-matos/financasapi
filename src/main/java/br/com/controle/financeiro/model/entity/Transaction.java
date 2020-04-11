@@ -24,15 +24,15 @@ public class Transaction implements Serializable {
     private BigDecimal value;
 
     @ManyToOne
-    @JoinColumn(name = "ownerId")
+    @JoinColumn(name = "client_id")
     private Client owner;
 
     @ManyToOne
-    @JoinColumn(name = "accountId")
+    @JoinColumn(name = "account_id")
     private BankAccount account;
 
     @ManyToOne
-    @JoinColumn(name = "cardId")
+    @JoinColumn(name = "card_id")
     private Card card;
 
     public Transaction() {
