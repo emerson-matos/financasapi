@@ -21,7 +21,7 @@ public class FirebaseConfig {
 
     private static final Logger LOG = LoggerFactory.getLogger(FirebaseConfig.class);
     
-    @Value("${rs.pscode.firebase.database.url}")
+    @Value("${br.com.controle.financeiro.firebase.database.url}")
     private String databaseUrl;
 
     @Bean
@@ -31,16 +31,18 @@ public class FirebaseConfig {
 
     @PostConstruct
     public void init() {
-        try {
-            LOG.debug("Starting Firebase");
-            FirebaseOptions options = new FirebaseOptions.Builder()
-                    .setCredentials(GoogleCredentials.getApplicationDefault()).setDatabaseUrl(databaseUrl).build();
-            FirebaseApp.initializeApp(options);
-            LOG.debug("Started Firebase with ${}", databaseUrl);
-        } catch (IOException e) {
-            LOG.error("Error stating Firebase", e);
-            FirebaseApp.initializeApp();
-            LOG.debug("Started Firebase after an Exception");
+        if(FirebaseApp.getApps().isEmpty()){
+            try {
+                LOG.debug("Starting Firebase");
+                FirebaseOptions options = new FirebaseOptions.Builder()
+                .setCredentials(GoogleCredentials.getApplicationDefault()).setDatabaseUrl(databaseUrl).build();
+                FirebaseApp.initializeApp(options);
+                LOG.debug("Started Firebase with ${}", databaseUrl);
+            } catch (IOException e) {
+                LOG.error("Error stating Firebase", e);
+                FirebaseApp.initializeApp();
+                LOG.debug("Started Firebase after an Exception");
+            }
         }
     }
 }
