@@ -1,4 +1,4 @@
-package br.com.controle.financeiro.component;
+package br.com.controle.financeiro.configuration;
 
 import java.io.IOException;
 
@@ -10,6 +10,8 @@ import com.google.firebase.FirebaseOptions;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -17,6 +19,8 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class FirebaseConfig {
 
+    private static final Logger LOG = LoggerFactory.getLogger(FirebaseConfig.class);
+    
     @Value("${rs.pscode.firebase.database.url}")
     private String databaseUrl;
 
@@ -28,12 +32,15 @@ public class FirebaseConfig {
     @PostConstruct
     public void init() {
         try {
+            LOG.debug("Starting Firebase");
             FirebaseOptions options = new FirebaseOptions.Builder()
                     .setCredentials(GoogleCredentials.getApplicationDefault()).setDatabaseUrl(databaseUrl).build();
             FirebaseApp.initializeApp(options);
+            LOG.debug("Started Firebase with ${}", databaseUrl);
         } catch (IOException e) {
-            e.printStackTrace();
+            LOG.error("Error stating Firebase", e);
             FirebaseApp.initializeApp();
+            LOG.debug("Started Firebase after an Exception");
         }
     }
 }

@@ -15,7 +15,6 @@
             "name": "Debug (Launch)-ControlefinanceiroApplication<controlefinanceiro>",
             "request": "launch",
             "mainClass": "br.com.controle.financeiro.controlefinanceiro.ControlefinanceiroApplication",
-            "projectName": "controlefinanceiro"
         }
     ]
 }
