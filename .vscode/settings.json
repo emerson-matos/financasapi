@@ -4,7 +4,10 @@
         "**/.classpath": true,
         "**/.project": true,
         "**/.settings": true,
-        "**/.factorypath": true
+        "**/.factorypath": true,
+        "**/target":true,
+        "**/pgadmin":true,
+        "**/postgres":true,
     },
     "sonarlint.testFilePattern": "**/test/**/*",
     "maven.executable.preferMavenWrapper": false
