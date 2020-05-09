@@ -27,6 +27,7 @@ mvn spring-boot:run
 * [An Intro to Spring HATEOAS](https://www.baeldung.com/spring-hateoas-tutorial)
 * [Building REST services with Spring](https://spring.io/guides/tutorials/rest/)
 * [Github Open Source Guides](https://opensource.guide/)
+* [Spring-Boot-Starter](https://github.com/savicprvoslav/Spring-Boot-starter)
 
 ## License
 
