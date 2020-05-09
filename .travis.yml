@@ -19,5 +19,5 @@ jobs:
   include:
   - stage: unit tests
     script: mvn clean jacoco:prepare-agent install jacoco:report sonar:sonar -Dsonar.projectKey=emerson-matos_financasapi
-  - stage: test production
-    script: curl https://filhoemer.herokuapp.com/healthCheck
+  # - stage: test production
+    # script: curl https://filhoemer.herokuapp.com/healthCheck
