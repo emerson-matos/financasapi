@@ -39,6 +39,10 @@ buildNumber.properties
 
 ### VisualStudioCode ###
 .vscode/*
+.classpath
+.project
+.factorypath
+.settings/
 !.vscode/settings.json
 !.vscode/tasks.json
 !.vscode/launch.json
