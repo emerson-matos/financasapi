@@ -14,7 +14,8 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 public class ControlefinanceiroApplication extends SpringBootServletInitializer {
 
 	public static void main(String... args) {
-		SpringApplication.run(ControlefinanceiroApplication.class, args);
+		SpringApplication app = new SpringApplication(ControlefinanceiroApplication.class);
+		app.run("-- debug");
 	}
 
 }
