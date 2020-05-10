@@ -42,7 +42,7 @@ public class SecurityConfig {
 		@Qualifier(value = UserServiceImpl.NAME)
 		private UserDetailsService userService;
 
-		@Value("${rs.pscode.firebase.enabled}")
+		@Value("${br.com.controle.financeiro.firebase.enabled}")
 		private Boolean firebaseEnabled;
 
 		@Autowired
@@ -65,7 +65,7 @@ public class SecurityConfig {
 		private static final String[] USER_ENDPOINT = { "/transaction/**", "/bankaccount/**", "/card/**", "/client/**",
 				"/institution/**" };
 
-		@Value("${rs.pscode.firebase.enabled}")
+		@Value("${br.com.controle.financeiro.firebase.enabled}")
 		private Boolean firebaseEnabled;
 
 		@Override

@@ -8,7 +8,7 @@ public class FirebaseConditionImpl implements Condition {
 
 	@Override
 	public boolean matches(ConditionContext context, AnnotatedTypeMetadata metadata) {
-		String enabled = context.getEnvironment().getProperty("rs.pscode.firebase.enabled");
+		String enabled = context.getEnvironment().getProperty("br.com.controle.financeiro.firebase.enabled");
 		return Boolean.parseBoolean(enabled);
 	}
 }

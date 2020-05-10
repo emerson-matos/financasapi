@@ -20,7 +20,7 @@ import org.springframework.context.annotation.Configuration;
 public class FirebaseConfig {
 
     private static final Logger LOG = LoggerFactory.getLogger(FirebaseConfig.class);
-    
+
     @Value("${br.com.controle.financeiro.firebase.database.url}")
     private String databaseUrl;
 
@@ -31,11 +31,11 @@ public class FirebaseConfig {
 
     @PostConstruct
     public void init() {
-        if(FirebaseApp.getApps().isEmpty()){
+        if (FirebaseApp.getApps().isEmpty()) {
             try {
                 LOG.debug("Starting Firebase");
                 FirebaseOptions options = new FirebaseOptions.Builder()
-                .setCredentials(GoogleCredentials.getApplicationDefault()).setDatabaseUrl(databaseUrl).build();
+                        .setCredentials(GoogleCredentials.getApplicationDefault()).setDatabaseUrl(databaseUrl).build();
                 FirebaseApp.initializeApp(options);
                 LOG.debug("Started Firebase with ${}", databaseUrl);
             } catch (IOException e) {
