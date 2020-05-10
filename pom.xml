@@ -10,7 +10,7 @@
 	</parent>
 	<groupId>br.com.controle.financeiro</groupId>
 	<artifactId>gestao-financeira</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>0.0.2-SNAPSHOT</version>
 	<name>Controle Financeiro</name>
 	<description>Aplicação para auxiliar na gestão financeira</description>
 	<url>https://github.com/emegson/financasapi</url>
