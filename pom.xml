@@ -12,12 +12,20 @@
 	<artifactId>gestao-financeira</artifactId>
 	<version>0.0.2-SNAPSHOT</version>
 	<name>Controle Financeiro</name>
-	<description>Aplicação para auxiliar na gestão financeira</description>
+	<description>Application to help stay financial health</description>
 	<url>https://github.com/emegson/financasapi</url>
 
 	<properties>
 		<java.version>1.8</java.version>
 	</properties>
+
+	<distributionManagement>
+		<repository>
+		  <id>github</id>
+		  <name>GitHub emerson-matos Apache Maven Packages</name>
+		  <url>https://maven.pkg.github.com/emerson-matos/financasapi</url>
+		</repository>
+	 </distributionManagement>
 
 	<scm>
 		<connection>scm:git:git@github.com:emegson/financasapi.git</connection>
