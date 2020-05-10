@@ -9,37 +9,40 @@ import javax.persistence.Id;
 @Entity
 public class Client implements Serializable {
 
-	private static final long serialVersionUID = 1L;
-
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
-	private Long idResponsavel;
+	private Long clientId;
 
-	private String nome;
-	
+	private String name;
+
 	public Client() {
 		super();
 	}
-	
-	public Client(String nome) {
+
+	public Client(final String name) {
 		super();
-		this.nome = nome;
+		this.name = name;
 	}
-	
+
+	public Client(String name, Long id) {
+		this.name = name;
+		this.clientId = id;
+	}
+
 	public Long getId() {
-		return this.idResponsavel;
+		return this.clientId;
 	}
 
-	public void setId(Long id) {
-		this.idResponsavel = id;
+	public void setId(final Long id) {
+		this.clientId = id;
 	}
 
-	public String getNome() {
-		return this.nome;
+	public String getName() {
+		return this.name;
 	}
 
-	public void setNome(String nome) {
-		this.nome = nome;
+	public void setName(final String name) {
+		this.name = name;
 	}
-	
+
 }

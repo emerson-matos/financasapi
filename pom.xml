@@ -74,6 +74,24 @@
 						<groupId>org.jacoco</groupId>
 						<artifactId>jacoco-maven-plugin</artifactId>
 						<version>0.8.2</version>
+						<configuration>
+							<rules>
+								<rule>
+									<element>PACKAGE</element>
+									<limits>
+										<limit>
+											<counter>LINE</counter>
+											<value>COVEREDRATIO</value>
+											<minimum>0.50</minimum>
+										</limit>
+									</limits>
+								</rule>
+							</rules>
+							<excludes>
+								<exclude>br/com/controle/financeiro/controlefinanceiro/**/*</exclude>
+								<exclude>br/com/controle/financeiro/model/**/*</exclude>
+							</excludes>
+						</configuration>
 						<executions>
 							<execution>
 								<goals>
