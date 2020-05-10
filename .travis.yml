@@ -1,5 +1,6 @@
 dist: trusty
 language: java
+os: linux
 
 services:
 - postgresql
@@ -31,6 +32,5 @@ addons:
 deploy:
   provider: script
   script: "cp .travis.settings.xml $HOME/.m2/settings.xml && mvn deploy"
-  skip_cleanup: true
   on:
     tags: true
