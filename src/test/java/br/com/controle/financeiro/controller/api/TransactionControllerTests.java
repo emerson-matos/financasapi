@@ -5,6 +5,7 @@ import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.when;
 
 import java.math.BigDecimal;
+import java.util.Currency;
 import java.util.Date;
 import java.util.Optional;
 
@@ -59,7 +60,7 @@ public class TransactionControllerTests {
 	}
 
 	private void setupTransaction() {
-		transaction = new Transaction(new BigDecimal(0), "name", new Date(), new Client(),
+		transaction = new Transaction(new BigDecimal(1), Currency.getInstance("BRL"), "name", new Date(), new Client(),
 		new BankAccount(), new Card());
 		transaction.setId(1L);
 	}

@@ -2,9 +2,9 @@ package br.com.controle.financeiro.controller;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -34,11 +34,11 @@ public class RestResponseEntityExceptionHandler extends ResponseEntityExceptionH
 	}
 
 	@ResponseBody
-	@ExceptionHandler({ AccessDeniedException.class })
-	@ResponseStatus(HttpStatus.FORBIDDEN)
-	ResponseEntity<Object> forbidden(AccessDeniedException ex) {
+	@ExceptionHandler({ EmptyResultDataAccessException.class })
+	@ResponseStatus(HttpStatus.NO_CONTENT)
+	ResponseEntity<Object> objectNotFoundHandler(EmptyResultDataAccessException ex) {
 		log.info("handleException");
 		log.error(ex.getMessage(), ex);
-		return handleExceptionInternal(ex, ex.getCause(), null, HttpStatus.FORBIDDEN, null);
+		return handleExceptionInternal(ex, null, null, HttpStatus.NO_CONTENT, null);
 	}
 }
