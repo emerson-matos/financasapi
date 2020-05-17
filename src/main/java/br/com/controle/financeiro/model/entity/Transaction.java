@@ -47,6 +47,7 @@ public class Transaction implements Serializable {
         this.setTransactionDate(date);
         this.setOwner(owner);
         this.setValue(value);
+        this.setCurrency(currency);
         this.setBankAccount(account);
         this.setCard(card);
     }
@@ -59,6 +60,7 @@ public class Transaction implements Serializable {
         this.setTransactionDate(date);
         this.setOwner(owner);
         this.setValue(value);
+        this.setCurrency(currency);
         this.setBankAccount(account);
         this.setCard(card);
     }
