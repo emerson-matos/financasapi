@@ -1,37 +1,32 @@
-package br.com.controle.financeiro.model.entity;
+package br.com.controle.financeiro.model.dto;
 
 import java.io.Serializable;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import br.com.controle.financeiro.model.entity.Institution;
 
-@Entity
-public class Institution implements Serializable {
+public class InstitutionDTO implements Serializable {
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Long institutionId;
-
 	private String name;
-
 	private String identifier;
 
-	public Institution() {
+	public InstitutionDTO() {
 		super();
 	}
 
-	public Institution(final Long id, final String identifier, final String name) {
+	public InstitutionDTO(final Long id, final String identifier, final String name) {
 		super();
 		this.institutionId = id;
 		this.identifier = identifier;
 		this.name = name;
 	}
 
-	public Institution(final String name) {
-		super();
-		this.name = name;
+	public static InstitutionDTO fromInstitution(Institution institution) {
+		return new InstitutionDTO(institution.getId(), institution.getIdentifier(), institution.getName());
+	}
+
+	public Institution toInstitution() {
+		return new Institution(this.institutionId, this.identifier, this.name);
 	}
 
 	public Long getId() {
@@ -56,10 +51,5 @@ public class Institution implements Serializable {
 
 	public void setIdentifier(final String identifier) {
 		this.identifier = identifier;
-	}
-
-	public Institution withId(Long id) {
-		this.setId(id);
-		return this;
 	}
 }

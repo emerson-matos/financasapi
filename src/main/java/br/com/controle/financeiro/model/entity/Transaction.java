@@ -1,9 +1,13 @@
 package br.com.controle.financeiro.model.entity;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
+import java.util.Currency;
 import java.util.Date;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -20,31 +24,43 @@ public class Transaction implements Serializable {
     private String name;
 
     private Date transactionDate;
-    private double value;
+    private BigDecimal value;
+    private Currency currency;
 
-    @ManyToOne
-    @JoinColumn(name = "ownerId")
+    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.DETACH)    @JoinColumn(name = "client_id")
     private Client owner;
 
-    @ManyToOne
-    @JoinColumn(name = "accountId")
+    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.DETACH)    @JoinColumn(name = "account_id")
     private BankAccount account;
 
-    @ManyToOne
-    @JoinColumn(name = "cardId")
+    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.DETACH)    @JoinColumn(name = "card_id")
     private Card card;
 
     public Transaction() {
         super();
     }
 
-    public Transaction(final double value, final String name, final Date date, final Client owner,
+    public Transaction(final BigDecimal value, final Currency currency, final String name, final Date date, final Client owner,
             final BankAccount account, final Card card) {
         super();
         this.setName(name);
         this.setTransactionDate(date);
         this.setOwner(owner);
         this.setValue(value);
+        this.setCurrency(currency);
+        this.setBankAccount(account);
+        this.setCard(card);
+    }
+
+    public Transaction(final BigDecimal value, final Currency currency, final String name, final Date date, final Client owner,
+            final BankAccount account, final Card card, final Long expenseId) {
+        super();
+        this.setId(expenseId);
+        this.setName(name);
+        this.setTransactionDate(date);
+        this.setOwner(owner);
+        this.setValue(value);
+        this.setCurrency(currency);
         this.setBankAccount(account);
         this.setCard(card);
     }
@@ -65,7 +81,7 @@ public class Transaction implements Serializable {
         return this.account;
     }
 
-    public double getValue() {
+    public BigDecimal getValue() {
         return value;
     }
 
@@ -77,7 +93,7 @@ public class Transaction implements Serializable {
         this.owner = owner;
     }
 
-    public void setValue(final double value) {
+    public void setValue(final BigDecimal value) {
         this.value = value;
     }
 
@@ -96,5 +112,25 @@ public class Transaction implements Serializable {
     public void setName(final String name) {
         this.name = name;
     }
+
+    public Long getId() {
+        return expenseId;
+    }
+
+    public void setId(Long expenseId) {
+        this.expenseId = expenseId;
+    }
+
+    public BankAccount getAccount() {
+        return account;
+    }
+
+	public Currency getCurrency() {
+		return currency;
+	}
+
+	public void setCurrency(Currency currency) {
+		this.currency = currency;
+	}
 
 }
