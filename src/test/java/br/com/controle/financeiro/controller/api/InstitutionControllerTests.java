@@ -66,8 +66,9 @@ public class InstitutionControllerTests {
 
 	@Test
 	public void institutionPostTest() throws Exception {
+		byte[] institutionJson = "{\"name\":\"institution\", \"identifier\": \"001\"}".getBytes();
 		mockMvc.perform(MockMvcRequestBuilders.post("/institution").contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
-				.accept("*/*").content(("{\"name\":\"institution\"}"))).andExpect(MockMvcResultMatchers.status().isCreated())
+				.accept("*/*").content(institutionJson)).andExpect(MockMvcResultMatchers.status().isCreated())
 				.andDo(MockMvcResultHandlers.print()).andReturn();
 	}
 
@@ -91,8 +92,8 @@ public class InstitutionControllerTests {
 
 	@Test
 	public void institutionGetOneNotFoundTest() throws Exception {
-		mockMvc.perform(MockMvcRequestBuilders.get("/institution/{id}", 1).contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
-				.content(("{\"name\":\"institution\"}"))).andExpect(MockMvcResultMatchers.status().isNotFound())
+		mockMvc.perform(MockMvcRequestBuilders.get("/institution/{id}", 1).contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+				.andExpect(MockMvcResultMatchers.status().isNotFound())
 				.andDo(MockMvcResultHandlers.print()).andReturn();
 	}
 
@@ -100,8 +101,8 @@ public class InstitutionControllerTests {
 	public void institutionGetOneFoundTest() throws Exception {
 		when(institutionRepository.findById(anyLong())).thenReturn(Optional.of(institution));
 
-		mockMvc.perform(MockMvcRequestBuilders.get("/institution/{id}", 1).contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
-				.content(("{\"name\":\"institution\"}"))).andExpect(MockMvcResultMatchers.status().isOk())
+		mockMvc.perform(MockMvcRequestBuilders.get("/institution/{id}", 1).contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+				.andExpect(MockMvcResultMatchers.status().isOk())
 				.andDo(MockMvcResultHandlers.print()).andReturn();
 	}
 

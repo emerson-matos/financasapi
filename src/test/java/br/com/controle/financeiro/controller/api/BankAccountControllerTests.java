@@ -47,6 +47,8 @@ public class BankAccountControllerTests {
 	@Spy
 	private BankAccountDTOResourceAssembler accountDTOResourceAssembler;
 
+	private byte[] contaJson = "{\"agency\":\"account\", \"number\":\"1\", \"dac\":\"1\"}".getBytes();
+
 	@Before
 	public void setup() {
 		setupBankAccount();
@@ -67,14 +69,14 @@ public class BankAccountControllerTests {
 	@Test
 	public void bankAccountPostTest() throws Exception {
 		mockMvc.perform(MockMvcRequestBuilders.post("/bankaccount").contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
-				.accept("*/*").content(("{\"name\":\"account\"}"))).andExpect(MockMvcResultMatchers.status().isCreated())
+				.accept("*/*").content(contaJson)).andExpect(MockMvcResultMatchers.status().isCreated())
 				.andDo(MockMvcResultHandlers.print()).andReturn();
 	}
 
 	@Test
 	public void bankAccountPutOldAccountTest() throws Exception {
 		mockMvc.perform(MockMvcRequestBuilders.put("/bankaccount/{id}", 1)
-				.header("Content-Type", MediaType.APPLICATION_JSON_UTF8_VALUE).content(("{\"name\":\"account\"}")))
+				.header("Content-Type", MediaType.APPLICATION_JSON_UTF8_VALUE).content(contaJson))
 				.andExpect(MockMvcResultMatchers.status().is2xxSuccessful()).andDo(MockMvcResultHandlers.print())
 				.andReturn();
 	}

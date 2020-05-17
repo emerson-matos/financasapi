@@ -6,6 +6,8 @@ import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import javax.validation.Valid;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.hateoas.Resource;
@@ -56,7 +58,7 @@ public class CardController {
 
 	@ResponseStatus(HttpStatus.CREATED)
 	@PostMapping(consumes = { MediaType.APPLICATION_JSON_UTF8_VALUE })
-	public Resource<CardDTO> newCard(@RequestBody final CardDTO card) {
+	public Resource<CardDTO> newCard(@RequestBody @Valid final CardDTO card) {
 		LOG.debug("creating newCard");
 		CardDTO savedCard = CardDTO.fromCard(cardRepository.save(card.toCard()));
 		return cardDTOResourceAssembler.toResource(savedCard);

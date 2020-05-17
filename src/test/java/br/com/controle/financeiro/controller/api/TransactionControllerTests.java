@@ -73,8 +73,10 @@ public class TransactionControllerTests {
 
 	@Test
 	public void transactionPostTest() throws Exception {
+		
+		byte[] transactionJson = "{\"name\": \"Viagem\",\"transactionDate\": \"2020-01-10\",\"value\": 10.22,\"currency\": \"BRL\"}".getBytes();
 		mockMvc.perform(MockMvcRequestBuilders.post("/transaction").contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
-				.accept("*/*").content(("{\"name\":\"transaction\"}"))).andExpect(MockMvcResultMatchers.status().isCreated())
+				.accept("*/*").content(transactionJson)).andExpect(MockMvcResultMatchers.status().isCreated())
 				.andDo(MockMvcResultHandlers.print()).andReturn();
 	}
 
@@ -98,8 +100,8 @@ public class TransactionControllerTests {
 
 	@Test
 	public void transactionGetOneNotFoundTest() throws Exception {
-		mockMvc.perform(MockMvcRequestBuilders.get("/transaction/{id}", 1).contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
-				.content(("{\"name\":\"transaction\"}"))).andExpect(MockMvcResultMatchers.status().isNotFound())
+		mockMvc.perform(MockMvcRequestBuilders.get("/transaction/{id}", 1).contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+				.andExpect(MockMvcResultMatchers.status().isNotFound())
 				.andDo(MockMvcResultHandlers.print()).andReturn();
 	}
 
@@ -107,8 +109,8 @@ public class TransactionControllerTests {
 	public void transactionGetOneFoundTest() throws Exception {
 		when(transactionRepository.findById(anyLong())).thenReturn(Optional.of(transaction));
 
-		mockMvc.perform(MockMvcRequestBuilders.get("/transaction/{id}", 1).contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
-				.content(("{\"name\":\"transaction\"}"))).andExpect(MockMvcResultMatchers.status().isOk())
+		mockMvc.perform(MockMvcRequestBuilders.get("/transaction/{id}", 1).contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+				.andExpect(MockMvcResultMatchers.status().isOk())
 				.andDo(MockMvcResultHandlers.print()).andReturn();
 	}
 
