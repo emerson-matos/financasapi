@@ -2,6 +2,7 @@ package br.com.controle.financeiro.controller;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -31,5 +32,14 @@ public class RestResponseEntityExceptionHandler extends ResponseEntityExceptionH
 		log.info("handleException");
 		log.error(ex.getMessage(), ex);
 		return handleExceptionInternal(ex, null, null, HttpStatus.NOT_FOUND, null);
+	}
+
+	@ResponseBody
+	@ExceptionHandler({ EmptyResultDataAccessException.class })
+	@ResponseStatus(HttpStatus.NO_CONTENT)
+	ResponseEntity<Object> objectNotFoundHandler(EmptyResultDataAccessException ex) {
+		log.info("handleException");
+		log.error(ex.getMessage(), ex);
+		return handleExceptionInternal(ex, null, null, HttpStatus.NO_CONTENT, null);
 	}
 }
