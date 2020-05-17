@@ -4,6 +4,9 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.when;
 
+import java.math.BigDecimal;
+import java.util.Currency;
+import java.util.Date;
 import java.util.Optional;
 
 import org.junit.Before;
@@ -25,6 +28,9 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
 import br.com.controle.financeiro.controlefinanceiro.ControlefinanceiroApplication;
 import br.com.controle.financeiro.controller.linkbuilder.TransactionDTOResourceAssembler;
+import br.com.controle.financeiro.model.entity.BankAccount;
+import br.com.controle.financeiro.model.entity.Card;
+import br.com.controle.financeiro.model.entity.Client;
 import br.com.controle.financeiro.model.entity.Transaction;
 import br.com.controle.financeiro.model.repository.TransactionRepository;
 
@@ -53,7 +59,8 @@ public class TransactionControllerTests {
 	}
 
 	private void setupTransaction() {
-		transaction = new Transaction();
+		transaction = new Transaction(new BigDecimal(1), Currency.getInstance("BRL"), "name", new Date(), new Client(),
+		new BankAccount(), new Card());
 		transaction.setId(1L);
 	}
 
