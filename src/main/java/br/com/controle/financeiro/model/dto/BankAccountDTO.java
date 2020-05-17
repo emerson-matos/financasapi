@@ -3,7 +3,6 @@ package br.com.controle.financeiro.model.dto;
 import java.io.Serializable;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonView;
 import com.fasterxml.jackson.annotation.JsonProperty.Access;
 
 import br.com.controle.financeiro.model.entity.BankAccount;

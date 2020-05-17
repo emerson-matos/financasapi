@@ -74,6 +74,7 @@ public class ClientController {
 	@PutMapping(path = "/{id}")
 	public Resource<ClientDTO> replaceClient(@RequestBody final ClientDTO newClient, @PathVariable final Long id) {
 		LOG.info("replaceClient");
+		//TODO verify DTO integrity
 		Client savedClient = clientRepository.findById(id).map(client -> {
 			client.setName(newClient.getName());
 			return clientRepository.save(client);

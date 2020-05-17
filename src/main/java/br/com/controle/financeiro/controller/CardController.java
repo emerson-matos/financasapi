@@ -72,6 +72,7 @@ public class CardController {
 	@PutMapping(path = "/{id}")
 	public Resource<CardDTO> replaceCard(@RequestBody final CardDTO newCard, @PathVariable final Long id) {
 		LOG.info("replaceCard");
+		//TODO verify DTO integrity
 		Card savedCard = cardRepository.findById(id).map(card -> {
 			card.setName(newCard.getName());
 			return cardRepository.save(card);

@@ -80,6 +80,7 @@ public class BankAccountController {
 	public BankAccountDTO replaceBankAccount(@RequestBody final BankAccountDTO newBankAccountDTO,
 			@PathVariable final Long id) {
 		LOG.info("replaceBankAccount");
+		//TODO verify DTO integrity
 		BankAccount savedAccount = bankAccountRepository.findById(id).map(bankAccount -> {
 			bankAccount.setAgency(newBankAccountDTO.getAgency());
 			bankAccount.setDac(newBankAccountDTO.getDac());

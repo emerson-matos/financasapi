@@ -60,6 +60,7 @@ public class TransactionController {
 	@PostMapping(consumes = { MediaType.APPLICATION_JSON_UTF8_VALUE })
 	public Resource<TransactionDTO> newTransaction(@RequestBody final TransactionDTO transaction) {
 		LOG.debug("creating newTransaction");
+		//TODO deal when an transaction doesn't belong to a card and a bank account simultaneously
 		TransactionDTO savedTransacation = TransactionDTO
 				.fromTransaction(transactionRepository.save(transaction.toTransaction()));
 		return transactionDTOResourceAssembler.toResource(savedTransacation);
@@ -77,6 +78,7 @@ public class TransactionController {
 	public Resource<TransactionDTO> replaceTransaction(@RequestBody final TransactionDTO newTransaction,
 			@PathVariable final Long id) {
 		LOG.info("replaceTransaction");
+		//TODO verify DTO integrity
 		Transaction savedTransaction = transactionRepository.findById(id).map(transaction -> {
 			transaction.setName(newTransaction.getName());
 			return transactionRepository.save(transaction);
