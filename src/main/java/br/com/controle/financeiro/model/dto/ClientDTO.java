@@ -2,12 +2,14 @@ package br.com.controle.financeiro.model.dto;
 
 import java.io.Serializable;
 
+import javax.validation.constraints.NotNull;
+
 import br.com.controle.financeiro.model.entity.Client;
 
 public class ClientDTO implements Serializable {
 
 	private Long clientId;
-
+	@NotNull
 	private String name;
 
 	public ClientDTO() {

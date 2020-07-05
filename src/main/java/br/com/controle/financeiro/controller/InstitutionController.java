@@ -6,6 +6,8 @@ import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import javax.validation.Valid;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -55,7 +57,7 @@ public class InstitutionController {
 
 	@ResponseStatus(HttpStatus.CREATED)
 	@PostMapping(consumes = { MediaType.APPLICATION_JSON_UTF8_VALUE })
-	public Resource<InstitutionDTO> newInstitution(@RequestBody final InstitutionDTO institution) {
+	public Resource<InstitutionDTO> newInstitution(@RequestBody @Valid final InstitutionDTO institution) {
 		LOG.debug("creating newInstitution");
 		InstitutionDTO savedInstitution = InstitutionDTO
 				.fromInstitution(institutionRepository.save(institution.toInstitution()));

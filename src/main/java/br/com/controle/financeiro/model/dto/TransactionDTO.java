@@ -5,6 +5,8 @@ import java.math.BigDecimal;
 import java.util.Currency;
 import java.util.Date;
 
+import javax.validation.constraints.NotNull;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonProperty.Access;
 
@@ -16,9 +18,13 @@ import br.com.controle.financeiro.model.entity.Transaction;
 public class TransactionDTO implements Serializable {
 
 	private Long expenseId;
+	@NotNull
 	private String name;
+	@NotNull
 	private Date transactionDate;
+	@NotNull
 	private BigDecimal value;
+	@NotNull
 	private Currency currency;
 
 	@JsonProperty(access = Access.WRITE_ONLY)

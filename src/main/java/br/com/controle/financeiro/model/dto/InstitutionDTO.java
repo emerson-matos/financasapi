@@ -2,12 +2,16 @@ package br.com.controle.financeiro.model.dto;
 
 import java.io.Serializable;
 
+import javax.validation.constraints.NotNull;
+
 import br.com.controle.financeiro.model.entity.Institution;
 
 public class InstitutionDTO implements Serializable {
 
 	private Long institutionId;
+	@NotNull
 	private String name;
+	@NotNull
 	private String identifier;
 
 	public InstitutionDTO() {
