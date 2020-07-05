@@ -10,9 +10,9 @@ public class InstitutionDTO implements Serializable {
 
 	private Long institutionId;
 	@NotNull
-	private String name;
+	private String name = "";
 	@NotNull
-	private String identifier;
+	private String identifier = "";
 
 	public InstitutionDTO() {
 		super();

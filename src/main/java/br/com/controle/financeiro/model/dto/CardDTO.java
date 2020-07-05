@@ -15,9 +15,9 @@ public class CardDTO implements Serializable {
 
 	private Long cardId;
 	@NotNull
-	private String name;
+	private String name = "";
 	@NotNull
-	private String number;
+	private String number = "";
 
 	@JsonProperty(access = Access.WRITE_ONLY)
 	private Long ownerId;

@@ -2,8 +2,12 @@ package br.com.controle.financeiro.model.dto;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.time.Clock;
+import java.time.Instant;
+import java.util.Calendar;
 import java.util.Currency;
 import java.util.Date;
+import java.util.Locale;
 
 import javax.validation.constraints.NotNull;
 
@@ -19,13 +23,13 @@ public class TransactionDTO implements Serializable {
 
 	private Long expenseId;
 	@NotNull
-	private String name;
+	private String name = "";
 	@NotNull
-	private Date transactionDate;
+	private Date transactionDate = Date.from(Instant.now());
 	@NotNull
-	private BigDecimal value;
+	private BigDecimal value = BigDecimal.ZERO;
 	@NotNull
-	private Currency currency;
+	private Currency currency = Currency.getInstance(new Locale("pt", "BR"));
 
 	@JsonProperty(access = Access.WRITE_ONLY)
 	private Long ownerId;
