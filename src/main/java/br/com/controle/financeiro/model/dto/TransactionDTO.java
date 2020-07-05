@@ -2,9 +2,7 @@ package br.com.controle.financeiro.model.dto;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.time.Clock;
 import java.time.Instant;
-import java.util.Calendar;
 import java.util.Currency;
 import java.util.Date;
 import java.util.Locale;
