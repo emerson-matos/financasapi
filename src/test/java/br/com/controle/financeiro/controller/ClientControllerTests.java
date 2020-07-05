@@ -74,8 +74,9 @@ public class ClientControllerTests {
 
 	@Test
 	public void clientPutOldClientTest() throws Exception {
+		byte[] clientJson= "{\"name\":\"Pedro\"}".getBytes();
 		mockMvc.perform(MockMvcRequestBuilders.put("/client/{id}", 1)
-				.header("Content-Type", MediaType.APPLICATION_JSON_UTF8_VALUE).content(("{\"name\":\"Pedro\"}")))
+				.header("Content-Type", MediaType.APPLICATION_JSON_UTF8_VALUE).content(clientJson))
 				.andExpect(MockMvcResultMatchers.status().is2xxSuccessful()).andDo(MockMvcResultHandlers.print())
 				.andReturn();
 	}
@@ -92,8 +93,8 @@ public class ClientControllerTests {
 
 	@Test
 	public void clientGetOneNotFoundTest() throws Exception {
-		mockMvc.perform(MockMvcRequestBuilders.get("/client/{id}", 1).contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
-				.content(("{\"name\":\"Pedro\"}"))).andExpect(MockMvcResultMatchers.status().isNotFound())
+		mockMvc.perform(MockMvcRequestBuilders.get("/client/{id}", 1).contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+				.andExpect(MockMvcResultMatchers.status().isNotFound())
 				.andDo(MockMvcResultHandlers.print()).andReturn();
 	}
 
@@ -101,8 +102,8 @@ public class ClientControllerTests {
 	public void clientGetOneFoundTest() throws Exception {
 		when(clientRepository.findById(anyLong())).thenReturn(Optional.of(client));
 
-		mockMvc.perform(MockMvcRequestBuilders.get("/client/{id}", 1).contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
-				.content(("{\"name\":\"Pedro\"}"))).andExpect(MockMvcResultMatchers.status().isOk())
+		mockMvc.perform(MockMvcRequestBuilders.get("/client/{id}", 1).contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+				.andExpect(MockMvcResultMatchers.status().isOk())
 				.andDo(MockMvcResultHandlers.print()).andReturn();
 	}
 

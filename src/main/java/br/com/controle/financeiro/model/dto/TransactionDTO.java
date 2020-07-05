@@ -2,8 +2,12 @@ package br.com.controle.financeiro.model.dto;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.time.Instant;
 import java.util.Currency;
 import java.util.Date;
+import java.util.Locale;
+
+import javax.validation.constraints.NotNull;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonProperty.Access;
@@ -16,10 +20,14 @@ import br.com.controle.financeiro.model.entity.Transaction;
 public class TransactionDTO implements Serializable {
 
 	private Long expenseId;
-	private String name;
-	private Date transactionDate;
-	private BigDecimal value;
-	private Currency currency;
+	@NotNull
+	private String name = "";
+	@NotNull
+	private Date transactionDate = Date.from(Instant.now());
+	@NotNull
+	private BigDecimal value = BigDecimal.ZERO;
+	@NotNull
+	private Currency currency = Currency.getInstance(new Locale("pt", "BR"));
 
 	@JsonProperty(access = Access.WRITE_ONLY)
 	private Long ownerId;

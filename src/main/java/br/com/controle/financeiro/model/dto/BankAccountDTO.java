@@ -2,6 +2,8 @@ package br.com.controle.financeiro.model.dto;
 
 import java.io.Serializable;
 
+import javax.validation.constraints.NotNull;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonProperty.Access;
 
@@ -12,10 +14,12 @@ import br.com.controle.financeiro.model.entity.Institution;
 public class BankAccountDTO implements Serializable {
 
 	private Long accountId;
-
-	private String agency;
-	private String number;
-	private String dac;
+	@NotNull
+	private String agency = "";
+	@NotNull
+	private String number  = "";
+	@NotNull
+	private String dac = "";
 
 	@JsonProperty(access = Access.WRITE_ONLY)
 	private Long ownerId;

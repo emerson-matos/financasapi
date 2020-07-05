@@ -46,6 +46,8 @@ public class CardControllerTests {
 	@Spy
 	private CardDTOResourceAssembler cardDTOResourceAssembler;
 
+	private String cardJson = "{\"name\":\"Card\", \"number\":\"1234132\"}";
+
 	@Before
 	public void setup() {
 		setupCard();
@@ -66,7 +68,7 @@ public class CardControllerTests {
 	@Test
 	public void cardPostTest() throws Exception {
 		mockMvc.perform(MockMvcRequestBuilders.post("/card").contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
-				.accept("*/*").content(("{\"name\":\"Card\"}"))).andExpect(MockMvcResultMatchers.status().isCreated())
+				.accept("*/*").content(cardJson)).andExpect(MockMvcResultMatchers.status().isCreated())
 				.andDo(MockMvcResultHandlers.print()).andReturn();
 	}
 
@@ -90,8 +92,8 @@ public class CardControllerTests {
 
 	@Test
 	public void cardGetOneNotFoundTest() throws Exception {
-		mockMvc.perform(MockMvcRequestBuilders.get("/card/{id}", 1).contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
-				.content(("{\"name\":\"Card\"}"))).andExpect(MockMvcResultMatchers.status().isNotFound())
+		mockMvc.perform(MockMvcRequestBuilders.get("/card/{id}", 1).contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+				.andExpect(MockMvcResultMatchers.status().isNotFound())
 				.andDo(MockMvcResultHandlers.print()).andReturn();
 	}
 
@@ -99,8 +101,8 @@ public class CardControllerTests {
 	public void cardGetOneFoundTest() throws Exception {
 		when(cardRepository.findById(anyLong())).thenReturn(Optional.of(card));
 
-		mockMvc.perform(MockMvcRequestBuilders.get("/card/{id}", 1).contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
-				.content(("{\"name\":\"Card\"}"))).andExpect(MockMvcResultMatchers.status().isOk())
+		mockMvc.perform(MockMvcRequestBuilders.get("/card/{id}", 1).contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+				.andExpect(MockMvcResultMatchers.status().isOk())
 				.andDo(MockMvcResultHandlers.print()).andReturn();
 	}
 

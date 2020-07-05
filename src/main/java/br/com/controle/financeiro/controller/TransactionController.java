@@ -6,6 +6,8 @@ import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import javax.validation.Valid;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.hateoas.Resource;
@@ -58,7 +60,7 @@ public class TransactionController {
 
 	@ResponseStatus(HttpStatus.CREATED)
 	@PostMapping(consumes = { MediaType.APPLICATION_JSON_UTF8_VALUE })
-	public Resource<TransactionDTO> newTransaction(@RequestBody final TransactionDTO transaction) {
+	public Resource<TransactionDTO> newTransaction(@RequestBody @Valid final TransactionDTO transaction) {
 		LOG.debug("creating newTransaction");
 		//TODO deal when an transaction doesn't belong to a card and a bank account simultaneously
 		TransactionDTO savedTransacation = TransactionDTO
