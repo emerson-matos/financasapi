@@ -10,7 +10,7 @@ public class ClientDTO implements Serializable {
 
 	private Long clientId;
 	@NotNull
-	private String name;
+	private String name = "";
 
 	public ClientDTO() {
 		super();

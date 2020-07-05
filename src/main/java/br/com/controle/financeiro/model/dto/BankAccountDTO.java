@@ -15,11 +15,11 @@ public class BankAccountDTO implements Serializable {
 
 	private Long accountId;
 	@NotNull
-	private String agency;
+	private String agency = "";
 	@NotNull
-	private String number;
+	private String number  = "";
 	@NotNull
-	private String dac;
+	private String dac = "";
 
 	@JsonProperty(access = Access.WRITE_ONLY)
 	private Long ownerId;
