@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>org.springframework.boot</groupId>
@@ -10,7 +11,7 @@
 	</parent>
 	<groupId>br.com.controle.financeiro</groupId>
 	<artifactId>gestao-financeira</artifactId>
-	<version>0.0.3-SNAPSHOT</version>
+	<version>0.1.0-SNAPSHOT</version>
 	<name>Controle Financeiro</name>
 	<description>Application to help stay financial health</description>
 	<url>https://github.com/emegson/financasapi</url>
@@ -21,11 +22,11 @@
 
 	<distributionManagement>
 		<repository>
-		  <id>github</id>
-		  <name>GitHub emerson-matos Apache Maven Packages</name>
-		  <url>https://maven.pkg.github.com/emerson-matos/financasapi</url>
+			<id>github</id>
+			<name>GitHub emerson-matos Apache Maven Packages</name>
+			<url>https://maven.pkg.github.com/emerson-matos/financasapi</url>
 		</repository>
-	 </distributionManagement>
+	</distributionManagement>
 
 	<scm>
 		<connection>scm:git:git@github.com:emegson/financasapi.git</connection>
@@ -42,10 +43,12 @@
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
+			<version>2.1.5.RELEASE</version>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-data-jpa</artifactId>
+			<version>2.1.5.RELEASE</version>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -54,6 +57,7 @@
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-test</artifactId>
+			<version>2.1.5.RELEASE</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
@@ -70,6 +74,22 @@
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-hateoas</artifactId>
+			<version>2.1.5.RELEASE</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.tomcat.embed</groupId>
+			<artifactId>tomcat-embed-jasper</artifactId>
+			<version>9.0.37</version>
+		</dependency>
+		<dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>jstl</artifactId>
+			<version>1.2</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-actuator</artifactId>
+			<version>2.1.5.RELEASE</version>
 		</dependency>
 		<dependency>
 			<groupId>com.google.firebase</groupId>
