@@ -31,7 +31,7 @@ import br.com.controle.financeiro.model.exception.BankAccountNotFoundException;
 import br.com.controle.financeiro.model.repository.BankAccountRepository;
 
 @RestController
-@RequestMapping("/bankaccount")
+@RequestMapping("/api/bankaccount")
 public class BankAccountController {
 
 	private static final Logger LOG = LoggerFactory.getLogger(BankAccountController.class);

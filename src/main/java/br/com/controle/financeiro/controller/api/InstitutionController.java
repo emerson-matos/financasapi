@@ -32,7 +32,7 @@ import br.com.controle.financeiro.model.exception.InstitutionNotFoundException;
 import br.com.controle.financeiro.model.repository.InstitutionRepository;
 
 @RestController
-@RequestMapping("/institution")
+@RequestMapping("/api/institution")
 public class InstitutionController {
 
 	private static final Logger LOG = LoggerFactory.getLogger(InstitutionController.class);

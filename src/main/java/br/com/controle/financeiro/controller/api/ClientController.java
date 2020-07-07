@@ -31,7 +31,7 @@ import br.com.controle.financeiro.model.exception.ClientNotFoundException;
 import br.com.controle.financeiro.model.repository.ClientRepository;
 
 @RestController
-@RequestMapping("/client")
+@RequestMapping("/api/client")
 public class ClientController {
 
 	private static final Logger LOG = LoggerFactory.getLogger(ClientController.class);
