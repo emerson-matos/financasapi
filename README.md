@@ -9,7 +9,7 @@ The objective of this project is to be able to study Spring Framework with somet
 ## Prerequisites
 
 * Maven
-* Java JDK 1.8+
+* Java JDK 11+
 * Postgres
 
 ## Running
@@ -17,6 +17,7 @@ The objective of this project is to be able to study Spring Framework with somet
 Just run the maven goal
 
 ```
+docker-compose up -d
 mvn spring-boot:run
 ```
 
