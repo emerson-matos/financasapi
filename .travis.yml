@@ -2,6 +2,9 @@ dist: trusty
 language: java
 os: linux
 
+jdk:
+  openjdk11
+
 services:
 - postgresql
 
