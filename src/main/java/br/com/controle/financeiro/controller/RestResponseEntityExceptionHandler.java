@@ -5,10 +5,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.ControllerAdvice;
-import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 import br.com.controle.financeiro.model.exception.BankAccountNotFoundException;
@@ -18,7 +15,7 @@ import br.com.controle.financeiro.model.exception.InstitutionNotFoundException;
 import br.com.controle.financeiro.model.exception.NotFoundException;
 import br.com.controle.financeiro.model.exception.TransactionNotFoundException;
 
-@ControllerAdvice
+@RestControllerAdvice
 public class RestResponseEntityExceptionHandler extends ResponseEntityExceptionHandler {
 
 	private static final Logger log = LoggerFactory.getLogger(RestResponseEntityExceptionHandler.class);
