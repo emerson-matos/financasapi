@@ -10,6 +10,7 @@ import org.mockito.InjectMocks;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.hateoas.Resource;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import br.com.controle.financeiro.model.dto.CardDTO;
@@ -17,6 +18,7 @@ import br.com.controle.financeiro.model.dto.CardDTO;
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = { CardDTOResourceAssembler.class })
 @AutoConfigureMockMvc
+@ActiveProfiles(profiles = "test")
 public class CardDTOResourceAssemblerTest {
 
 	@InjectMocks

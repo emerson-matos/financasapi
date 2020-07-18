@@ -23,7 +23,7 @@ public class TransactionDTO implements Serializable {
 	@NotNull
 	private String name = "";
 	@NotNull
-	private LocalDateTime transactionDate = LocalDateTime.from(Instant.now());
+	private LocalDateTime transactionDate = LocalDateTime.now();
 	@NotNull
 	private BigDecimal value = BigDecimal.ZERO;
 	@NotNull
