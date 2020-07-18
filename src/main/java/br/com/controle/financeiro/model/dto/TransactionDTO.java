@@ -3,8 +3,8 @@ package br.com.controle.financeiro.model.dto;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.Instant;
+import java.time.LocalDateTime;
 import java.util.Currency;
-import java.util.Date;
 import java.util.Locale;
 
 import javax.validation.constraints.NotNull;
@@ -23,7 +23,7 @@ public class TransactionDTO implements Serializable {
 	@NotNull
 	private String name = "";
 	@NotNull
-	private Date transactionDate = Date.from(Instant.now());
+	private LocalDateTime transactionDate = LocalDateTime.from(Instant.now());
 	@NotNull
 	private BigDecimal value = BigDecimal.ZERO;
 	@NotNull
@@ -51,7 +51,7 @@ public class TransactionDTO implements Serializable {
 		super();
 	}
 
-	public TransactionDTO(final BigDecimal value, final Currency currency, final String name, final Date date, final Long owner,
+	public TransactionDTO(final BigDecimal value, final Currency currency, final String name, final LocalDateTime date, final Long owner,
 			final Long account, final Long card, final Long id) {
 		super();
 		this.setCurrency(currency);
@@ -134,11 +134,11 @@ public class TransactionDTO implements Serializable {
 		this.value = value;
 	}
 
-	public Date getTransactionDate() {
+	public LocalDateTime getTransactionDate() {
 		return transactionDate;
 	}
 
-	public void setTransactionDate(final Date transactionDate) {
+	public void setTransactionDate(final LocalDateTime transactionDate) {
 		this.transactionDate = transactionDate;
 	}
 

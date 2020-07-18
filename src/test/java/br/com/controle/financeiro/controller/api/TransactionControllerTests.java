@@ -5,8 +5,8 @@ import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.when;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.Currency;
-import java.util.Date;
 import java.util.Optional;
 
 import org.junit.Before;
@@ -60,8 +60,8 @@ public class TransactionControllerTests {
 	}
 
 	private void setupTransaction() {
-		transaction = new Transaction(new BigDecimal(1), Currency.getInstance("BRL"), "name", new Date(), new Client(),
-		new BankAccount(), new Card());
+		transaction = new Transaction(new BigDecimal(1), Currency.getInstance("BRL"), "name", LocalDateTime.now(), new Client(),
+				new BankAccount(), new Card());
 		transaction.setId(1L);
 	}
 

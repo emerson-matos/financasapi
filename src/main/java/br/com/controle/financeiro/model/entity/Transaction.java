@@ -2,8 +2,8 @@ package br.com.controle.financeiro.model.entity;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.Currency;
-import java.util.Date;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
@@ -23,7 +23,7 @@ public class Transaction implements Serializable {
 
     private String name;
 
-    private Date transactionDate;
+    private LocalDateTime transactionDate;
     private BigDecimal value;
     private Currency currency;
 
@@ -40,7 +40,7 @@ public class Transaction implements Serializable {
         super();
     }
 
-    public Transaction(final BigDecimal value, final Currency currency, final String name, final Date date, final Client owner,
+    public Transaction(final BigDecimal value, final Currency currency, final String name, final LocalDateTime date, final Client owner,
             final BankAccount account, final Card card) {
         super();
         this.setName(name);
@@ -52,7 +52,7 @@ public class Transaction implements Serializable {
         this.setCard(card);
     }
 
-    public Transaction(final BigDecimal value, final Currency currency, final String name, final Date date, final Client owner,
+    public Transaction(final BigDecimal value, final Currency currency, final String name, final LocalDateTime date, final Client owner,
             final BankAccount account, final Card card, final Long expenseId) {
         super();
         this.setId(expenseId);
@@ -97,11 +97,11 @@ public class Transaction implements Serializable {
         this.value = value;
     }
 
-    public Date getTransactionDate() {
+    public LocalDateTime getTransactionDate() {
         return transactionDate;
     }
 
-    public void setTransactionDate(final Date transactionDate) {
+    public void setTransactionDate(final LocalDateTime transactionDate) {
         this.transactionDate = transactionDate;
     }
 
