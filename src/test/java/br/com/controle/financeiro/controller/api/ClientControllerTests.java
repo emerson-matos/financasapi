@@ -2,6 +2,7 @@ package br.com.controle.financeiro.controller.api;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
 
 import java.util.Optional;
@@ -15,6 +16,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
@@ -112,4 +114,12 @@ public class ClientControllerTests {
 				.andReturn();
 	}
 
+	@Test
+	public void clientDeleteNotFoundTest() throws Exception {
+		doThrow(new EmptyResultDataAccessException(1)).when(clientRepository).deleteById(anyLong());
+		
+		mockMvc.perform(MockMvcRequestBuilders.delete("/client/{id}", 5))
+				.andExpect(MockMvcResultMatchers.status().isNoContent()).andDo(MockMvcResultHandlers.print())
+				.andReturn();
+	}
 }

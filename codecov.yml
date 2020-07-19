@@ -1,0 +1,12 @@
+codecov:
+    require_ci_to_pass:yes
+
+coverage:
+    project:
+        default:
+            target: 70%
+            threshold: 0%
+            base: auto
+    precision: 2
+    round: down
+    range: "70..100"

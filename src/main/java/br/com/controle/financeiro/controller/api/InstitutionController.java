@@ -74,6 +74,7 @@ public class InstitutionController {
 	public Resource<InstitutionDTO> replaceInstitution(@RequestBody final InstitutionDTO newInstitution,
 			@PathVariable final Long id) {
 		LOG.info("replaceInstitution");
+		//TODO verify DTO integrity
 		Institution savedInstitution = institutionRepository.findById(id).map(inst -> {
 			inst.setName(newInstitution.getName());
 			return institutionRepository.save(inst);

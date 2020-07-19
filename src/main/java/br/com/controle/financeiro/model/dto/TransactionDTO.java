@@ -2,6 +2,7 @@ package br.com.controle.financeiro.model.dto;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.util.Currency;
 import java.util.Date;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -18,6 +19,7 @@ public class TransactionDTO implements Serializable {
 	private String name;
 	private Date transactionDate;
 	private BigDecimal value;
+	private Currency currency;
 
 	@JsonProperty(access = Access.WRITE_ONLY)
 	private Long ownerId;
@@ -41,9 +43,10 @@ public class TransactionDTO implements Serializable {
 		super();
 	}
 
-	public TransactionDTO(final BigDecimal value, final String name, final Date date, final Long owner,
+	public TransactionDTO(final BigDecimal value, final Currency currency, final String name, final Date date, final Long owner,
 			final Long account, final Long card, final Long id) {
 		super();
+		this.setCurrency(currency);
 		this.setId(id);
 		this.setName(name);
 		this.setTransactionDate(date);
@@ -54,7 +57,7 @@ public class TransactionDTO implements Serializable {
 	}
 
 	public static TransactionDTO fromTransaction(Transaction t) {
-		return new TransactionDTO(t.getValue(), t.getName(), t.getTransactionDate(), t.getOwner().getId(),
+		return new TransactionDTO(t.getValue(), t.getCurrency(), t.getName(), t.getTransactionDate(), t.getOwner().getId(),
 				t.getAccount().getId(), t.getCard().getId(), t.getId());
 	}
 
@@ -63,7 +66,7 @@ public class TransactionDTO implements Serializable {
 		BankAccount accountObj = new BankAccount().withId(this.accountId);
 		Client client = new Client().withId(this.ownerId);
 
-		return new Transaction(this.getValue(), this.getName(), this.getTransactionDate(), client, accountObj, cardObj,
+		return new Transaction(this.getValue(), this.getCurrency(), this.getName(), this.getTransactionDate(), client, accountObj, cardObj,
 				this.getId());
 	}
 
@@ -147,4 +150,11 @@ public class TransactionDTO implements Serializable {
 		this.expenseId = expenseId;
 	}
 
+	public Currency getCurrency() {
+		return currency;
+	}
+
+	public void setCurrency(Currency currency) {
+		this.currency = currency;
+	}
 }

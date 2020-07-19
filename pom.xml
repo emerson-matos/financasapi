@@ -9,14 +9,29 @@
 		<!-- lookup parent from repository -->
 	</parent>
 	<groupId>br.com.controle.financeiro</groupId>
-	<artifactId>controlefinanceiro</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
-	<name>controlefinanceiro</name>
-	<description>Aplicação para salvar e tratar a gestão financeira</description>
+	<artifactId>gestao-financeira</artifactId>
+	<version>0.0.3-SNAPSHOT</version>
+	<name>Controle Financeiro</name>
+	<description>Application to help stay financial health</description>
+	<url>https://github.com/emegson/financasapi</url>
 
 	<properties>
 		<java.version>1.8</java.version>
 	</properties>
+
+	<distributionManagement>
+		<repository>
+		  <id>github</id>
+		  <name>GitHub emerson-matos Apache Maven Packages</name>
+		  <url>https://maven.pkg.github.com/emerson-matos/financasapi</url>
+		</repository>
+	 </distributionManagement>
+
+	<scm>
+		<connection>scm:git:git@github.com:emegson/financasapi.git</connection>
+		<developerConnection>scm:git:git@github.com:emegson/financasapi.git</developerConnection>
+		<url>https://github.com/emegson/financasapi</url>
+	</scm>
 
 	<dependencies>
 		<dependency>
@@ -70,46 +85,54 @@
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
 			</plugin>
-			<plugin>
-				<groupId>org.jacoco</groupId>
-				<artifactId>jacoco-maven-plugin</artifactId>
-				<version>0.8.2</version>
-				<configuration>
-					<rules>
-						<rule>
-							<element>PACKAGE</element>
-							<limits>
-								<limit>
-									<counter>LINE</counter>
-									<value>COVEREDRATIO</value>
-									<minimum>0.50</minimum>
-								</limit>
-							</limits>
-						</rule>
-					</rules>
-					<excludes>
-						<exclude>br/com/controle/financeiro/controlefinanceiro/**/*</exclude>
-						<exclude>br/com/controle/financeiro/model/**/*</exclude>
-					</excludes>
-				</configuration>
-				<executions>
-					<execution>
-						<goals>
-							<goal>
-								prepare-agent
-							</goal>
-						</goals>
-					</execution>
-					<execution>
-						<id>report</id>
-						<phase>test</phase>
-						<goals>
-							<goal>report</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
 		</plugins>
 	</build>
-
+	<profiles>
+		<profile>
+			<id>coverage</id>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.jacoco</groupId>
+						<artifactId>jacoco-maven-plugin</artifactId>
+						<version>0.8.2</version>
+						<configuration>
+							<rules>
+								<rule>
+									<element>PACKAGE</element>
+									<limits>
+										<limit>
+											<counter>LINE</counter>
+											<value>COVEREDRATIO</value>
+											<minimum>0.50</minimum>
+										</limit>
+									</limits>
+								</rule>
+							</rules>
+							<excludes>
+								<exclude>br/com/controle/financeiro/controlefinanceiro/**/*</exclude>
+								<exclude>br/com/controle/financeiro/model/**/*</exclude>
+							</excludes>
+						</configuration>
+						<executions>
+							<execution>
+								<goals>
+									<goal>
+								prepare-agent
+									</goal>
+								</goals>
+							</execution>
+							<execution>
+								<id>report</id>
+								<phase>test</phase>
+								<goals>
+									<goal>report</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+	</profiles>
 </project>
