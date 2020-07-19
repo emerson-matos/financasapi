@@ -10,6 +10,7 @@ import org.mockito.InjectMocks;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.hateoas.Resource;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import br.com.controle.financeiro.model.dto.TransactionDTO;
@@ -17,6 +18,7 @@ import br.com.controle.financeiro.model.dto.TransactionDTO;
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = { TransactionDTOResourceAssembler.class })
 @AutoConfigureMockMvc
+@ActiveProfiles(profiles = "test")
 public class TransactionDTOResourceAssemblerTest {
 
 	@InjectMocks

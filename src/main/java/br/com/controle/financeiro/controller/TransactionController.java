@@ -31,7 +31,7 @@ import br.com.controle.financeiro.model.exception.TransactionNotFoundException;
 import br.com.controle.financeiro.model.repository.TransactionRepository;
 
 @RestController
-@RequestMapping("/transaction")
+@RequestMapping("/api/transaction")
 public class TransactionController {
 
 	private static final Logger LOG = LoggerFactory.getLogger(TransactionController.class);
