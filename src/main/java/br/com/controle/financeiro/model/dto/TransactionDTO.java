@@ -2,8 +2,12 @@ package br.com.controle.financeiro.model.dto;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.time.Instant;
+import java.time.LocalDateTime;
 import java.util.Currency;
-import java.util.Date;
+import java.util.Locale;
+
+import javax.validation.constraints.NotNull;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonProperty.Access;
@@ -16,10 +20,14 @@ import br.com.controle.financeiro.model.entity.Transaction;
 public class TransactionDTO implements Serializable {
 
 	private Long expenseId;
-	private String name;
-	private Date transactionDate;
-	private BigDecimal value;
-	private Currency currency;
+	@NotNull
+	private String name = "";
+	@NotNull
+	private LocalDateTime transactionDate = LocalDateTime.now();
+	@NotNull
+	private BigDecimal value = BigDecimal.ZERO;
+	@NotNull
+	private Currency currency = Currency.getInstance(new Locale("pt", "BR"));
 
 	@JsonProperty(access = Access.WRITE_ONLY)
 	private Long ownerId;
@@ -43,7 +51,7 @@ public class TransactionDTO implements Serializable {
 		super();
 	}
 
-	public TransactionDTO(final BigDecimal value, final Currency currency, final String name, final Date date, final Long owner,
+	public TransactionDTO(final BigDecimal value, final Currency currency, final String name, final LocalDateTime date, final Long owner,
 			final Long account, final Long card, final Long id) {
 		super();
 		this.setCurrency(currency);
@@ -126,11 +134,11 @@ public class TransactionDTO implements Serializable {
 		this.value = value;
 	}
 
-	public Date getTransactionDate() {
+	public LocalDateTime getTransactionDate() {
 		return transactionDate;
 	}
 
-	public void setTransactionDate(final Date transactionDate) {
+	public void setTransactionDate(final LocalDateTime transactionDate) {
 		this.transactionDate = transactionDate;
 	}
 

@@ -16,6 +16,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
@@ -33,6 +34,7 @@ import br.com.controle.financeiro.model.repository.InstitutionRepository;
 @SpringBootTest(classes = { ControlefinanceiroApplication.class, InstitutionDTOResourceAssembler.class })
 @AutoConfigureMockMvc
 @EnableWebMvc
+@ActiveProfiles(profiles = "test")
 @Import({ RestResponseEntityExceptionHandler.class })
 public class InstitutionControllerTests {
 
@@ -60,20 +62,21 @@ public class InstitutionControllerTests {
 
 	@Test
 	public void institutionGetAllTest() throws Exception {
-		mockMvc.perform(MockMvcRequestBuilders.get("/institution").accept("*/*"))
+		mockMvc.perform(MockMvcRequestBuilders.get("/api/institution").accept("*/*"))
 				.andExpect(MockMvcResultMatchers.status().isOk()).andDo(MockMvcResultHandlers.print()).andReturn();
 	}
 
 	@Test
 	public void institutionPostTest() throws Exception {
-		mockMvc.perform(MockMvcRequestBuilders.post("/institution").contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
-				.accept("*/*").content(("{\"name\":\"institution\"}"))).andExpect(MockMvcResultMatchers.status().isCreated())
+		byte[] institutionJson = "{\"name\":\"institution\", \"identifier\": \"001\"}".getBytes();
+		mockMvc.perform(MockMvcRequestBuilders.post("/api/institution").contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
+				.accept("*/*").content(institutionJson)).andExpect(MockMvcResultMatchers.status().isCreated())
 				.andDo(MockMvcResultHandlers.print()).andReturn();
 	}
 
 	@Test
 	public void institutionPutOldInstitutionTest() throws Exception {
-		mockMvc.perform(MockMvcRequestBuilders.put("/institution/{id}", 1)
+		mockMvc.perform(MockMvcRequestBuilders.put("/api/institution/{id}", 1)
 				.header("Content-Type", MediaType.APPLICATION_JSON_UTF8_VALUE).content(("{\"name\":\"institution\"}")))
 				.andExpect(MockMvcResultMatchers.status().is2xxSuccessful()).andDo(MockMvcResultHandlers.print())
 				.andReturn();
@@ -83,7 +86,7 @@ public class InstitutionControllerTests {
 	public void institutionPutNewInstitutionTest() throws Exception {
 		when(institutionRepository.findById(anyLong())).thenReturn(Optional.of(institution));
 
-		mockMvc.perform(MockMvcRequestBuilders.put("/institution/{id}", 1)
+		mockMvc.perform(MockMvcRequestBuilders.put("/api/institution/{id}", 1)
 				.header("Content-Type", MediaType.APPLICATION_JSON_UTF8_VALUE).content(("{\"name\":\"institution\"}")))
 				.andExpect(MockMvcResultMatchers.status().is2xxSuccessful()).andDo(MockMvcResultHandlers.print())
 				.andReturn();
@@ -91,8 +94,8 @@ public class InstitutionControllerTests {
 
 	@Test
 	public void institutionGetOneNotFoundTest() throws Exception {
-		mockMvc.perform(MockMvcRequestBuilders.get("/institution/{id}", 1).contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
-				.content(("{\"name\":\"institution\"}"))).andExpect(MockMvcResultMatchers.status().isNotFound())
+		mockMvc.perform(MockMvcRequestBuilders.get("/api/institution/{id}", 1).contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+				.andExpect(MockMvcResultMatchers.status().isNotFound())
 				.andDo(MockMvcResultHandlers.print()).andReturn();
 	}
 
@@ -100,14 +103,14 @@ public class InstitutionControllerTests {
 	public void institutionGetOneFoundTest() throws Exception {
 		when(institutionRepository.findById(anyLong())).thenReturn(Optional.of(institution));
 
-		mockMvc.perform(MockMvcRequestBuilders.get("/institution/{id}", 1).contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
-				.content(("{\"name\":\"institution\"}"))).andExpect(MockMvcResultMatchers.status().isOk())
+		mockMvc.perform(MockMvcRequestBuilders.get("/api/institution/{id}", 1).contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+				.andExpect(MockMvcResultMatchers.status().isOk())
 				.andDo(MockMvcResultHandlers.print()).andReturn();
 	}
 
 	@Test
 	public void institutionDeleteTest() throws Exception {
-		mockMvc.perform(MockMvcRequestBuilders.delete("/institution/{id}", 5))
+		mockMvc.perform(MockMvcRequestBuilders.delete("/api/institution/{id}", 5))
 				.andExpect(MockMvcResultMatchers.status().isNoContent()).andDo(MockMvcResultHandlers.print())
 				.andReturn();
 	}

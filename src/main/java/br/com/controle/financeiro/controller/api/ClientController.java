@@ -6,6 +6,8 @@ import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import javax.validation.Valid;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.hateoas.Resource;
@@ -29,7 +31,7 @@ import br.com.controle.financeiro.model.exception.ClientNotFoundException;
 import br.com.controle.financeiro.model.repository.ClientRepository;
 
 @RestController
-@RequestMapping("/client")
+@RequestMapping("/api/client")
 public class ClientController {
 
 	private static final Logger LOG = LoggerFactory.getLogger(ClientController.class);
@@ -58,7 +60,7 @@ public class ClientController {
 
 	@ResponseStatus(HttpStatus.CREATED)
 	@PostMapping(consumes = { MediaType.APPLICATION_JSON_UTF8_VALUE })
-	public Resource<ClientDTO> newClient(@RequestBody final ClientDTO client) {
+	public Resource<ClientDTO> newClient(@RequestBody @Valid final ClientDTO client) {
 		LOG.debug("creating newClient");
 		ClientDTO clientDTO = ClientDTO.fromClient(clientRepository.save(client.toClient()));
 		return clientDTOResourceAssembler.toResource(clientDTO);

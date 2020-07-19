@@ -6,6 +6,8 @@ import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import javax.validation.Valid;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.hateoas.Resource;
@@ -29,7 +31,7 @@ import br.com.controle.financeiro.model.exception.BankAccountNotFoundException;
 import br.com.controle.financeiro.model.repository.BankAccountRepository;
 
 @RestController
-@RequestMapping("/bankaccount")
+@RequestMapping("/api/bankaccount")
 public class BankAccountController {
 
 	private static final Logger LOG = LoggerFactory.getLogger(BankAccountController.class);
@@ -58,7 +60,7 @@ public class BankAccountController {
 
 	@ResponseStatus(HttpStatus.CREATED)
 	@PostMapping(consumes = { MediaType.APPLICATION_JSON_UTF8_VALUE })
-	public Resource<BankAccountDTO> newBankAccount(@RequestBody final BankAccountDTO bankAccount) {
+	public Resource<BankAccountDTO> newBankAccount(@RequestBody @Valid BankAccountDTO bankAccount) {
 		LOG.debug("creating newBankAccount");
 
 		BankAccountDTO savedBankAccountDTO = BankAccountDTO

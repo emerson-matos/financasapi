@@ -39,10 +39,6 @@ buildNumber.properties
 
 ### VisualStudioCode ###
 .vscode/*
-.classpath
-.project
-.factorypath
-.settings/
 !.vscode/settings.json
 !.vscode/tasks.json
 !.vscode/launch.json
@@ -55,3 +51,37 @@ buildNumber.properties
 ### Docker
 postgres/
 pgadmin/
+
+.classpath
+.settings/org.eclipse.core.resources.prefs
+.settings/org.eclipse.jdt.apt.core.prefs
+.settings/org.eclipse.jdt.core.prefs
+.settings/org.eclipse.m2e.core.prefs
+
+
+### Intellij
+# User-specific stuff
+.idea/**/workspace.xml
+.idea/**/tasks.xml
+.idea/**/usage.statistics.xml
+.idea/**/dictionaries
+.idea/**/shelf
+
+# Generated files
+.idea/**/contentModel.xml
+.classpath
+.project
+.factorypath
+.settings/
+
+# Sensitive or high-churn files
+.idea/**/dataSources/
+.idea/**/dataSources.ids
+.idea/**/dataSources.local.xml
+.idea/**/sqlDataSources.xml
+.idea/**/dynamic.xml
+.idea/**/uiDesigner.xml
+.idea/**/dbnavigator.xml
+.idea/**/libraries
+.idea/**/sonarlint
+out/

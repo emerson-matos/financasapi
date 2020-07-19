@@ -16,6 +16,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
@@ -33,6 +34,7 @@ import br.com.controle.financeiro.model.repository.CardRepository;
 @SpringBootTest(classes = { ControlefinanceiroApplication.class, CardDTOResourceAssembler.class })
 @AutoConfigureMockMvc
 @EnableWebMvc
+@ActiveProfiles(profiles = "test")
 @Import({ RestResponseEntityExceptionHandler.class })
 public class CardControllerTests {
 
@@ -47,6 +49,8 @@ public class CardControllerTests {
 	@Spy
 	private CardDTOResourceAssembler cardDTOResourceAssembler;
 
+	private String cardJson = "{\"name\":\"Card\", \"number\":\"1234132\"}";
+
 	@Before
 	public void setup() {
 		setupCard();
@@ -60,20 +64,20 @@ public class CardControllerTests {
 
 	@Test
 	public void cardGetAllTest() throws Exception {
-		mockMvc.perform(MockMvcRequestBuilders.get("/card").accept("*/*"))
+		mockMvc.perform(MockMvcRequestBuilders.get("/api/card").accept("*/*"))
 				.andExpect(MockMvcResultMatchers.status().isOk()).andDo(MockMvcResultHandlers.print()).andReturn();
 	}
 
 	@Test
 	public void cardPostTest() throws Exception {
-		mockMvc.perform(MockMvcRequestBuilders.post("/card").contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
-				.accept("*/*").content(("{\"name\":\"Card\"}"))).andExpect(MockMvcResultMatchers.status().isCreated())
+		mockMvc.perform(MockMvcRequestBuilders.post("/api/card").contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
+				.accept("*/*").content(cardJson)).andExpect(MockMvcResultMatchers.status().isCreated())
 				.andDo(MockMvcResultHandlers.print()).andReturn();
 	}
 
 	@Test
 	public void cardPutOldCardTest() throws Exception {
-		mockMvc.perform(MockMvcRequestBuilders.put("/card/{id}", 1)
+		mockMvc.perform(MockMvcRequestBuilders.put("/api/card/{id}", 1)
 				.header("Content-Type", MediaType.APPLICATION_JSON_UTF8_VALUE).content(("{\"name\":\"Card\"}")))
 				.andExpect(MockMvcResultMatchers.status().is2xxSuccessful()).andDo(MockMvcResultHandlers.print())
 				.andReturn();
@@ -83,7 +87,7 @@ public class CardControllerTests {
 	public void cardPutNewCardTest() throws Exception {
 		when(cardRepository.findById(anyLong())).thenReturn(Optional.of(card));
 
-		mockMvc.perform(MockMvcRequestBuilders.put("/card/{id}", 1)
+		mockMvc.perform(MockMvcRequestBuilders.put("/api/card/{id}", 1)
 				.header("Content-Type", MediaType.APPLICATION_JSON_UTF8_VALUE).content(("{\"name\":\"Card\"}")))
 				.andExpect(MockMvcResultMatchers.status().is2xxSuccessful()).andDo(MockMvcResultHandlers.print())
 				.andReturn();
@@ -91,8 +95,8 @@ public class CardControllerTests {
 
 	@Test
 	public void cardGetOneNotFoundTest() throws Exception {
-		mockMvc.perform(MockMvcRequestBuilders.get("/card/{id}", 1).contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
-				.content(("{\"name\":\"Card\"}"))).andExpect(MockMvcResultMatchers.status().isNotFound())
+		mockMvc.perform(MockMvcRequestBuilders.get("/api/card/{id}", 1).contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+				.andExpect(MockMvcResultMatchers.status().isNotFound())
 				.andDo(MockMvcResultHandlers.print()).andReturn();
 	}
 
@@ -100,14 +104,14 @@ public class CardControllerTests {
 	public void cardGetOneFoundTest() throws Exception {
 		when(cardRepository.findById(anyLong())).thenReturn(Optional.of(card));
 
-		mockMvc.perform(MockMvcRequestBuilders.get("/card/{id}", 1).contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
-				.content(("{\"name\":\"Card\"}"))).andExpect(MockMvcResultMatchers.status().isOk())
+		mockMvc.perform(MockMvcRequestBuilders.get("/api/card/{id}", 1).contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+				.andExpect(MockMvcResultMatchers.status().isOk())
 				.andDo(MockMvcResultHandlers.print()).andReturn();
 	}
 
 	@Test
 	public void cardDeleteTest() throws Exception {
-		mockMvc.perform(MockMvcRequestBuilders.delete("/card/{id}", 5))
+		mockMvc.perform(MockMvcRequestBuilders.delete("/api/card/{id}", 5))
 				.andExpect(MockMvcResultMatchers.status().isNoContent()).andDo(MockMvcResultHandlers.print())
 				.andReturn();
 	}
