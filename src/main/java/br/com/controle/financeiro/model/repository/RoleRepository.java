@@ -2,9 +2,9 @@ package br.com.controle.financeiro.model.repository;
 
 import org.springframework.data.repository.CrudRepository;
 
-import br.com.controle.financeiro.model.entity.RoleEntity;
+import br.com.controle.financeiro.model.entity.Role;
 
-public interface RoleRepository extends CrudRepository<RoleEntity, Long> {
+public interface RoleRepository extends CrudRepository<Role, Long> {
 
-	RoleEntity findByAuthority(String username);
+	Role findByAuthority(String username);
 }

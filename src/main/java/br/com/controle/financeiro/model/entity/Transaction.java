@@ -6,6 +6,7 @@ import java.time.LocalDateTime;
 import java.util.Currency;
 
 import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -14,11 +15,12 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
-@Entity
+@Entity(name = "transaction")
 public class Transaction implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(name = "id_expense")
     private Long expenseId;
 
     private String name;
@@ -27,13 +29,16 @@ public class Transaction implements Serializable {
     private BigDecimal value;
     private Currency currency;
 
-    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.DETACH)    @JoinColumn(name = "client_id")
+    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.DETACH)
+    @JoinColumn(name = "id_client")
     private Client owner;
 
-    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.DETACH)    @JoinColumn(name = "account_id")
+    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.DETACH)
+    @JoinColumn(name = "id_account")
     private BankAccount account;
 
-    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.DETACH)    @JoinColumn(name = "card_id")
+    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.DETACH)
+    @JoinColumn(name = "id_card")
     private Card card;
 
     public Transaction() {
@@ -41,7 +46,7 @@ public class Transaction implements Serializable {
     }
 
     public Transaction(final BigDecimal value, final Currency currency, final String name, final LocalDateTime date, final Client owner,
-            final BankAccount account, final Card card) {
+                       final BankAccount account, final Card card) {
         super();
         this.setName(name);
         this.setTransactionDate(date);
@@ -53,7 +58,7 @@ public class Transaction implements Serializable {
     }
 
     public Transaction(final BigDecimal value, final Currency currency, final String name, final LocalDateTime date, final Client owner,
-            final BankAccount account, final Card card, final Long expenseId) {
+                       final BankAccount account, final Card card, final Long expenseId) {
         super();
         this.setId(expenseId);
         this.setName(name);
@@ -125,12 +130,12 @@ public class Transaction implements Serializable {
         return account;
     }
 
-	public Currency getCurrency() {
-		return currency;
-	}
+    public Currency getCurrency() {
+        return currency;
+    }
 
-	public void setCurrency(Currency currency) {
-		this.currency = currency;
-	}
+    public void setCurrency(Currency currency) {
+        this.currency = currency;
+    }
 
 }
