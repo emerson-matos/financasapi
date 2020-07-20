@@ -31,7 +31,7 @@ import br.com.controle.financeiro.model.exception.CardNotFoundException;
 import br.com.controle.financeiro.model.repository.CardRepository;
 
 @RestController
-@RequestMapping("/api/card")
+@RequestMapping(value = "/api/card", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 public class CardController {
 
 	private static final Logger LOG = LoggerFactory.getLogger(CardController.class);
