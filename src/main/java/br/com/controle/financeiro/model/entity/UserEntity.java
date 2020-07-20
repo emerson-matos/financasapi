@@ -11,89 +11,91 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
-import javax.persistence.Table;
 import javax.validation.constraints.Email;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-@Entity(name = "user")
-@Table(name = "USER")
+@Entity(name = "user_entity")
 public class UserEntity implements UserDetails {
 
-	@Id()
-	@Column(name = "ID_")
-	@GeneratedValue(strategy = GenerationType.AUTO)
-	private Long id;
+    @Id
+    @Column(name = "id_user")
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private Long userId;
 
-	@Column(name = "USERNAME_", nullable = false, unique = true)
-	private String username;
+    @Column(name = "username", nullable = false, unique = true)
+    private String username;
 
-	@Column(name = "PASSWORD_", nullable = false)
-	private String password;
+    @Column(name = "password", nullable = false)
+    private String password;
 
-	@Column(name = "EMAIL_", nullable = false)
-	@Email
-	//TODO add unique index
-	private String email;
+    @Column(name = "email", nullable = false)
+    @Email
+    private String email;
 
-	@ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-	private List<RoleEntity> authorities;
+    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    private List<Role> authorities;
 
-	public Collection<? extends GrantedAuthority> getAuthorities() {
-		return authorities;
-	}
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return authorities;
+    }
 
-	public String getPassword() {
-		return password;
-	}
+    public String getPassword() {
+        return password;
+    }
 
-	public String getUsername() {
-		return username;
-	}
+    public String getUsername() {
+        return username;
+    }
 
-	public boolean isAccountNonExpired() {
-		return false;
-	}
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
 
-	public boolean isAccountNonLocked() {
-		return false;
-	}
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
 
-	public boolean isCredentialsNonExpired() {
-		return false;
-	}
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
 
-	public boolean isEnabled() {
-		return false;
-	}
+    @Override
+    public boolean isEnabled() {
+        return true;
+    }
 
-	public void setId(Long id) {
-		this.id = id;
-	}
+    public void setUserId(Long id) {
+        this.userId = id;
+    }
 
-	public Long getId() {
-		return id;
-	}
+    public Long getUserId() {
+        return userId;
+    }
 
-	public void setUsername(String username) {
-		this.username = username;
-	}
+    public void setUsername(String username) {
+        this.username = username;
+    }
 
-	public void setPassword(String password) {
-		this.password = password;
-	}
+    public void setPassword(String password) {
+        this.password = password;
+    }
 
-	public void setAuthorities(List<RoleEntity> authorities) {
-		this.authorities = authorities;
-	}
+    public void setAuthorities(List<Role> authorities) {
+        this.authorities = authorities;
+    }
 
-	public void setEmail(String email) {
-		this.email = email;
-	}
+    public void setEmail(String email) {
+        this.email = email;
+    }
 
-	public String getEmail() {
-		return email;
-	}
+    public String getEmail() {
+        return email;
+    }
 
 }
