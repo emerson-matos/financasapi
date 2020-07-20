@@ -3,122 +3,115 @@ package br.com.controle.financeiro.service.impl;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 
 import javax.annotation.PostConstruct;
 import javax.transaction.Transactional;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.annotation.Secured;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.stereotype.Service;
-
 import br.com.controle.financeiro.configuration.SecurityConfig.Roles;
-import br.com.controle.financeiro.model.entity.RoleEntity;
+import br.com.controle.financeiro.model.entity.Role;
 import br.com.controle.financeiro.model.entity.UserEntity;
 import br.com.controle.financeiro.model.repository.RoleRepository;
 import br.com.controle.financeiro.model.repository.UserRepository;
 import br.com.controle.financeiro.service.UserService;
-import br.com.controle.financeiro.service.UserService.RegisterUserInit;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.stereotype.Service;
 
 @Service(value = UserServiceImpl.NAME)
 public class UserServiceImpl implements UserService {
 
-	public static final String NAME = "UserService";
+    public static final String NAME = "UserService";
     private static final Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
 
-	@Autowired
-	private UserRepository userDao;
+    @Autowired
+    private UserRepository userDao;
 
-	@Autowired
-	private RoleRepository roleRepository;
+    @Autowired
+    private RoleRepository roleRepository;
 
-	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-		UserDetails userDetails = userDao.findByUsername(username);
-		if (userDetails == null)
-			return null;
+    public UserDetails loadUserByUsername(String username) {
+        Optional<UserEntity> user = userDao.findByUsername(username);
+        if (user.isEmpty())
+            throw new UsernameNotFoundException("Bad credentials");
 
-		Set<GrantedAuthority> grantedAuthorities = new HashSet<>();
-		for (GrantedAuthority role : userDetails.getAuthorities()) {
-			grantedAuthorities.add(new SimpleGrantedAuthority(role.getAuthority()));
-		}
+        UserEntity userDetails = user.get();
 
-		return new org.springframework.security.core.userdetails.User(userDetails.getUsername(),
-				userDetails.getPassword(), userDetails.getAuthorities());
-	}
+        Set<GrantedAuthority> grantedAuthorities = new HashSet<>();
+        for (GrantedAuthority role : userDetails.getAuthorities()) {
+            grantedAuthorities.add(new SimpleGrantedAuthority(role.getAuthority()));
+        }
 
-	@Override
-	@Transactional
-	@Secured(value = Roles.ROLE_ANONYMOUS)
-	public UserEntity registerUser(RegisterUserInit init) {
+        return new User(userDetails.getUsername(),
+                userDetails.getPassword(), userDetails.getAuthorities());
+    }
 
-		UserEntity userLoaded = userDao.findByUsername(init.getUserName());
+    @Override
+    @Transactional
+    public UserEntity registerUser(RegisterUserInit init) {
 
-		if (userLoaded == null) {
-			UserEntity userEntity = new UserEntity();
-			userEntity.setUsername(init.getUserName());
-			userEntity.setEmail(init.getEmail());
+        Optional<UserEntity> userLoaded = userDao.findByUsername(init.getUserName());
 
-			userEntity.setAuthorities(getUserRoles());
-			// TODO firebase users should not be able to login via username and
-			// password so for now generation of password is OK
-			userEntity.setPassword(UUID.randomUUID().toString());
-			userDao.save(userEntity);
-			logger.info("registerUser -> user created");
-			return userEntity;
-		} else {
-			logger.info("registerUser -> user exists");
-			return userLoaded;
-		}
-	}
+        if (userLoaded.isEmpty()) {
+            UserEntity userEntity = new UserEntity();
+            userEntity.setUsername(init.getUserName());
+            userEntity.setEmail(init.getEmail());
 
-	@PostConstruct
-	public void init() {
+            userEntity.setAuthorities(getUserRoles());
+            // TODO firebase users should not be able to login via username and
+            // password so for now generation of password is OK
+            userEntity.setPassword(UUID.randomUUID().toString());
+            userDao.save(userEntity);
+            logger.info("registerUser -> user created");
+            return userEntity;
+        } else {
+            logger.info("registerUser -> user exists");
+            return userLoaded.get();
+        }
+    }
 
-		if (userDao.count() == 0) {
-			UserEntity adminEntity = new UserEntity();
-			adminEntity.setUsername("admin");
-			adminEntity.setPassword("admin");
-			adminEntity.setEmail("savic.prvoslav@gmail.com");
+    @PostConstruct
+    public void init() {
 
-			adminEntity.setAuthorities(getAdminRoles());
-			userDao.save(adminEntity);
+        if (userDao.count() == 0) {
+            UserEntity adminEntity = new UserEntity();
+            adminEntity.setUsername("admin");
+            adminEntity.setPassword(new BCryptPasswordEncoder().encode("admin"));
+            adminEntity.setEmail("savic.prvoslav@gmail.com");
 
-			UserEntity userEntity = new UserEntity();
-			userEntity.setUsername("user1");
-			userEntity.setPassword("user1");
-			userEntity.setEmail("savic.prvoslav@gmail.com");
-			userEntity.setAuthorities(getUserRoles());
+            adminEntity.setAuthorities(getAdminRoles());
+            userDao.save(adminEntity);
 
-			userDao.save(userEntity);
-		}
-	}
+            UserEntity userEntity = new UserEntity();
+            userEntity.setUsername("user1");
+            userEntity.setPassword(new BCryptPasswordEncoder().encode("user1"));
+            userEntity.setEmail("savic.prvoslav@gmail.com");
+            userEntity.setAuthorities(getUserRoles());
 
-	private List<RoleEntity> getAdminRoles() {
-		return Collections.singletonList(getRole(Roles.ROLE_ADMIN));
-	}
+            userDao.save(userEntity);
+        }
+    }
 
-	private List<RoleEntity> getUserRoles() {
-		return Collections.singletonList(getRole(Roles.ROLE_USER));
-	}
+    private List<Role> getAdminRoles() {
+        return Collections.singletonList(getRole(Roles.ROLE_ADMIN));
+    }
 
-	/**
-	 * Get or create role
-	 * @param authority
-	 * @return
-	 */
-	private RoleEntity getRole(String authority) {
-		RoleEntity adminRole = roleRepository.findByAuthority(authority);
-		if (adminRole == null) {
-			return new RoleEntity(authority);
-		} else {
-			return adminRole;
-		}
+    private List<Role> getUserRoles() {
+        return Collections.singletonList(getRole(Roles.ROLE_USER));
+    }
+
+    private Role getRole(String authority) {
+        Role adminRole = roleRepository.findByAuthority(authority);
+        return Objects.requireNonNullElseGet(adminRole, () -> new Role(authority));
     }
 }
