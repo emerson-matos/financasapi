@@ -10,7 +10,6 @@ import javax.validation.Valid;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.Resource;
 import org.springframework.hateoas.Resources;
 import org.springframework.http.HttpStatus;
@@ -32,16 +31,19 @@ import br.com.controle.financeiro.model.exception.InstitutionNotFoundException;
 import br.com.controle.financeiro.model.repository.InstitutionRepository;
 
 @RestController
-@RequestMapping("/api/institution")
+@RequestMapping(value = "/api/institution", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 public class InstitutionController {
 
 	private static final Logger LOG = LoggerFactory.getLogger(InstitutionController.class);
 
-	@Autowired
-	private InstitutionRepository institutionRepository;
+	private final InstitutionRepository institutionRepository;
 
-	@Autowired
-	private InstitutionDTOResourceAssembler institutionDTOResourceAssembler;
+	private final InstitutionDTOResourceAssembler institutionDTOResourceAssembler;
+
+	public InstitutionController(InstitutionRepository institutionRepository, InstitutionDTOResourceAssembler institutionDTOResourceAssembler) {
+		this.institutionRepository = institutionRepository;
+		this.institutionDTOResourceAssembler = institutionDTOResourceAssembler;
+	}
 
 	@GetMapping
 	public Resources<Resource<InstitutionDTO>> allInstitutions() {
