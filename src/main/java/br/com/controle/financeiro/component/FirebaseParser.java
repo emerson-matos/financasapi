@@ -1,6 +1,6 @@
 package br.com.controle.financeiro.component;
 
-import com.google.api.core.ApiFuture;
+import br.com.controle.financeiro.service.exception.FirebaseTokenInvalidException;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseToken;
 
@@ -8,7 +8,7 @@ import br.com.controle.financeiro.configuration.auth.firebase.FirebaseTokenHolde
 
 public class FirebaseParser {
 	public FirebaseTokenHolder parseToken(String idToken) {
-		if (idToken.isEmpty()) {
+		if (idToken.isBlank()) {
 			throw new IllegalArgumentException("FirebaseTokenBlank");
 		}
 		try {
@@ -16,7 +16,7 @@ public class FirebaseParser {
 
 			return new FirebaseTokenHolder(customToken);
 		} catch (Exception e) {
-			throw new IllegalArgumentException(e.getMessage());
+			throw new FirebaseTokenInvalidException(e.getMessage());
 		}
 	}
 }
