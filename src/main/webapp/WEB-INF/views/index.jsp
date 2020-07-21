@@ -31,7 +31,7 @@
           href="https://cdn.glitch.com/9c389208-b279-4e96-bcbc-e5f8712d8706%2Ffavicon-16x16.png?1553712190383"/>
 </head>
 <body class="mdc-typography mainContainer border text-center">
-<div class="cover-container d-flex w-100 h-100 p-3 mx-auto flex-column">
+<div class="container-xl d-flex w-100 h-100 p-3 mx-auto flex-column">
     <header class="masthead mb-auto">
         <div class="inner">
             <h3 class="masthead-brand">Controle Financeiro</h3>
