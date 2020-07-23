@@ -20,6 +20,7 @@ import br.com.controle.financeiro.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
@@ -58,6 +59,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
+    @Secured(value = Roles.ROLE_ANONYMOUS)
     public UserEntity registerUser(RegisterUserInit init) {
 
         Optional<UserEntity> userLoaded = userDao.findByUsername(init.getUserName());
