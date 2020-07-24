@@ -5,7 +5,11 @@ import org.slf4j.LoggerFactory;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 import br.com.controle.financeiro.model.exception.BankAccountNotFoundException;
@@ -37,5 +41,14 @@ public class RestResponseEntityExceptionHandler extends ResponseEntityExceptionH
 		log.info("handleException");
 		log.error(ex.getMessage(), ex);
 		return handleExceptionInternal(ex, null, null, HttpStatus.NO_CONTENT, null);
+	}
+
+	@ResponseBody
+	@ExceptionHandler({ AccessDeniedException.class })
+	@ResponseStatus(HttpStatus.FORBIDDEN)
+	ResponseEntity<Object> forbidden(AccessDeniedException ex) {
+		log.info("handleException");
+		log.error(ex.getMessage(), ex);
+		return handleExceptionInternal(ex, ex.getCause(), null, HttpStatus.FORBIDDEN, null);
 	}
 }

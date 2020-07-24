@@ -12,7 +12,6 @@ import java.util.Optional;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Spy;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -51,9 +50,6 @@ public class TransactionControllerTests {
 
 	@MockBean
 	private TransactionRepository transactionRepository;
-
-	@Spy
-	private TransactionDTOResourceAssembler transactionDTOResourceAssembler;
 
 	@Before
 	public void setup() {
