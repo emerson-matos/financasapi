@@ -22,15 +22,14 @@ import br.com.controle.financeiro.model.exception.TransactionNotFoundException;
 @RestControllerAdvice
 public class RestResponseEntityExceptionHandler extends ResponseEntityExceptionHandler {
 
-	private static final Logger log = LoggerFactory.getLogger(RestResponseEntityExceptionHandler.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(RestResponseEntityExceptionHandler.class);
 
 	@ResponseBody
 	@ExceptionHandler({ ClientNotFoundException.class, InstitutionNotFoundException.class, CardNotFoundException.class,
 			BankAccountNotFoundException.class, TransactionNotFoundException.class })
 	@ResponseStatus(HttpStatus.NOT_FOUND)
 	ResponseEntity<Object> objectNotFoundHandler(NotFoundException ex) {
-		log.info("handleException");
-		log.error(ex.getMessage(), ex);
+		logException(ex);
 		return handleExceptionInternal(ex, null, null, HttpStatus.NOT_FOUND, null);
 	}
 
@@ -38,8 +37,7 @@ public class RestResponseEntityExceptionHandler extends ResponseEntityExceptionH
 	@ExceptionHandler({ EmptyResultDataAccessException.class })
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	ResponseEntity<Object> objectNotFoundHandler(EmptyResultDataAccessException ex) {
-		log.info("handleException");
-		log.error(ex.getMessage(), ex);
+		logException(ex);
 		return handleExceptionInternal(ex, null, null, HttpStatus.NO_CONTENT, null);
 	}
 
@@ -47,8 +45,12 @@ public class RestResponseEntityExceptionHandler extends ResponseEntityExceptionH
 	@ExceptionHandler({ AccessDeniedException.class })
 	@ResponseStatus(HttpStatus.FORBIDDEN)
 	ResponseEntity<Object> forbidden(AccessDeniedException ex) {
-		log.info("handleException");
-		log.error(ex.getMessage(), ex);
+		logException(ex);
 		return handleExceptionInternal(ex, ex.getCause(), null, HttpStatus.FORBIDDEN, null);
+	}
+
+	private void logException(RuntimeException ex) {
+		LOGGER.info("handleException");
+		LOGGER.error(ex.getMessage(), ex);
 	}
 }
