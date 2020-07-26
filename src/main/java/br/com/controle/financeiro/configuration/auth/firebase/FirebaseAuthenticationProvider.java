@@ -26,15 +26,15 @@ public class FirebaseAuthenticationProvider implements AuthenticationProvider {
         if (!supports(authentication.getClass())) {
             return null;
         }
-        
+
         FirebaseAuthenticationToken authenticationToken = (FirebaseAuthenticationToken) authentication;
         UserDetails details = userService.loadUserByUsername(authenticationToken.getName());
         if (details == null) {
             throw new UsernameNotFoundException("not found");
         }
 
-        authenticationToken = new FirebaseAuthenticationToken(details, authentication.getCredentials(),
-                details.getAuthorities());
+        authenticationToken =
+                new FirebaseAuthenticationToken(details, authentication.getCredentials(), details.getAuthorities());
 
         return authenticationToken;
     }

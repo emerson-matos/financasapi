@@ -8,52 +8,53 @@ import br.com.controle.financeiro.model.entity.Institution;
 
 public class InstitutionDTO implements Serializable {
 
-	private Long institutionId;
-	@NotNull
-	private String name = "";
-	@NotNull
-	private String identifier = "";
+    private Long institutionId;
+    @NotNull
+    private String name = "";
+    @NotNull
+    private String identifier = "";
 
-	public InstitutionDTO() {
-		super();
-	}
+    public InstitutionDTO() {
+        super();
+    }
 
-	public InstitutionDTO(final Long id, final String identifier, final String name) {
-		super();
-		this.institutionId = id;
-		this.identifier = identifier;
-		this.name = name;
-	}
+    public InstitutionDTO(final Long id, final String identifier, final String name) {
+        super();
+        this.institutionId = id;
+        this.identifier = identifier;
+        this.name = name;
+    }
 
-	public static InstitutionDTO fromInstitution(Institution institution) {
-		return new InstitutionDTO(institution.getId(), institution.getIdentifier(), institution.getName());
-	}
+    public static InstitutionDTO fromInstitution(Institution institution) {
+        return new InstitutionDTO(institution.getId(), institution.getIdentifier(), institution.getName());
+    }
 
-	public Institution toInstitution() {
-		return new Institution(this.institutionId, this.identifier, this.name);
-	}
+    public Institution toInstitution() {
+        return new Institution(this.institutionId, this.identifier, this.name);
+    }
 
-	public Long getId() {
-		return institutionId;
-	}
+    public Long getId() {
+        return institutionId;
+    }
 
-	public void setId(final Long institutionId) {
-		this.institutionId = institutionId;
-	}
+    public void setId(final Long institutionId) {
+        this.institutionId = institutionId;
+    }
 
-	public String getName() {
-		return name;
-	}
+    public String getName() {
+        return name;
+    }
 
-	public void setName(final String name) {
-		this.name = name;
-	}
+    public void setName(final String name) {
+        this.name = name;
+    }
 
-	public String getIdentifier() {
-		return identifier;
-	}
+    public String getIdentifier() {
+        return identifier;
+    }
 
-	public void setIdentifier(final String identifier) {
-		this.identifier = identifier;
-	}
+    public void setIdentifier(final String identifier) {
+        this.identifier = identifier;
+    }
+
 }

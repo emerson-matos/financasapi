@@ -4,6 +4,7 @@ import br.com.controle.financeiro.configuration.auth.firebase.FirebaseAuthentica
 import br.com.controle.financeiro.configuration.auth.firebase.FirebaseFilter;
 import br.com.controle.financeiro.service.FirebaseService;
 import br.com.controle.financeiro.service.impl.UserServiceImpl;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;

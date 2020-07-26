@@ -8,6 +8,12 @@ import java.util.stream.Collectors;
 
 import javax.validation.Valid;
 
+import br.com.controle.financeiro.controller.api.linkbuilder.BankAccountDTOResourceAssembler;
+import br.com.controle.financeiro.model.dto.BankAccountDTO;
+import br.com.controle.financeiro.model.entity.BankAccount;
+import br.com.controle.financeiro.model.exception.BankAccountNotFoundException;
+import br.com.controle.financeiro.model.repository.BankAccountRepository;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.hateoas.Resource;
@@ -24,80 +30,75 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-import br.com.controle.financeiro.controller.api.linkbuilder.BankAccountDTOResourceAssembler;
-import br.com.controle.financeiro.model.dto.BankAccountDTO;
-import br.com.controle.financeiro.model.entity.BankAccount;
-import br.com.controle.financeiro.model.exception.BankAccountNotFoundException;
-import br.com.controle.financeiro.model.repository.BankAccountRepository;
-
 @RestController
 @RequestMapping(value = "/api/bankaccount", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 public class BankAccountController {
 
-	private static final Logger LOG = LoggerFactory.getLogger(BankAccountController.class);
+    private static final Logger LOG = LoggerFactory.getLogger(BankAccountController.class);
 
-	private final BankAccountRepository bankAccountRepository;
+    private final BankAccountRepository bankAccountRepository;
 
-	private final BankAccountDTOResourceAssembler bankAccountDTOResourceAssembler;
+    private final BankAccountDTOResourceAssembler bankAccountDTOResourceAssembler;
 
-	public BankAccountController(final BankAccountRepository bankAccountRepository,
-			final BankAccountDTOResourceAssembler bankAccountDTOResourceAssembler) {
-		this.bankAccountRepository = bankAccountRepository;
-		this.bankAccountDTOResourceAssembler = bankAccountDTOResourceAssembler;
-	}
+    public BankAccountController(final BankAccountRepository bankAccountRepository,
+                                 final BankAccountDTOResourceAssembler bankAccountDTOResourceAssembler) {
+        this.bankAccountRepository = bankAccountRepository;
+        this.bankAccountDTOResourceAssembler = bankAccountDTOResourceAssembler;
+    }
 
-	@GetMapping
-	public Resources<Resource<BankAccountDTO>> allBankAccounts() {
-		LOG.debug("finding allBankAccounts");
+    @GetMapping
+    public Resources<Resource<BankAccountDTO>> allBankAccounts() {
+        LOG.debug("finding allBankAccounts");
 
-		final List<Resource<BankAccountDTO>> bankAccounts = bankAccountRepository.findAll().stream()
-				.map(BankAccountDTO::fromBankAccount).map(bankAccountDTOResourceAssembler::toResource)
-				.collect(Collectors.toList());
+        final List<Resource<BankAccountDTO>> bankAccounts =
+                bankAccountRepository.findAll().stream().map(BankAccountDTO::fromBankAccount)
+                                     .map(bankAccountDTOResourceAssembler::toResource).collect(Collectors.toList());
 
-		return new Resources<>(bankAccounts,
-				linkTo(methodOn(BankAccountController.class).allBankAccounts()).withSelfRel());
-	}
+        return new Resources<>(bankAccounts,
+                               linkTo(methodOn(BankAccountController.class).allBankAccounts()).withSelfRel());
+    }
 
-	@ResponseStatus(HttpStatus.CREATED)
-	@PostMapping(consumes = { MediaType.APPLICATION_JSON_UTF8_VALUE })
-	public Resource<BankAccountDTO> newBankAccount(@RequestBody @Valid BankAccountDTO bankAccount) {
-		LOG.debug("creating newBankAccount");
+    @ResponseStatus(HttpStatus.CREATED)
+    @PostMapping(consumes = { MediaType.APPLICATION_JSON_UTF8_VALUE })
+    public Resource<BankAccountDTO> newBankAccount(@RequestBody @Valid BankAccountDTO bankAccount) {
+        LOG.debug("creating newBankAccount");
 
-		BankAccountDTO savedBankAccountDTO = BankAccountDTO
-				.fromBankAccount(bankAccountRepository.save(bankAccount.toBankAccount()));
-		return bankAccountDTOResourceAssembler.toResource(savedBankAccountDTO);
-	}
+        BankAccountDTO savedBankAccountDTO =
+                BankAccountDTO.fromBankAccount(bankAccountRepository.save(bankAccount.toBankAccount()));
+        return bankAccountDTOResourceAssembler.toResource(savedBankAccountDTO);
+    }
 
-	@GetMapping(path = "/{id}")
-	public Resource<BankAccountDTO> oneBankAccount(@PathVariable(value = "id") final long id) {
-		LOG.debug("searching oneBankAccount ${}", id);
-		final BankAccount account = bankAccountRepository.findById(id)
-				.orElseThrow(() -> new BankAccountNotFoundException(id));
-		return bankAccountDTOResourceAssembler.toResource(BankAccountDTO.fromBankAccount(account));
-	}
+    @GetMapping(path = "/{id}")
+    public Resource<BankAccountDTO> oneBankAccount(@PathVariable(value = "id") final long id) {
+        LOG.debug("searching oneBankAccount ${}", id);
+        final BankAccount account =
+                bankAccountRepository.findById(id).orElseThrow(() -> new BankAccountNotFoundException(id));
+        return bankAccountDTOResourceAssembler.toResource(BankAccountDTO.fromBankAccount(account));
+    }
 
-	@PutMapping(path = "/{id}")
-	public BankAccountDTO replaceBankAccount(@RequestBody final BankAccountDTO newBankAccountDTO,
-			@PathVariable final Long id) {
-		LOG.info("replaceBankAccount");
-		//TODO verify DTO integrity
-		BankAccount savedAccount = bankAccountRepository.findById(id).map(bankAccount -> {
-			bankAccount.setAgency(newBankAccountDTO.getAgency());
-			bankAccount.setDac(newBankAccountDTO.getDac());
-			bankAccount.setNumber(newBankAccountDTO.getNumber());
-			return bankAccountRepository.save(bankAccount);
-		}).orElseGet(() -> {
-			newBankAccountDTO.setId(id);
-			return bankAccountRepository.save(newBankAccountDTO.toBankAccount());
-		});
+    @PutMapping(path = "/{id}")
+    public BankAccountDTO replaceBankAccount(@RequestBody final BankAccountDTO newBankAccountDTO,
+                                             @PathVariable final Long id) {
+        LOG.info("replaceBankAccount");
+        //TODO verify DTO integrity
+        BankAccount savedAccount = bankAccountRepository.findById(id).map(bankAccount -> {
+            bankAccount.setAgency(newBankAccountDTO.getAgency());
+            bankAccount.setDac(newBankAccountDTO.getDac());
+            bankAccount.setNumber(newBankAccountDTO.getNumber());
+            return bankAccountRepository.save(bankAccount);
+        }).orElseGet(() -> {
+            newBankAccountDTO.setId(id);
+            return bankAccountRepository.save(newBankAccountDTO.toBankAccount());
+        });
 
-		return BankAccountDTO.fromBankAccount(savedAccount);
-	}
+        return BankAccountDTO.fromBankAccount(savedAccount);
+    }
 
-	@ResponseStatus(HttpStatus.NO_CONTENT)
-	@DeleteMapping(path = "/{id}")
-	public void deleteBankAccount(@PathVariable final Long id) {
-		LOG.debug("trying to deleteBankAccount ${}", id);
-		bankAccountRepository.deleteById(id);
-	}
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @DeleteMapping(path = "/{id}")
+    public void deleteBankAccount(@PathVariable final Long id) {
+        LOG.debug("trying to deleteBankAccount ${}", id);
+        bankAccountRepository.deleteById(id);
+    }
+
 }

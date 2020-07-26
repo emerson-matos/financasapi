@@ -38,4 +38,5 @@ public class Role implements GrantedAuthority {
     public Long getRoleId() {
         return roleId;
     }
+
 }

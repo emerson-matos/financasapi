@@ -5,6 +5,7 @@ import javax.transaction.Transactional;
 import br.com.controle.financeiro.configuration.auth.firebase.FirebaseTokenHolder;
 import br.com.controle.financeiro.service.FirebaseService;
 import br.com.controle.financeiro.service.UserService;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.PostMapping;

@@ -36,8 +36,9 @@ public class FirebaseConfig {
         if (FirebaseApp.getApps().isEmpty()) {
             try {
                 LOG.debug("Starting Firebase");
-                FirebaseOptions options = new FirebaseOptions.Builder()
-                        .setCredentials(GoogleCredentials.getApplicationDefault()).setDatabaseUrl(databaseUrl).build();
+                FirebaseOptions options =
+                        new FirebaseOptions.Builder().setCredentials(GoogleCredentials.getApplicationDefault())
+                                                     .setDatabaseUrl(databaseUrl).build();
                 FirebaseApp.initializeApp(options);
                 LOG.debug("Started Firebase with ${}", databaseUrl);
             } catch (IOException e) {
@@ -47,4 +48,5 @@ public class FirebaseConfig {
             }
         }
     }
+
 }

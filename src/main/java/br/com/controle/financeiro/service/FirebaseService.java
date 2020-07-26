@@ -4,6 +4,6 @@ import br.com.controle.financeiro.configuration.auth.firebase.FirebaseTokenHolde
 
 public interface FirebaseService {
 
-	FirebaseTokenHolder parseToken(String idToken);
+    FirebaseTokenHolder parseToken(String idToken);
 
 }

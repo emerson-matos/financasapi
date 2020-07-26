@@ -1,10 +1,9 @@
 package br.com.controle.financeiro.component;
 
+import br.com.controle.financeiro.configuration.auth.firebase.FirebaseTokenHolder;
 import br.com.controle.financeiro.service.exception.FirebaseTokenInvalidException;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseToken;
-
-import br.com.controle.financeiro.configuration.auth.firebase.FirebaseTokenHolder;
 
 public class FirebaseParser {
     public FirebaseTokenHolder parseToken(String idToken) {
@@ -19,4 +18,5 @@ public class FirebaseParser {
             throw new FirebaseTokenInvalidException(e.getMessage());
         }
     }
+
 }

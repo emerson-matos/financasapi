@@ -45,8 +45,8 @@ public class Transaction implements Serializable {
         super();
     }
 
-    public Transaction(final BigDecimal value, final Currency currency, final String name, final LocalDateTime date, final Client owner,
-                       final BankAccount account, final Card card) {
+    public Transaction(final BigDecimal value, final Currency currency, final String name, final LocalDateTime date,
+                       final Client owner, final BankAccount account, final Card card) {
         super();
         this.setName(name);
         this.setTransactionDate(date);
@@ -57,8 +57,8 @@ public class Transaction implements Serializable {
         this.setCard(card);
     }
 
-    public Transaction(final BigDecimal value, final Currency currency, final String name, final LocalDateTime date, final Client owner,
-                       final BankAccount account, final Card card, final Long expenseId) {
+    public Transaction(final BigDecimal value, final Currency currency, final String name, final LocalDateTime date,
+                       final Client owner, final BankAccount account, final Card card, final Long expenseId) {
         super();
         this.setId(expenseId);
         this.setName(name);

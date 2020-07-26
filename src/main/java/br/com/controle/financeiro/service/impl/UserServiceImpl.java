@@ -17,6 +17,7 @@ import br.com.controle.financeiro.model.entity.UserEntity;
 import br.com.controle.financeiro.model.repository.RoleRepository;
 import br.com.controle.financeiro.model.repository.UserRepository;
 import br.com.controle.financeiro.service.UserService;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,8 +44,9 @@ public class UserServiceImpl implements UserService {
 
     public UserDetails loadUserByUsername(String username) {
         Optional<UserEntity> user = userDao.findByUsername(username);
-        if (user.isEmpty())
+        if (user.isEmpty()) {
             throw new UsernameNotFoundException("Bad credentials");
+        }
 
         UserEntity userDetails = user.get();
 
@@ -53,8 +55,7 @@ public class UserServiceImpl implements UserService {
             grantedAuthorities.add(new SimpleGrantedAuthority(role.getAuthority()));
         }
 
-        return new User(userDetails.getUsername(),
-                userDetails.getPassword(), userDetails.getAuthorities());
+        return new User(userDetails.getUsername(), userDetails.getPassword(), userDetails.getAuthorities());
     }
 
     @Override
@@ -116,4 +117,5 @@ public class UserServiceImpl implements UserService {
         Role adminRole = roleRepository.findByAuthority(authority);
         return Objects.requireNonNullElseGet(adminRole, () -> new Role(authority));
     }
+
 }
