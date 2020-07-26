@@ -8,7 +8,7 @@ public interface UserService extends UserDetailsService {
 
 	UserEntity registerUser(RegisterUserInit init);
 
-	public class RegisterUserInit {
+	class RegisterUserInit {
 		private final String userName;
 		private final String email;
 	
