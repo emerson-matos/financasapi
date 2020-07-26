@@ -29,6 +29,9 @@ mvn spring-boot:run
 * [Building REST services with Spring](https://spring.io/guides/tutorials/rest/)
 * [Github Open Source Guides](https://opensource.guide/)
 * [Spring-Boot-Starter](https://github.com/savicprvoslav/Spring-Boot-starter)
+* [Spring Boot Conditionals](https://reflectoring.io/spring-boot-conditionals/)
+* [Spring-Boot-Starter (Using Firebase Auth)](https://github.com/savicprvoslav/Spring-Boot-starter/)
+* [Add the Firebase Admin SDK to your server](https://firebase.google.com/docs/admin/setup)
 
 ## License
 
