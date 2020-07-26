@@ -25,10 +25,10 @@ public class SingUp {
     @Autowired
     private UserService userService;
 
-    @PostMapping("/open/signup")
+    @PostMapping(path = "/open/signup")
     @Transactional
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void signUp(@RequestHeader(name = "X-Authorization-Firebase") String token) {
+    public void signUp(@RequestHeader(name = "X-Firebase-User") String token) {
         LOG.info("SignUp request for {}", token);
 
         if (token.isBlank()) {
