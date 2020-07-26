@@ -20,11 +20,11 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 @RunWith(SpringRunner.class)
@@ -32,6 +32,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 @AutoConfigureMockMvc
 @ActiveProfiles(profiles = "test")
 @Import({ RestResponseEntityExceptionHandler.class })
+@WithMockUser(value = "someone")
 public class InstitutionControllerTests {
 
     public static final String API_INSTITUTION = "/api/institution";
@@ -74,8 +75,7 @@ public class InstitutionControllerTests {
         mockMvc.perform(
                 MockMvcRequestBuilders.put(API_INSTITUTION + "/{id}", 1).contentType(MediaType.APPLICATION_JSON_UTF8)
                                       .content(INSTITUTION_JSON))
-               .andExpect(MockMvcResultMatchers.status().is2xxSuccessful())
-               .andReturn();
+               .andExpect(MockMvcResultMatchers.status().is2xxSuccessful()).andReturn();
     }
 
     @Test
@@ -85,8 +85,7 @@ public class InstitutionControllerTests {
         mockMvc.perform(
                 MockMvcRequestBuilders.put(API_INSTITUTION + "/{id}", 1).contentType(MediaType.APPLICATION_JSON_UTF8)
                                       .content(INSTITUTION_JSON))
-               .andExpect(MockMvcResultMatchers.status().is2xxSuccessful())
-               .andReturn();
+               .andExpect(MockMvcResultMatchers.status().is2xxSuccessful()).andReturn();
     }
 
     @Test
@@ -106,8 +105,7 @@ public class InstitutionControllerTests {
     @Test
     public void institutionDeleteTest() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.delete(API_INSTITUTION + "/{id}", 5))
-               .andExpect(MockMvcResultMatchers.status().isNoContent())
-               .andReturn();
+               .andExpect(MockMvcResultMatchers.status().isNoContent()).andReturn();
     }
 
 }

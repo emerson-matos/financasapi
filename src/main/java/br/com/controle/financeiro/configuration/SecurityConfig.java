@@ -1,5 +1,9 @@
 package br.com.controle.financeiro.configuration;
 
+import br.com.controle.financeiro.configuration.auth.firebase.FirebaseAuthenticationProvider;
+import br.com.controle.financeiro.configuration.auth.firebase.FirebaseFilter;
+import br.com.controle.financeiro.service.FirebaseService;
+import br.com.controle.financeiro.service.impl.UserServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
@@ -17,11 +21,6 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
-
-import br.com.controle.financeiro.configuration.auth.firebase.FirebaseAuthenticationProvider;
-import br.com.controle.financeiro.configuration.auth.firebase.FirebaseFilter;
-import br.com.controle.financeiro.service.FirebaseService;
-import br.com.controle.financeiro.service.impl.UserServiceImpl;
 
 @EnableGlobalMethodSecurity(securedEnabled = true)
 public class SecurityConfig extends GlobalMethodSecurityConfiguration {
@@ -92,9 +91,10 @@ public class SecurityConfig extends GlobalMethodSecurityConfiguration {
                     .and().anonymous().authorities(Roles.ROLE_ANONYMOUS);//
             } else {
                 http.authorizeRequests()//
-                    .antMatchers(USER_ENDPOINT).permitAll()//
-                    .antMatchers(OPEN_ENDPOINT).permitAll()//
-                    .anyRequest().authenticated().and().formLogin();
+                    .antMatchers(USER_ENDPOINT).hasRole(Roles.USER)//
+                    .antMatchers(OPEN_ENDPOINT).hasRole(Roles.ANONYMOUS)//
+                    .anyRequest().authenticated().and().formLogin()//
+                    .and().anonymous().authorities(Roles.ROLE_ANONYMOUS);
             }
         }
 

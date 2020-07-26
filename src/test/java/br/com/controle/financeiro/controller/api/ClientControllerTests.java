@@ -22,6 +22,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
@@ -34,6 +35,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 @AutoConfigureMockMvc
 @ActiveProfiles(profiles = "test")
 @Import({ RestResponseEntityExceptionHandler.class })
+@WithMockUser(value = "someone")
 public class ClientControllerTests {
 
     public static final String API_CLIENT = "/api/client";
@@ -75,8 +77,7 @@ public class ClientControllerTests {
     public void clientPutOldClientTest() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.put(API_CLIENT + "/{id}", 1).contentType(MediaType.APPLICATION_JSON_UTF8)
                                               .content(CLIENT_JSON))
-               .andExpect(MockMvcResultMatchers.status().is2xxSuccessful())
-               .andReturn();
+               .andExpect(MockMvcResultMatchers.status().is2xxSuccessful()).andReturn();
     }
 
     @Test
@@ -85,14 +86,12 @@ public class ClientControllerTests {
 
         mockMvc.perform(MockMvcRequestBuilders.put(API_CLIENT + "/{id}", 1).contentType(MediaType.APPLICATION_JSON_UTF8)
                                               .content(CLIENT_JSON))
-               .andExpect(MockMvcResultMatchers.status().is2xxSuccessful())
-               .andReturn();
+               .andExpect(MockMvcResultMatchers.status().is2xxSuccessful()).andReturn();
     }
 
     @Test
     public void clientGetOneNotFoundTest() throws Exception {
-        mockMvc.perform(
-                MockMvcRequestBuilders.get(API_CLIENT + "/{id}", 1).accept(MediaType.APPLICATION_JSON_UTF8))
+        mockMvc.perform(MockMvcRequestBuilders.get(API_CLIENT + "/{id}", 1).accept(MediaType.APPLICATION_JSON_UTF8))
                .andExpect(MockMvcResultMatchers.status().isNotFound()).andReturn();
     }
 
@@ -100,16 +99,14 @@ public class ClientControllerTests {
     public void clientGetOneFoundTest() throws Exception {
         when(clientRepository.findById(anyLong())).thenReturn(Optional.of(client));
 
-        mockMvc.perform(
-                MockMvcRequestBuilders.get(API_CLIENT + "/{id}", 1).accept(MediaType.APPLICATION_JSON_UTF8))
+        mockMvc.perform(MockMvcRequestBuilders.get(API_CLIENT + "/{id}", 1).accept(MediaType.APPLICATION_JSON_UTF8))
                .andExpect(MockMvcResultMatchers.status().isOk()).andReturn();
     }
 
     @Test
     public void clientDeleteTest() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.delete(API_CLIENT + "/{id}", 5))
-               .andExpect(MockMvcResultMatchers.status().isNoContent())
-               .andReturn();
+               .andExpect(MockMvcResultMatchers.status().isNoContent()).andReturn();
     }
 
     @Test
@@ -117,8 +114,7 @@ public class ClientControllerTests {
         doThrow(new EmptyResultDataAccessException(1)).when(clientRepository).deleteById(anyLong());
 
         mockMvc.perform(MockMvcRequestBuilders.delete(API_CLIENT + "/{id}", 5))
-               .andExpect(MockMvcResultMatchers.status().isNoContent())
-               .andReturn();
+               .andExpect(MockMvcResultMatchers.status().isNoContent()).andReturn();
     }
 
 }
