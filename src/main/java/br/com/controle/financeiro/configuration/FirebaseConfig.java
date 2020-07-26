@@ -8,6 +8,8 @@ import br.com.controle.financeiro.spring.conditionals.FirebaseCondition;
 import com.google.auth.oauth2.GoogleCredentials;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
+import com.google.firebase.auth.AbstractFirebaseAuth;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
@@ -25,6 +27,11 @@ public class FirebaseConfig {
 
     @Value("${br.com.controle.financeiro.firebase.database.url}")
     private String databaseUrl;
+
+    @Bean
+    public AbstractFirebaseAuth firebaseAuth() {
+        return FirebaseAuth.getInstance();
+    }
 
     @Bean
     public DatabaseReference firebaseDatabse() {
