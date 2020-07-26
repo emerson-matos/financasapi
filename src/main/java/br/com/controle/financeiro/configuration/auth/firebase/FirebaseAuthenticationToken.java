@@ -2,6 +2,8 @@ package br.com.controle.financeiro.configuration.auth.firebase;
 
 import java.util.Collection;
 
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
 
@@ -30,9 +32,6 @@ public class FirebaseAuthenticationToken extends AbstractAuthenticationToken {
      * implementations that are satisfied with producing a trusted (i.e.
      * {@link #isAuthenticated()} = <code>true</code>) authentication token.
      *
-     * @param principal
-     * @param credentials
-     * @param authorities
      */
     public FirebaseAuthenticationToken(Object principal, Object credentials,
                                        Collection<? extends GrantedAuthority> authorities) {
@@ -66,6 +65,34 @@ public class FirebaseAuthenticationToken extends AbstractAuthenticationToken {
     public void eraseCredentials() {
         super.eraseCredentials();
         credentials = null;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+
+        if (!(o instanceof FirebaseAuthenticationToken)) {
+            return false;
+        }
+
+        FirebaseAuthenticationToken that = (FirebaseAuthenticationToken) o;
+
+        return new EqualsBuilder()//
+                                  .appendSuper(super.equals(o))//
+                                  .append(getPrincipal(), that.getPrincipal())//
+                                  .append(getCredentials(), that.getCredentials())//
+                                  .isEquals();
+    }
+
+    @Override
+    public int hashCode() {
+        return new HashCodeBuilder(17, 37)//
+                                          .appendSuper(super.hashCode())//
+                                          .append(getPrincipal())//
+                                          .append(getCredentials())//
+                                          .toHashCode();
     }
 
 }
