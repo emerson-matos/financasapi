@@ -90,7 +90,7 @@ public class UserServiceImpl implements UserService {
             UserEntity adminEntity = new UserEntity();
             adminEntity.setUsername("admin");
             adminEntity.setPassword(new BCryptPasswordEncoder().encode("admin"));
-            adminEntity.setEmail("savic.prvoslav@gmail.com");
+            adminEntity.setEmail("some@one.com");
 
             adminEntity.setAuthorities(getAdminRoles());
             userDao.save(adminEntity);
@@ -98,7 +98,7 @@ public class UserServiceImpl implements UserService {
             UserEntity userEntity = new UserEntity();
             userEntity.setUsername("user1");
             userEntity.setPassword(new BCryptPasswordEncoder().encode("user1"));
-            userEntity.setEmail("savic.prvoslav@gmail.com");
+            userEntity.setEmail("some@one.com");
             userEntity.setAuthorities(getUserRoles());
 
             userDao.save(userEntity);
