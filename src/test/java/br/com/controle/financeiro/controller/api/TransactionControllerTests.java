@@ -9,6 +9,14 @@ import java.time.LocalDateTime;
 import java.util.Currency;
 import java.util.Optional;
 
+import br.com.controle.financeiro.controlefinanceiro.ControlefinanceiroApplication;
+import br.com.controle.financeiro.controller.RestResponseEntityExceptionHandler;
+import br.com.controle.financeiro.controller.api.linkbuilder.TransactionDTOResourceAssembler;
+import br.com.controle.financeiro.model.entity.BankAccount;
+import br.com.controle.financeiro.model.entity.Card;
+import br.com.controle.financeiro.model.entity.Client;
+import br.com.controle.financeiro.model.entity.Transaction;
+import br.com.controle.financeiro.model.repository.TransactionRepository;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -24,99 +32,93 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
-import org.springframework.web.servlet.config.annotation.EnableWebMvc;
-
-import br.com.controle.financeiro.controlefinanceiro.ControlefinanceiroApplication;
-import br.com.controle.financeiro.controller.RestResponseEntityExceptionHandler;
-import br.com.controle.financeiro.controller.api.linkbuilder.TransactionDTOResourceAssembler;
-import br.com.controle.financeiro.model.entity.BankAccount;
-import br.com.controle.financeiro.model.entity.Card;
-import br.com.controle.financeiro.model.entity.Client;
-import br.com.controle.financeiro.model.entity.Transaction;
-import br.com.controle.financeiro.model.repository.TransactionRepository;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = { ControlefinanceiroApplication.class, TransactionDTOResourceAssembler.class })
 @AutoConfigureMockMvc
-@EnableWebMvc
 @ActiveProfiles(profiles = "test")
 @Import({ RestResponseEntityExceptionHandler.class })
 public class TransactionControllerTests {
 
-	@Autowired
-	private MockMvc mockMvc;
+    public static final String API_TRANSACTION = "/api/transaction";
+    public static final String TRANSACTION_JSON =
+            "{\"name\": \"Trip\",\"transactionDate\": \"2020-07-18T04:45:20.871140Z\",\"value\": 10.22,\"currency\": " +
+                    "\"BRL\"}";
+    @Autowired
+    private MockMvc mockMvc;
 
-	private Transaction transaction;
+    @MockBean
+    private TransactionRepository transactionRepository;
 
-	@MockBean
-	private TransactionRepository transactionRepository;
+    private Transaction transaction;
 
-	@Before
-	public void setup() {
-		setupTransaction();
-		when(transactionRepository.save(any())).thenReturn(transaction);
-	}
+    @Before
+    public void setup() {
+        setupTransaction();
+        when(transactionRepository.save(any())).thenReturn(transaction);
+    }
 
-	private void setupTransaction() {
-		transaction = new Transaction(new BigDecimal(1), Currency.getInstance("BRL"), "name", LocalDateTime.now(), new Client(),
-				new BankAccount(), new Card());
-		transaction.setId(1L);
-	}
+    private void setupTransaction() {
+        transaction = new Transaction(new BigDecimal(1), Currency.getInstance("BRL"), "name", LocalDateTime.now(),
+                                      new Client(), new BankAccount(), new Card());
+        transaction.setId(1L);
+    }
 
-	@Test
-	public void transactionGetAllTest() throws Exception {
-		mockMvc.perform(MockMvcRequestBuilders.get("/api/transaction").accept("*/*"))
-				.andExpect(MockMvcResultMatchers.status().isOk()).andDo(MockMvcResultHandlers.print()).andReturn();
-	}
+    @Test
+    public void transactionGetAllTest() throws Exception {
+        mockMvc.perform(MockMvcRequestBuilders.get(API_TRANSACTION).accept(MediaType.APPLICATION_JSON_UTF8))
+               .andExpect(MockMvcResultMatchers.status().isOk()).andReturn();
+    }
 
-	@Test
-	public void transactionPostTest() throws Exception {
-		
-		byte[] transactionJson = "{\"name\": \"Viagem\",\"transactionDate\": \"2020-07-18T04:45:20.871140Z\",\"value\": 10.22,\"currency\": \"BRL\"}".getBytes();
-		mockMvc.perform(MockMvcRequestBuilders.post("/api/transaction").contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
-				.accept("*/*").content(transactionJson)).andExpect(MockMvcResultMatchers.status().isCreated())
-				.andDo(MockMvcResultHandlers.print()).andReturn();
-	}
+    @Test
+    public void transactionPostTest() throws Exception {
+        mockMvc.perform(
+                MockMvcRequestBuilders.post(API_TRANSACTION).contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
+                                      .content(TRANSACTION_JSON)).andExpect(MockMvcResultMatchers.status().isCreated())
+               .andReturn();
+    }
 
-	@Test
-	public void transactionPutOldTransactionTest() throws Exception {
-		mockMvc.perform(MockMvcRequestBuilders.put("/api/transaction/{id}", 1)
-				.header("Content-Type", MediaType.APPLICATION_JSON_UTF8_VALUE).content(("{\"name\":\"Transaction\"}")))
-				.andExpect(MockMvcResultMatchers.status().is2xxSuccessful()).andDo(MockMvcResultHandlers.print())
-				.andReturn();
-	}
+    @Test
+    public void transactionPutOldTransactionTest() throws Exception {
+        mockMvc.perform(
+                MockMvcRequestBuilders.put(API_TRANSACTION + "/{id}", 1).contentType(MediaType.APPLICATION_JSON_UTF8)
+                                      .content(TRANSACTION_JSON))
+               .andExpect(MockMvcResultMatchers.status().is2xxSuccessful())
+               .andReturn();
+    }
 
-	@Test
-	public void transactionPutNewTransactionTest() throws Exception {
-		when(transactionRepository.findById(anyLong())).thenReturn(Optional.of(transaction));
+    @Test
+    public void transactionPutNewTransactionTest() throws Exception {
+        when(transactionRepository.findById(anyLong())).thenReturn(Optional.of(transaction));
 
-		mockMvc.perform(MockMvcRequestBuilders.put("/api/transaction/{id}", 1)
-				.header("Content-Type", MediaType.APPLICATION_JSON_UTF8_VALUE).content(("{\"name\":\"transaction\"}")))
-				.andExpect(MockMvcResultMatchers.status().is2xxSuccessful()).andDo(MockMvcResultHandlers.print())
-				.andReturn();
-	}
+        mockMvc.perform(
+                MockMvcRequestBuilders.put(API_TRANSACTION + "/{id}", 1).contentType(MediaType.APPLICATION_JSON_UTF8)
+                                      .content(TRANSACTION_JSON))
+               .andExpect(MockMvcResultMatchers.status().is2xxSuccessful())
+               .andReturn();
+    }
 
-	@Test
-	public void transactionGetOneNotFoundTest() throws Exception {
-		mockMvc.perform(MockMvcRequestBuilders.get("/api/transaction/{id}", 1).contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
-				.andExpect(MockMvcResultMatchers.status().isNotFound())
-				.andDo(MockMvcResultHandlers.print()).andReturn();
-	}
+    @Test
+    public void transactionGetOneNotFoundTest() throws Exception {
+        mockMvc.perform(MockMvcRequestBuilders.get(API_TRANSACTION + "/{id}", 1)
+                                              .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+               .andExpect(MockMvcResultMatchers.status().isNotFound()).andReturn();
+    }
 
-	@Test
-	public void transactionGetOneFoundTest() throws Exception {
-		when(transactionRepository.findById(anyLong())).thenReturn(Optional.of(transaction));
+    @Test
+    public void transactionGetOneFoundTest() throws Exception {
+        when(transactionRepository.findById(anyLong())).thenReturn(Optional.of(transaction));
 
-		mockMvc.perform(MockMvcRequestBuilders.get("/api/transaction/{id}", 1).contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
-				.andExpect(MockMvcResultMatchers.status().isOk())
-				.andDo(MockMvcResultHandlers.print()).andReturn();
-	}
+        mockMvc.perform(MockMvcRequestBuilders.get(API_TRANSACTION + "/{id}", 1)
+                                              .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+               .andExpect(MockMvcResultMatchers.status().isOk()).andReturn();
+    }
 
-	@Test
-	public void transactionDeleteTest() throws Exception {
-		mockMvc.perform(MockMvcRequestBuilders.delete("/api/transaction/{id}", 5))
-				.andExpect(MockMvcResultMatchers.status().isNoContent()).andDo(MockMvcResultHandlers.print())
-				.andReturn();
-	}
+    @Test
+    public void transactionDeleteTest() throws Exception {
+        mockMvc.perform(MockMvcRequestBuilders.delete(API_TRANSACTION + "/{id}", 5))
+               .andExpect(MockMvcResultMatchers.status().isNoContent())
+               .andReturn();
+    }
 
 }

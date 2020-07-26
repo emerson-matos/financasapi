@@ -61,21 +61,21 @@ public class BankAccountControllerTests {
     @Test
     public void bankAccountGetAllTestAcceptJSON () throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.get(BANK_ACCOUNT_URI).accept(MediaType.APPLICATION_JSON_UTF8))
-               .andExpect(MockMvcResultMatchers.status().isOk()).andDo(MockMvcResultHandlers.print()).andReturn();
+               .andExpect(MockMvcResultMatchers.status().isOk()).andReturn();
     }
 
     @Test
     public void bankAccountPostTest () throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.post(BANK_ACCOUNT_URI).contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
                                               .accept(MediaType.APPLICATION_JSON_UTF8).content(ACCOUNT_JSON))
-               .andExpect(MockMvcResultMatchers.status().isCreated()).andDo(MockMvcResultHandlers.print()).andReturn();
+               .andExpect(MockMvcResultMatchers.status().isCreated()).andReturn();
     }
 
     @Test
     public void bankAccountPutOldAccountTest () throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.put(BANK_ACCOUNT_URI + "/{id}", 1)
                                               .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE).content(ACCOUNT_JSON))
-               .andExpect(MockMvcResultMatchers.status().is2xxSuccessful()).andDo(MockMvcResultHandlers.print())
+               .andExpect(MockMvcResultMatchers.status().is2xxSuccessful())
                .andReturn();
     }
 
@@ -85,7 +85,7 @@ public class BankAccountControllerTests {
 
         mockMvc.perform(MockMvcRequestBuilders.put(BANK_ACCOUNT_URI + "/{id}", 1)
                                               .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE).content(ACCOUNT_JSON))
-               .andExpect(MockMvcResultMatchers.status().is2xxSuccessful()).andDo(MockMvcResultHandlers.print())
+               .andExpect(MockMvcResultMatchers.status().is2xxSuccessful())
                .andReturn();
     }
 
@@ -93,7 +93,7 @@ public class BankAccountControllerTests {
     public void bankAccountGetOneNotFoundTest () throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.get(BANK_ACCOUNT_URI + "/{id}", 1)
                                               .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
-               .andExpect(MockMvcResultMatchers.status().isNotFound()).andDo(MockMvcResultHandlers.print()).andReturn();
+               .andExpect(MockMvcResultMatchers.status().isNotFound()).andReturn();
     }
 
     @Test
@@ -102,13 +102,13 @@ public class BankAccountControllerTests {
 
         mockMvc.perform(MockMvcRequestBuilders.get(BANK_ACCOUNT_URI + "/{id}", 1)
                                               .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
-               .andExpect(MockMvcResultMatchers.status().isOk()).andDo(MockMvcResultHandlers.print()).andReturn();
+               .andExpect(MockMvcResultMatchers.status().isOk()).andReturn();
     }
 
     @Test
     public void bankAccountDeleteTest () throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.delete(BANK_ACCOUNT_URI + "/{id}", 5))
-               .andExpect(MockMvcResultMatchers.status().isNoContent()).andDo(MockMvcResultHandlers.print())
+               .andExpect(MockMvcResultMatchers.status().isNoContent())
                .andReturn();
     }
 

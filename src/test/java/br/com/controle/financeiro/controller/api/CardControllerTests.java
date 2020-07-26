@@ -6,10 +6,14 @@ import static org.mockito.Mockito.when;
 
 import java.util.Optional;
 
+import br.com.controle.financeiro.controlefinanceiro.ControlefinanceiroApplication;
+import br.com.controle.financeiro.controller.RestResponseEntityExceptionHandler;
+import br.com.controle.financeiro.controller.api.linkbuilder.CardDTOResourceAssembler;
+import br.com.controle.financeiro.model.entity.Card;
+import br.com.controle.financeiro.model.repository.CardRepository;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Spy;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -22,98 +26,87 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
-import org.springframework.web.servlet.config.annotation.EnableWebMvc;
-
-import br.com.controle.financeiro.controlefinanceiro.ControlefinanceiroApplication;
-import br.com.controle.financeiro.controller.RestResponseEntityExceptionHandler;
-import br.com.controle.financeiro.controller.api.linkbuilder.CardDTOResourceAssembler;
-import br.com.controle.financeiro.model.entity.Card;
-import br.com.controle.financeiro.model.repository.CardRepository;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = { ControlefinanceiroApplication.class, CardDTOResourceAssembler.class })
 @AutoConfigureMockMvc
-@EnableWebMvc
 @ActiveProfiles(profiles = "test")
 @Import({ RestResponseEntityExceptionHandler.class })
 public class CardControllerTests {
 
-	@Autowired
-	private MockMvc mockMvc;
+    private static final String CARD_JSON = "{\"name\":\"Card\", \"number\":\"1234132\"}";
+    public static final String API_CARD_URL = "/api/card";
 
-	private Card card;
+    @Autowired
+    private MockMvc mockMvc;
 
-	@MockBean
-	private CardRepository cardRepository;
+    @MockBean
+    private CardRepository cardRepository;
 
-	@Spy
-	private CardDTOResourceAssembler cardDTOResourceAssembler;
+    private Card card;
 
-	private String cardJson = "{\"name\":\"Card\", \"number\":\"1234132\"}";
+    @Before
+    public void setup() {
+        setupCard();
+        when(cardRepository.save(any())).thenReturn(card);
+    }
 
-	@Before
-	public void setup() {
-		setupCard();
-		when(cardRepository.save(any())).thenReturn(card);
-	}
+    private void setupCard() {
+        card = new Card();
+        card.setId(1L);
+    }
 
-	private void setupCard() {
-		card = new Card();
-		card.setId(1L);
-	}
+    @Test
+    public void cardGetAllTest() throws Exception {
+        mockMvc.perform(MockMvcRequestBuilders.get(API_CARD_URL).accept(MediaType.APPLICATION_JSON_UTF8))
+               .andExpect(MockMvcResultMatchers.status().isOk()).andReturn();
+    }
 
-	@Test
-	public void cardGetAllTest() throws Exception {
-		mockMvc.perform(MockMvcRequestBuilders.get("/api/card").accept("*/*"))
-				.andExpect(MockMvcResultMatchers.status().isOk()).andDo(MockMvcResultHandlers.print()).andReturn();
-	}
+    @Test
+    public void cardPostTest() throws Exception {
+        mockMvc.perform(MockMvcRequestBuilders.post(API_CARD_URL).contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
+                                              .content(CARD_JSON)).andExpect(MockMvcResultMatchers.status().isCreated())
+               .andReturn();
+    }
 
-	@Test
-	public void cardPostTest() throws Exception {
-		mockMvc.perform(MockMvcRequestBuilders.post("/api/card").contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
-				.accept("*/*").content(cardJson)).andExpect(MockMvcResultMatchers.status().isCreated())
-				.andDo(MockMvcResultHandlers.print()).andReturn();
-	}
+    @Test
+    public void cardPutOldCardTest() throws Exception {
+        mockMvc.perform(
+                MockMvcRequestBuilders.put(API_CARD_URL + "/{id}", 1).contentType(MediaType.APPLICATION_JSON_UTF8)
+                                      .content(CARD_JSON)).andExpect(MockMvcResultMatchers.status().is2xxSuccessful())
+               .andReturn();
+    }
 
-	@Test
-	public void cardPutOldCardTest() throws Exception {
-		mockMvc.perform(MockMvcRequestBuilders.put("/api/card/{id}", 1)
-				.header("Content-Type", MediaType.APPLICATION_JSON_UTF8_VALUE).content(("{\"name\":\"Card\"}")))
-				.andExpect(MockMvcResultMatchers.status().is2xxSuccessful()).andDo(MockMvcResultHandlers.print())
-				.andReturn();
-	}
+    @Test
+    public void cardPutNewCardTest() throws Exception {
+        when(cardRepository.findById(anyLong())).thenReturn(Optional.of(card));
 
-	@Test
-	public void cardPutNewCardTest() throws Exception {
-		when(cardRepository.findById(anyLong())).thenReturn(Optional.of(card));
+        mockMvc.perform(
+                MockMvcRequestBuilders.put(API_CARD_URL + "/{id}", 1).contentType(MediaType.APPLICATION_JSON_UTF8)
+                                      .content(CARD_JSON)).andExpect(MockMvcResultMatchers.status().is2xxSuccessful())
+               .andReturn();
+    }
 
-		mockMvc.perform(MockMvcRequestBuilders.put("/api/card/{id}", 1)
-				.header("Content-Type", MediaType.APPLICATION_JSON_UTF8_VALUE).content(("{\"name\":\"Card\"}")))
-				.andExpect(MockMvcResultMatchers.status().is2xxSuccessful()).andDo(MockMvcResultHandlers.print())
-				.andReturn();
-	}
+    @Test
+    public void cardGetOneNotFoundTest() throws Exception {
+        mockMvc.perform(MockMvcRequestBuilders.get(API_CARD_URL + "/{id}", 1)
+                                              .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+               .andExpect(MockMvcResultMatchers.status().isNotFound()).andReturn();
+    }
 
-	@Test
-	public void cardGetOneNotFoundTest() throws Exception {
-		mockMvc.perform(MockMvcRequestBuilders.get("/api/card/{id}", 1).contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
-				.andExpect(MockMvcResultMatchers.status().isNotFound())
-				.andDo(MockMvcResultHandlers.print()).andReturn();
-	}
+    @Test
+    public void cardGetOneFoundTest() throws Exception {
+        when(cardRepository.findById(anyLong())).thenReturn(Optional.of(card));
 
-	@Test
-	public void cardGetOneFoundTest() throws Exception {
-		when(cardRepository.findById(anyLong())).thenReturn(Optional.of(card));
+        mockMvc.perform(MockMvcRequestBuilders.get(API_CARD_URL + "/{id}", 1)
+                                              .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+               .andExpect(MockMvcResultMatchers.status().isOk()).andReturn();
+    }
 
-		mockMvc.perform(MockMvcRequestBuilders.get("/api/card/{id}", 1).contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
-				.andExpect(MockMvcResultMatchers.status().isOk())
-				.andDo(MockMvcResultHandlers.print()).andReturn();
-	}
-
-	@Test
-	public void cardDeleteTest() throws Exception {
-		mockMvc.perform(MockMvcRequestBuilders.delete("/api/card/{id}", 5))
-				.andExpect(MockMvcResultMatchers.status().isNoContent()).andDo(MockMvcResultHandlers.print())
-				.andReturn();
-	}
+    @Test
+    public void cardDeleteTest() throws Exception {
+        mockMvc.perform(MockMvcRequestBuilders.delete(API_CARD_URL + "/{id}", 5))
+               .andExpect(MockMvcResultMatchers.status().isNoContent()).andReturn();
+    }
 
 }
