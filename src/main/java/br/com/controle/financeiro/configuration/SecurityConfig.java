@@ -6,15 +6,16 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
-import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.authentication.configuration.GlobalAuthenticationConfigurerAdapter;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
+import org.springframework.security.config.annotation.method.configuration.GlobalMethodSecurityConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.factory.PasswordEncoderFactories;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 
 import br.com.controle.financeiro.configuration.auth.firebase.FirebaseAuthenticationProvider;
@@ -23,7 +24,7 @@ import br.com.controle.financeiro.service.FirebaseService;
 import br.com.controle.financeiro.service.impl.UserServiceImpl;
 
 @EnableGlobalMethodSecurity(securedEnabled = true)
-public class SecurityConfig {
+public class SecurityConfig extends GlobalMethodSecurityConfiguration {
 
     public static class Roles {
         public static final String ANONYMOUS = "ANONYMOUS";
@@ -38,6 +39,7 @@ public class SecurityConfig {
         private Roles() {
 
         }
+
     }
 
     @Order(Ordered.HIGHEST_PRECEDENCE)
@@ -51,26 +53,29 @@ public class SecurityConfig {
 
         private final FirebaseAuthenticationProvider firebaseProvider;
 
-        public AuthenticationSecurity(@Qualifier(value = UserServiceImpl.NAME) UserDetailsService userService, FirebaseAuthenticationProvider firebaseProvider) {
+        public AuthenticationSecurity(@Qualifier(value = UserServiceImpl.NAME) UserDetailsService userService,
+                                      FirebaseAuthenticationProvider firebaseProvider) {
             this.userService = userService;
             this.firebaseProvider = firebaseProvider;
         }
 
         @Override
         public void init(AuthenticationManagerBuilder auth) throws Exception {
-            auth.userDetailsService(userService).passwordEncoder(new BCryptPasswordEncoder());
+            PasswordEncoder encoder = PasswordEncoderFactories.createDelegatingPasswordEncoder();
+            auth.userDetailsService(userService).passwordEncoder(encoder);
             if (Boolean.TRUE.equals(firebaseEnabled)) {
                 auth.authenticationProvider(firebaseProvider);
             }
         }
+
     }
 
     @Configuration
     protected static class ApplicationSecurity extends WebSecurityConfigurerAdapter {
 
-        private static final String[] ADMIN_ENDPOINT = {"/admin/**", "/health/**"};
-        private static final String[] OPEN_ENDPOINT = {"/", "/open/**"};
-        private static final String[] USER_ENDPOINT = {"/api/**"};
+        private static final String[] ADMIN_ENDPOINT = { "/admin/**", "/actuator/**" };
+        private static final String[] OPEN_ENDPOINT = { "/**" };
+        private static final String[] USER_ENDPOINT = { "/api/**" };
 
         @Value("${br.com.controle.financeiro.firebase.enabled}")
         private Boolean firebaseEnabled;
@@ -78,24 +83,18 @@ public class SecurityConfig {
         @Override
         protected void configure(HttpSecurity http) throws Exception {
             if (Boolean.TRUE.equals(firebaseEnabled)) {
-//                http.authorizeRequests()//
-//                        .antMatchers(OPEN_ENDPOINT).permitAll()//
-//                        .antMatchers(HttpMethod.GET, USER_ENDPOINT).permitAll()//
-//                        .anyRequest().authenticated()//
-//                        .and().csrf().disable()//
-//                        .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
                 http.addFilterBefore(tokenAuthorizationFilter(), BasicAuthenticationFilter.class).authorizeRequests()//
-                        .antMatchers(OPEN_ENDPOINT).hasAnyRole(Roles.ANONYMOUS)//
-                        .antMatchers(USER_ENDPOINT).hasRole(Roles.USER)
-                        .antMatchers(ADMIN_ENDPOINT).hasAnyRole(Roles.ADMIN)//
-                        .and().csrf().disable()//
-                        .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                        .and().anonymous().authorities(Roles.ROLE_ANONYMOUS);//
+                    .antMatchers(ADMIN_ENDPOINT).hasAnyRole(Roles.ADMIN)//
+                    .antMatchers(USER_ENDPOINT).hasRole(Roles.USER)//
+                    .antMatchers(OPEN_ENDPOINT).hasAnyRole(Roles.ANONYMOUS)//
+                    .and().csrf().disable()//
+                    .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)//
+                    .and().anonymous().authorities(Roles.ROLE_ANONYMOUS);//
             } else {
                 http.authorizeRequests()//
-                        .antMatchers(HttpMethod.GET, USER_ENDPOINT).permitAll()
-                        .anyRequest().authenticated()
-                        .and().formLogin();
+                    .antMatchers(USER_ENDPOINT).permitAll()//
+                    .antMatchers(OPEN_ENDPOINT).permitAll()//
+                    .anyRequest().authenticated().and().formLogin();
             }
         }
 
@@ -107,4 +106,5 @@ public class SecurityConfig {
         }
 
     }
+
 }
