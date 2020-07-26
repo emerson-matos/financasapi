@@ -82,20 +82,15 @@ public class SecurityConfig extends GlobalMethodSecurityConfiguration {
         @Override
         protected void configure(HttpSecurity http) throws Exception {
             if (Boolean.TRUE.equals(firebaseEnabled)) {
-                http.addFilterBefore(tokenAuthorizationFilter(), BasicAuthenticationFilter.class).authorizeRequests()//
-                    .antMatchers(ADMIN_ENDPOINT).hasAnyRole(Roles.ADMIN)//
-                    .antMatchers(USER_ENDPOINT).hasRole(Roles.USER)//
-                    .antMatchers(OPEN_ENDPOINT).hasAnyRole(Roles.ANONYMOUS)//
-                    .and().csrf().disable()//
-                    .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)//
-                    .and().anonymous().authorities(Roles.ROLE_ANONYMOUS);//
-            } else {
-                http.authorizeRequests()//
-                    .antMatchers(USER_ENDPOINT).hasRole(Roles.USER)//
-                    .antMatchers(OPEN_ENDPOINT).hasRole(Roles.ANONYMOUS)//
-                    .anyRequest().authenticated().and().formLogin()//
-                    .and().anonymous().authorities(Roles.ROLE_ANONYMOUS);
+                http.addFilterBefore(tokenAuthorizationFilter(), BasicAuthenticationFilter.class);
             }
+            http.authorizeRequests()//
+                .antMatchers(ADMIN_ENDPOINT).hasAnyRole(Roles.ADMIN)//
+                .antMatchers(USER_ENDPOINT).hasRole(Roles.USER)//
+                .antMatchers(OPEN_ENDPOINT).hasAnyRole(Roles.ANONYMOUS)//
+                .and().csrf().disable()//
+                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)//
+                .and().anonymous().authorities(Roles.ROLE_ANONYMOUS);//
         }
 
         @Autowired(required = false)

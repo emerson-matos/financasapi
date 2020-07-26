@@ -4,6 +4,7 @@ import java.io.IOException;
 
 import javax.annotation.PostConstruct;
 
+import br.com.controle.financeiro.spring.conditionals.FirebaseCondition;
 import com.google.auth.oauth2.GoogleCredentials;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
@@ -17,6 +18,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
+@FirebaseCondition
 public class FirebaseConfig {
 
     private static final Logger LOG = LoggerFactory.getLogger(FirebaseConfig.class);
