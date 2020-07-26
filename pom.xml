@@ -131,7 +131,6 @@
                             </rules>
                             <excludes>
                                 <exclude>br/com/controle/financeiro/controlefinanceiro/**/*</exclude>
-                                <exclude>br/com/controle/financeiro/model/**/*</exclude>
                             </excludes>
                         </configuration>
                         <executions>

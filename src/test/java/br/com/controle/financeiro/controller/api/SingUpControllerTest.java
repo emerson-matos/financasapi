@@ -1,10 +1,9 @@
 package br.com.controle.financeiro.controller.api;
 
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 
 import br.com.controle.financeiro.configuration.auth.firebase.FirebaseTokenHolder;
 import br.com.controle.financeiro.controlefinanceiro.ControlefinanceiroApplication;
@@ -50,11 +49,16 @@ public class SingUpControllerTest {
                .andExpect(MockMvcResultMatchers.status().isNoContent());
     }
 
+    @Test(expected = Exception.class)
+    public void signUpWithBlackToken() throws Exception {
+        mockMvc.perform(MockMvcRequestBuilders.post("/open/signup").header("X-Firebase-User", "")).andDo(print())
+               .andExpect(MockMvcResultMatchers.status().isNoContent());
+    }
+
     @Test
-    public void signUpWithouToken() throws Exception {
+    public void signUpWithoutToken() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.post("/open/signup"))
                .andExpect(MockMvcResultMatchers.status().isBadRequest());
     }
-
 
 }
