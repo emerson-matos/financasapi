@@ -9,7 +9,6 @@ import java.util.Optional;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Spy;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -33,87 +32,84 @@ import br.com.controle.financeiro.model.repository.BankAccountRepository;
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = { ControlefinanceiroApplication.class, BankAccountDTOResourceAssembler.class })
 @AutoConfigureMockMvc
-@EnableWebMvc
 @ActiveProfiles(profiles = "test")
 @Import({ RestResponseEntityExceptionHandler.class })
 public class BankAccountControllerTests {
 
-	@Autowired
-	private MockMvc mockMvc;
+    private static final String BANK_ACCOUNT_URI = "/api/bankaccount";
+    private static final String ACCOUNT_JSON = "{\"agency\":\"account\", \"number\":\"1\", \"dac\":\"1\"}";
 
-	private BankAccount bankAccount;
+    @Autowired
+    private MockMvc mockMvc;
 
-	@MockBean
-	private BankAccountRepository accountRepository;
+    @MockBean
+    private BankAccountRepository accountRepository;
 
-	@Spy
-	private BankAccountDTOResourceAssembler accountDTOResourceAssembler;
+    private BankAccount bankAccount;
 
-	private byte[] contaJson = "{\"agency\":\"account\", \"number\":\"1\", \"dac\":\"1\"}".getBytes();
+    @Before
+    public void setup () {
+        setupBankAccount();
+        when(accountRepository.save(any())).thenReturn(bankAccount);
+    }
 
-	@Before
-	public void setup() {
-		setupBankAccount();
-		when(accountRepository.save(any())).thenReturn(bankAccount);
-	}
+    private void setupBankAccount () {
+        bankAccount = new BankAccount();
+        bankAccount.setId(1L);
+    }
 
-	private void setupBankAccount() {
-		bankAccount = new BankAccount();
-		bankAccount.setId(1L);
-	}
+    @Test
+    public void bankAccountGetAllTestAcceptJSON () throws Exception {
+        mockMvc.perform(MockMvcRequestBuilders.get(BANK_ACCOUNT_URI).accept(MediaType.APPLICATION_JSON_UTF8))
+               .andExpect(MockMvcResultMatchers.status().isOk()).andDo(MockMvcResultHandlers.print()).andReturn();
+    }
 
-	@Test
-	public void bankAccountGetAllTest() throws Exception {
-		mockMvc.perform(MockMvcRequestBuilders.get("/api/bankaccount").accept("*/*"))
-				.andExpect(MockMvcResultMatchers.status().isOk()).andDo(MockMvcResultHandlers.print()).andReturn();
-	}
+    @Test
+    public void bankAccountPostTest () throws Exception {
+        mockMvc.perform(MockMvcRequestBuilders.post(BANK_ACCOUNT_URI).contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
+                                              .accept(MediaType.APPLICATION_JSON_UTF8).content(ACCOUNT_JSON))
+               .andExpect(MockMvcResultMatchers.status().isCreated()).andDo(MockMvcResultHandlers.print()).andReturn();
+    }
 
-	@Test
-	public void bankAccountPostTest() throws Exception {
-		mockMvc.perform(MockMvcRequestBuilders.post("/api/bankaccount").contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
-				.accept("*/*").content(contaJson)).andExpect(MockMvcResultMatchers.status().isCreated())
-				.andDo(MockMvcResultHandlers.print()).andReturn();
-	}
+    @Test
+    public void bankAccountPutOldAccountTest () throws Exception {
+        mockMvc.perform(MockMvcRequestBuilders.put(BANK_ACCOUNT_URI + "/{id}", 1)
+                                              .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE).content(ACCOUNT_JSON))
+               .andExpect(MockMvcResultMatchers.status().is2xxSuccessful()).andDo(MockMvcResultHandlers.print())
+               .andReturn();
+    }
 
-	@Test
-	public void bankAccountPutOldAccountTest() throws Exception {
-		mockMvc.perform(MockMvcRequestBuilders.put("/api/bankaccount/{id}", 1)
-				.header("Content-Type", MediaType.APPLICATION_JSON_UTF8_VALUE).content(contaJson))
-				.andExpect(MockMvcResultMatchers.status().is2xxSuccessful()).andDo(MockMvcResultHandlers.print())
-				.andReturn();
-	}
+    @Test
+    public void bankAccountPutNewAccountTest () throws Exception {
+        when(accountRepository.findById(anyLong())).thenReturn(Optional.of(bankAccount));
 
-	@Test
-	public void bankAccountPutNewAccountTest() throws Exception {
-		when(accountRepository.findById(anyLong())).thenReturn(Optional.of(bankAccount));
+        mockMvc.perform(MockMvcRequestBuilders.put(BANK_ACCOUNT_URI + "/{id}", 1)
+                                              .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE).content(ACCOUNT_JSON))
+               .andExpect(MockMvcResultMatchers.status().is2xxSuccessful()).andDo(MockMvcResultHandlers.print())
+               .andReturn();
+    }
 
-		mockMvc.perform(MockMvcRequestBuilders.put("/api/bankaccount/{id}", 1)
-				.header("Content-Type", MediaType.APPLICATION_JSON_UTF8_VALUE).content(("{\"name\":\"account\"}")))
-				.andExpect(MockMvcResultMatchers.status().is2xxSuccessful()).andDo(MockMvcResultHandlers.print())
-				.andReturn();
-	}
+    @Test
+    public void bankAccountGetOneNotFoundTest () throws Exception {
+        mockMvc.perform(MockMvcRequestBuilders.get(BANK_ACCOUNT_URI + "/{id}", 1)
+                                              .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+               .andExpect(MockMvcResultMatchers.status().isNotFound()).andDo(MockMvcResultHandlers.print()).andReturn();
+    }
 
-	@Test
-	public void bankAccountGetOneNotFoundTest() throws Exception {
-		mockMvc.perform(MockMvcRequestBuilders.get("/api/bankaccount/{id}", 1).contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
-				.content(("{\"name\":\"account\"}"))).andExpect(MockMvcResultMatchers.status().isNotFound())
-				.andDo(MockMvcResultHandlers.print()).andReturn();
-	}
+    @Test
+    public void bankAccountGetOneFoundTest () throws Exception {
+        when(accountRepository.findById(anyLong())).thenReturn(Optional.of(bankAccount));
 
-	@Test
-	public void bankAccountGetOneFoundTest() throws Exception {
-		when(accountRepository.findById(anyLong())).thenReturn(Optional.of(bankAccount));
+        mockMvc.perform(MockMvcRequestBuilders.get(BANK_ACCOUNT_URI + "/{id}", 1)
+                                              .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+               .andExpect(MockMvcResultMatchers.status().isOk()).andDo(MockMvcResultHandlers.print()).andReturn();
+    }
 
-		mockMvc.perform(MockMvcRequestBuilders.get("/api/bankaccount/{id}", 1).contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
-				.content(("{\"name\":\"account\"}"))).andExpect(MockMvcResultMatchers.status().isOk())
-				.andDo(MockMvcResultHandlers.print()).andReturn();
-	}
-
-	@Test
-	public void bankAccountDeleteTest() throws Exception {
-		mockMvc.perform(MockMvcRequestBuilders.delete("/api/bankaccount/{id}", 5))
-				.andExpect(MockMvcResultMatchers.status().isNoContent()).andDo(MockMvcResultHandlers.print())
-				.andReturn();
-	}
+    @Test
+    public void bankAccountDeleteTest () throws Exception {
+        mockMvc.perform(MockMvcRequestBuilders.delete(BANK_ACCOUNT_URI + "/{id}", 5))
+               .andExpect(MockMvcResultMatchers.status().isNoContent()).andDo(MockMvcResultHandlers.print())
+               .andReturn();
+    }
 
 }
