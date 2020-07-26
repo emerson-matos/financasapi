@@ -14,13 +14,14 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 @EnableJpaRepositories({ "br.com.controle.financeiro.model.repository" })
 public class ControlefinanceiroApplication extends SpringBootServletInitializer {
 
-	public static void main(String... args) {
-		SpringApplication.run(ControlefinanceiroApplication.class, args);
-	}
+    public static void main(String... args) {
+        SpringApplication app = new SpringApplication(ControlefinanceiroApplication.class);
+        app.run(args);
+    }
 
-	@Override
-	protected SpringApplicationBuilder configure(SpringApplicationBuilder application) {
-		return application.sources(ControlefinanceiroApplication.class);
-	}
+    @Override
+    protected SpringApplicationBuilder configure(SpringApplicationBuilder application) {
+        return application.sources(ControlefinanceiroApplication.class);
+    }
 
 }
