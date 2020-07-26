@@ -10,7 +10,7 @@
     </parent>
     <groupId>br.com.controle.financeiro</groupId>
     <artifactId>gestao-financeira</artifactId>
-    <version>0.2.0</version>
+    <version>0.2.1</version>
     <name>Controle Financeiro</name>
     <description>Application to help stay financial health</description>
     <url>https://github.com/emegson/financasapi</url>
@@ -72,7 +72,7 @@
 		<dependency>
 			<groupId>org.hibernate</groupId>
 			<artifactId>hibernate-agroal</artifactId>
-			<version>5.3.10.Final</version>
+			<version>5.4.18.Final</version>
 			<type>pom</type>
 		</dependency>
 		<dependency>
