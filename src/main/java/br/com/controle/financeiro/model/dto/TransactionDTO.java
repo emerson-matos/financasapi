@@ -2,167 +2,166 @@ package br.com.controle.financeiro.model.dto;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.time.Instant;
+import java.time.LocalDateTime;
 import java.util.Currency;
-import java.util.Date;
 import java.util.Locale;
 
 import javax.validation.constraints.NotNull;
-
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonProperty.Access;
 
 import br.com.controle.financeiro.model.entity.BankAccount;
 import br.com.controle.financeiro.model.entity.Card;
 import br.com.controle.financeiro.model.entity.Client;
 import br.com.controle.financeiro.model.entity.Transaction;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonProperty.Access;
 
 public class TransactionDTO implements Serializable {
 
-	private Long expenseId;
-	@NotNull
-	private String name = "";
-	@NotNull
-	private Date transactionDate = Date.from(Instant.now());
-	@NotNull
-	private BigDecimal value = BigDecimal.ZERO;
-	@NotNull
-	private Currency currency = Currency.getInstance(new Locale("pt", "BR"));
+    private Long expenseId;
+    @NotNull
+    private String name = "";
+    @NotNull
+    private LocalDateTime transactionDate = LocalDateTime.now();
+    @NotNull
+    private BigDecimal value = BigDecimal.ZERO;
+    @NotNull
+    private Currency currency = Currency.getInstance(new Locale("pt", "BR"));
 
-	@JsonProperty(access = Access.WRITE_ONLY)
-	private Long ownerId;
-	
-	@JsonProperty(access = Access.WRITE_ONLY)
-	private Long accountId;
+    @JsonProperty(access = Access.WRITE_ONLY)
+    private Long ownerId;
 
-	@JsonProperty(access = Access.WRITE_ONLY)
-	private Long cardId;
+    @JsonProperty(access = Access.WRITE_ONLY)
+    private Long accountId;
 
-	@JsonProperty(access = Access.READ_ONLY)
-	private Client owner;
+    @JsonProperty(access = Access.WRITE_ONLY)
+    private Long cardId;
 
-	@JsonProperty(access = Access.READ_ONLY)
-	private BankAccount account;
-	
-	@JsonProperty(access = Access.READ_ONLY)
-	private Card card;
+    @JsonProperty(access = Access.READ_ONLY)
+    private Client owner;
 
-	public TransactionDTO() {
-		super();
-	}
+    @JsonProperty(access = Access.READ_ONLY)
+    private BankAccount account;
 
-	public TransactionDTO(final BigDecimal value, final Currency currency, final String name, final Date date, final Long owner,
-			final Long account, final Long card, final Long id) {
-		super();
-		this.setCurrency(currency);
-		this.setId(id);
-		this.setName(name);
-		this.setTransactionDate(date);
-		this.setOwnerId(owner);
-		this.setValue(value);
-		this.setBankAccountId(account);
-		this.setCardId(card);
-	}
+    @JsonProperty(access = Access.READ_ONLY)
+    private Card card;
 
-	public static TransactionDTO fromTransaction(Transaction t) {
-		return new TransactionDTO(t.getValue(), t.getCurrency(), t.getName(), t.getTransactionDate(), t.getOwner().getId(),
-				t.getAccount().getId(), t.getCard().getId(), t.getId());
-	}
+    public TransactionDTO() {
+        super();
+    }
 
-	public Transaction toTransaction() {
-		Card cardObj = new Card().withId(this.cardId);
-		BankAccount accountObj = new BankAccount().withId(this.accountId);
-		Client client = new Client().withId(this.ownerId);
+    public TransactionDTO(final BigDecimal value, final Currency currency, final String name, final LocalDateTime date,
+                          final Long owner, final Long account, final Long card, final Long id) {
+        super();
+        this.setCurrency(currency);
+        this.setId(id);
+        this.setName(name);
+        this.setTransactionDate(date);
+        this.setOwnerId(owner);
+        this.setValue(value);
+        this.setBankAccountId(account);
+        this.setCardId(card);
+    }
 
-		return new Transaction(this.getValue(), this.getCurrency(), this.getName(), this.getTransactionDate(), client, accountObj, cardObj,
-				this.getId());
-	}
+    public static TransactionDTO fromTransaction(Transaction t) {
+        return new TransactionDTO(t.getValue(), t.getCurrency(), t.getName(), t.getTransactionDate(),
+                                  t.getOwner().getId(), t.getAccount().getId(), t.getCard().getId(), t.getId());
+    }
 
-	public void setCard(final Card card) {
-		this.card = card;
-	}
+    public Transaction toTransaction() {
+        Card cardObj = new Card().withId(this.cardId);
+        BankAccount accountObj = new BankAccount().withId(this.accountId);
+        Client client = new Client().withId(this.ownerId);
 
-	public Card getCard() {
-		return this.card;
-	}
+        return new Transaction(this.getValue(), this.getCurrency(), this.getName(), this.getTransactionDate(), client,
+                               accountObj, cardObj, this.getId());
+    }
 
-	public void setCardId(final Long id) {
-		this.cardId = id;
-	}
+    public void setCard(final Card card) {
+        this.card = card;
+    }
 
-	public Long getCardId() {
-		return this.cardId;
-	}
+    public Card getCard() {
+        return this.card;
+    }
 
-	public void setBankAccountId(final Long accountId) {
-		this.accountId = accountId;
-	}
+    public void setCardId(final Long id) {
+        this.cardId = id;
+    }
 
-	public Long getBankAccountId() {
-		return this.accountId;
-	}
+    public Long getCardId() {
+        return this.cardId;
+    }
 
-	public void setBankAccount(final BankAccount account) {
-		this.account = account;
-	}
+    public void setBankAccountId(final Long accountId) {
+        this.accountId = accountId;
+    }
 
-	public BankAccount getBankAccount() {
-		return this.account;
-	}
+    public Long getBankAccountId() {
+        return this.accountId;
+    }
 
-	public BigDecimal getValue() {
-		return value;
-	}
+    public void setBankAccount(final BankAccount account) {
+        this.account = account;
+    }
 
-	public Long getOwnerId() {
-		return ownerId;
-	}
+    public BankAccount getBankAccount() {
+        return this.account;
+    }
 
-	public void setOwnerId(final Long owner) {
-		this.ownerId = owner;
-	}
+    public BigDecimal getValue() {
+        return value;
+    }
 
-	public Client getOwner() {
-		return owner;
-	}
+    public Long getOwnerId() {
+        return ownerId;
+    }
 
-	public void setOwner(final Client owner) {
-		this.owner = owner;
-	}
+    public void setOwnerId(final Long owner) {
+        this.ownerId = owner;
+    }
 
-	public void setValue(final BigDecimal value) {
-		this.value = value;
-	}
+    public Client getOwner() {
+        return owner;
+    }
 
-	public Date getTransactionDate() {
-		return transactionDate;
-	}
+    public void setOwner(final Client owner) {
+        this.owner = owner;
+    }
 
-	public void setTransactionDate(final Date transactionDate) {
-		this.transactionDate = transactionDate;
-	}
+    public void setValue(final BigDecimal value) {
+        this.value = value;
+    }
 
-	public String getName() {
-		return name;
-	}
+    public LocalDateTime getTransactionDate() {
+        return transactionDate;
+    }
 
-	public void setName(final String name) {
-		this.name = name;
-	}
+    public void setTransactionDate(final LocalDateTime transactionDate) {
+        this.transactionDate = transactionDate;
+    }
 
-	public Long getId() {
-		return expenseId;
-	}
+    public String getName() {
+        return name;
+    }
 
-	public void setId(Long expenseId) {
-		this.expenseId = expenseId;
-	}
+    public void setName(final String name) {
+        this.name = name;
+    }
 
-	public Currency getCurrency() {
-		return currency;
-	}
+    public Long getId() {
+        return expenseId;
+    }
 
-	public void setCurrency(Currency currency) {
-		this.currency = currency;
-	}
+    public void setId(Long expenseId) {
+        this.expenseId = expenseId;
+    }
+
+    public Currency getCurrency() {
+        return currency;
+    }
+
+    public void setCurrency(Currency currency) {
+        this.currency = currency;
+    }
+
 }
