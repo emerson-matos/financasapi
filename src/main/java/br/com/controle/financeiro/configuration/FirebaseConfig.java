@@ -1,5 +1,6 @@
 package br.com.controle.financeiro.configuration;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 
 import javax.annotation.PostConstruct;
@@ -13,6 +14,8 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
+import org.apache.tomcat.util.json.JSONParser;
+import org.apache.tomcat.util.json.ParseException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -27,6 +30,9 @@ public class FirebaseConfig {
 
     @Value("${br.com.controle.financeiro.firebase.database.url}")
     private String databaseUrl;
+
+    @Value("${br.com.controle.financeiro.firebase.credentials:}")
+    private String credentials;
 
     @Bean
     public AbstractFirebaseAuth firebaseAuth() {
@@ -43,17 +49,33 @@ public class FirebaseConfig {
         if (FirebaseApp.getApps().isEmpty()) {
             try {
                 LOG.debug("Starting Firebase");
-                FirebaseOptions options =
-                        new FirebaseOptions.Builder().setCredentials(GoogleCredentials.getApplicationDefault())
-                                                     .setDatabaseUrl(databaseUrl).build();
+                GoogleCredentials googleCredential = getGoogleCredentials();
+                FirebaseOptions options = new FirebaseOptions.Builder()//
+                                                                       .setCredentials(googleCredential)//
+                                                                       .setDatabaseUrl(databaseUrl).build();
                 FirebaseApp.initializeApp(options);
-                LOG.debug("Started Firebase with ${}", databaseUrl);
+                LOG.debug("Started Firebase with {}", databaseUrl);
             } catch (IOException e) {
                 LOG.error("Error stating Firebase", e);
                 FirebaseApp.initializeApp();
                 LOG.debug("Started Firebase after an Exception");
             }
         }
+    }
+
+    private GoogleCredentials getGoogleCredentials() throws IOException {
+        try {
+             if (!credentials.isEmpty()) {
+                String json = new JSONParser(credentials).parse().toString();
+                return GoogleCredentials.fromStream(new ByteArrayInputStream(json.getBytes()));
+            }
+        } catch (ParseException e) {
+            LOG.error(
+                    "Erro on parse google credentials, using default credentials based on env " +
+                            "$GOOGLE_APPLICATION_CREDENTIALS={}",
+                    System.getenv("GOOGLE_APPLICATION_CREDENTIALS"));
+        }
+        return GoogleCredentials.getApplicationDefault();
     }
 
 }
