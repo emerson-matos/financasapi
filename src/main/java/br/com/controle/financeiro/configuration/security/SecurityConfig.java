@@ -1,7 +1,7 @@
-package br.com.controle.financeiro.configuration;
+package br.com.controle.financeiro.configuration.security;
 
-import br.com.controle.financeiro.configuration.auth.firebase.FirebaseAuthenticationProvider;
-import br.com.controle.financeiro.configuration.auth.firebase.FirebaseFilter;
+import br.com.controle.financeiro.configuration.security.auth.firebase.FirebaseAuthenticationProvider;
+import br.com.controle.financeiro.configuration.security.auth.firebase.FirebaseFilter;
 import br.com.controle.financeiro.service.FirebaseService;
 import br.com.controle.financeiro.service.impl.UserServiceImpl;
 
@@ -16,6 +16,7 @@ import org.springframework.security.config.annotation.authentication.configurati
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.method.configuration.GlobalMethodSecurityConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -79,6 +80,13 @@ public class SecurityConfig extends GlobalMethodSecurityConfiguration {
 
         @Value("${br.com.controle.financeiro.firebase.enabled}")
         private Boolean firebaseEnabled;
+
+        @Override
+        public void configure(WebSecurity web) throws Exception {
+            web.ignoring()
+               .antMatchers("/v2/api-docs", "/configuration/ui", "/swagger-resources/**", "/configuration/security",
+                            "/swagger-ui.html", "/webjars/**", "/v2/swagger.json");
+        }
 
         @Override
         protected void configure(HttpSecurity http) throws Exception {

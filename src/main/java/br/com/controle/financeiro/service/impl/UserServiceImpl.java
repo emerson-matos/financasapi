@@ -11,7 +11,7 @@ import java.util.UUID;
 import javax.annotation.PostConstruct;
 import javax.transaction.Transactional;
 
-import br.com.controle.financeiro.configuration.SecurityConfig.Roles;
+import br.com.controle.financeiro.configuration.security.SecurityConfig.Roles;
 import br.com.controle.financeiro.model.entity.Role;
 import br.com.controle.financeiro.model.entity.UserEntity;
 import br.com.controle.financeiro.model.repository.RoleRepository;
