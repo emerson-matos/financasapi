@@ -7,7 +7,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
-import br.com.controle.financeiro.configuration.auth.firebase.FirebaseTokenHolder;
+import br.com.controle.financeiro.configuration.security.auth.firebase.FirebaseTokenHolder;
 import br.com.controle.financeiro.service.FirebaseParserService;
 
 import org.junit.Test;

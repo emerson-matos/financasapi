@@ -38,6 +38,7 @@
             <nav class="nav nav-masthead justify-content-center">
                 <a class="nav-link active" href="${pageContext.request.contextPath}/">Home</a>
                 <a class="nav-link" href="https://github.com/emerson-matos/financasapi/blob/master/README.md">Sobre</a>
+                <a class="nav-link" href="${pageContext.request.contextPath}/swagger-ui.html">Docs</a>
             </nav>
         </div>
     </header>

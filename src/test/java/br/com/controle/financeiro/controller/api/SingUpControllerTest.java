@@ -5,7 +5,7 @@ import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 
-import br.com.controle.financeiro.configuration.auth.firebase.FirebaseTokenHolder;
+import br.com.controle.financeiro.configuration.security.auth.firebase.FirebaseTokenHolder;
 import br.com.controle.financeiro.controlefinanceiro.ControlefinanceiroApplication;
 import br.com.controle.financeiro.service.FirebaseService;
 import br.com.controle.financeiro.service.UserService;

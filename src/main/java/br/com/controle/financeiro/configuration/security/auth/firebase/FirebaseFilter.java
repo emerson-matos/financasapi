@@ -1,4 +1,4 @@
-package br.com.controle.financeiro.configuration.auth.firebase;
+package br.com.controle.financeiro.configuration.security.auth.firebase;
 
 import java.io.IOException;
 

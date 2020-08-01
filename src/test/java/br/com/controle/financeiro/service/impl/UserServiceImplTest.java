@@ -13,7 +13,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Optional;
 
-import br.com.controle.financeiro.configuration.SecurityConfig;
+import br.com.controle.financeiro.configuration.security.SecurityConfig;
 import br.com.controle.financeiro.model.entity.Role;
 import br.com.controle.financeiro.model.entity.UserEntity;
 import br.com.controle.financeiro.model.repository.RoleRepository;
