@@ -22,6 +22,14 @@ jobs:
   - stage: unit tests
     script: mvn clean verify sonar:sonar -Dsonar.projectKey=emerson-matos_financasapi
       -Pcoverage
+    if: type = pull_request
+  - stage: build docker image
+    script:
+      - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+      - docker build -t memerson .
+      - docker images
+      - docker tag memerson $DOCKER_USERNAME/memerson:latest
+      - docker push $DOCKER_USERNAME/memerson:latest
 deploy:
   provider: script
   script: mvn deploy -s .travis.settings.xml -DskipTests
