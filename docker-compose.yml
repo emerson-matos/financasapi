@@ -4,7 +4,7 @@ services:
     container_name: postgres_container
     image: postgres:12
     volumes:
-      - ../postgres:/var/lib/postgresql/data
+      - ./postgres:/var/lib/postgresql/data
     environment:
       POSTGRES_USER: ${SPRING_DATASOURCE_USERNAME:-postgres}
       POSTGRES_DB: controle
@@ -21,9 +21,23 @@ services:
       PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL:-pgadmin4@pgadmin.org}
       PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD:-admin}
     volumes:
-      - ../pgadmin:/root/.pgadmin
+      - ./pgadmin:/root/.pgadmin
     ports:
       - "${PGADMIN_PORT:-5050}:80"
+    networks:
+      - postgres
+    restart: unless-stopped
+  api:
+    container_name: financasbackend_container
+    build: .
+    volumes:
+      - ./spring:/home/spring/
+    environment:
+      SPRING_PROFILE: dev
+      FIREBASE_URL: https://financas-98f0c.firebaseio.com/
+      GOOGLE_APPLICATION_CREDENTIALS: /home/spring/service-account-file.json
+    ports:
+      - "8080:8080"
     networks:
       - postgres
     restart: unless-stopped

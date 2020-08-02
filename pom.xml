@@ -11,6 +11,7 @@
     <groupId>br.com.controle.financeiro</groupId>
     <artifactId>gestao-financeira</artifactId>
     <version>0.2.4</version>
+    <packaging>war</packaging>
     <name>Controle Financeiro</name>
     <description>Application to help stay financial health</description>
     <url>https://github.com/emegson/financasapi</url>
@@ -84,6 +85,7 @@
 			<groupId>org.apache.tomcat.embed</groupId>
 			<artifactId>tomcat-embed-jasper</artifactId>
 			<version>9.0.37</version>
+            <scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>javax.servlet</groupId>
