@@ -20,18 +20,16 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
-import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
-import br.com.controle.financeiro.controlefinanceiro.ControlefinanceiroApplication;
+import br.com.controle.financeiro.controlefinanceiro.ControleFinanceiroApplication;
 import br.com.controle.financeiro.controller.RestResponseEntityExceptionHandler;
 import br.com.controle.financeiro.controller.api.linkbuilder.BankAccountDTOResourceAssembler;
 import br.com.controle.financeiro.model.entity.BankAccount;
 import br.com.controle.financeiro.model.repository.BankAccountRepository;
 
 @RunWith(SpringRunner.class)
-@SpringBootTest(classes = { ControlefinanceiroApplication.class, BankAccountDTOResourceAssembler.class })
+@SpringBootTest(classes = { ControleFinanceiroApplication.class, BankAccountDTOResourceAssembler.class })
 @AutoConfigureMockMvc
 @ActiveProfiles(profiles = "test")
 @Import({ RestResponseEntityExceptionHandler.class })

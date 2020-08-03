@@ -1,6 +1,6 @@
 package br.com.controle.financeiro.controller;
 
-import br.com.controle.financeiro.controlefinanceiro.ControlefinanceiroApplication;
+import br.com.controle.financeiro.controlefinanceiro.ControleFinanceiroApplication;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -16,7 +16,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
 @RunWith(SpringRunner.class)
-@SpringBootTest(classes = { ControlefinanceiroApplication.class })
+@SpringBootTest(classes = { ControleFinanceiroApplication.class })
 @AutoConfigureMockMvc
 @ActiveProfiles(profiles = "test")
 public class IndexControllerTest {
