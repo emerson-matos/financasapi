@@ -15,16 +15,16 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 @ComponentScan({ "br.com.controle.financeiro" })
 @EntityScan({ "br.com.controle.financeiro.model.entity" })
 @EnableJpaRepositories({ "br.com.controle.financeiro.model.repository" })
-public class ControlefinanceiroApplication extends SpringBootServletInitializer {
+public class ControleFinanceiroApplication extends SpringBootServletInitializer {
 
     public static void main(String... args) {
-        SpringApplication app = new SpringApplication(ControlefinanceiroApplication.class);
+        SpringApplication app = new SpringApplication(ControleFinanceiroApplication.class);
         app.run(args);
     }
 
     @Override
     protected SpringApplicationBuilder configure(SpringApplicationBuilder application) {
-        return application.sources(ControlefinanceiroApplication.class);
+        return application.sources(ControleFinanceiroApplication.class);
     }
 
 }

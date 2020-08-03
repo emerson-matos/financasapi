@@ -9,7 +9,7 @@ import java.time.LocalDateTime;
 import java.util.Currency;
 import java.util.Optional;
 
-import br.com.controle.financeiro.controlefinanceiro.ControlefinanceiroApplication;
+import br.com.controle.financeiro.controlefinanceiro.ControleFinanceiroApplication;
 import br.com.controle.financeiro.controller.RestResponseEntityExceptionHandler;
 import br.com.controle.financeiro.controller.api.linkbuilder.TransactionDTOResourceAssembler;
 import br.com.controle.financeiro.model.entity.BankAccount;
@@ -26,18 +26,15 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.test.context.support.WithMockUser;
-import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 @RunWith(SpringRunner.class)
-@SpringBootTest(classes = { ControlefinanceiroApplication.class, TransactionDTOResourceAssembler.class })
+@SpringBootTest(classes = { ControleFinanceiroApplication.class, TransactionDTOResourceAssembler.class })
 @AutoConfigureMockMvc
 @ActiveProfiles(profiles = "test")
 @Import({ RestResponseEntityExceptionHandler.class })
