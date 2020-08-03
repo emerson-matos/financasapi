@@ -3,15 +3,15 @@ language: java
 os: linux
 jdk: openjdk11
 services:
-- postgresql
+  - postgresql
 cache:
-- directories:
-  - "$HOME/.m2/repository"
-  - "$HOME/.sonar/cache"
+  - directories:
+      - "$HOME/.m2/repository"
+      - "$HOME/.sonar/cache"
 before_script:
-- psql -c 'create database controle;' -U $SPRING_DATASOURCE_USERNAME
+  - psql -c 'create database controle;' -U $SPRING_DATASOURCE_USERNAME
 after_success:
-- bash <(curl -s https://codecov.io/bash)
+  - bash <(curl -s https://codecov.io/bash)
 addons:
   sonarcloud:
     organization: emerson-matos
@@ -19,20 +19,21 @@ addons:
       secure: qjyj9JBrqgmm1eHaaMIAxBa0XFwq8+AamHVWQ7x3WKc+jyguSdPpkH3IYoU/kxHCs0cWO8gQaT/qBe0w9qCc6EANfWuEn/E9gZOQdFSnIteEFj28FDFaxVwSh2TZLXdQOszF2be+MJIB6PBUb9II2jZs4xRPcLE2dnvyVBmFSjYfJYxIEtDKBEw4g4FWhwKFIbOZu5a2Gfe4QyTMen2UcPzJHNpywjBU9R2vNvJiklZjZ2RLWjDB6Ra4PnYMnFQwbfHbqgLZ9VrxS8+KOCfizobDts7hW9ESnAFWP44cFKNuHmB62GHYZAKUDwEqrAdSboKUSsDWnAjq8Ray3X8W3ISHfoEc7HWvHQERkJVhR6nuxhRMGON7d2N7IPLVKaoNYjAh4J3w+niG54rzGNToGUUp0YDnXIev7iUmsfp7Q7N3qPsQHgqZWsLwBwz4z80PeQthKZszithbsj+x52pwFabcE3hme4nfIrmE7AXI4NVIA/xa+cWhFbgcpvOM+Q1vIWWOtNG8+ptngB0QXBezDGCtK5Wz04/dqjdYpDYfLuf+NPj8KO227uvXn4YyiH3njJH1fv6DGt02ul8r5bcx0/q4KEVvyUSgBg7QoXDa43WQUoM4pi0HRXurSCBFMU0n6P2q41tskUHXlxQVyTMCcj3yDogm+8/S49y+A5TMxuo=
 jobs:
   include:
-  - stage: unit tests
-    script: mvn clean verify sonar:sonar -Dsonar.projectKey=emerson-matos_financasapi
-      -Pcoverage
-    if: type = pull_request
-  - stage: build docker image
-    script:
-      - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
-      - docker build -t memerson .
-      - docker images
-      - docker tag memerson $DOCKER_USERNAME/memerson:latest
-      - docker push $DOCKER_USERNAME/memerson:latest
+    - stage: unit tests
+      script: mvn clean test
+      if: type = commit
+    - stage: unit tests
+      script: mvn clean verify sonar:sonar -Dsonar.projectKey=emerson-matos_financasapi -Pcoverage
+      if: type = pull_request
+
 deploy:
   provider: script
-  script: mvn deploy -s .travis.settings.xml -DskipTests
+  script:
+    - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+    - docker build -t memerson .
+    - docker images
+    - docker tag memerson $DOCKER_USERNAME/memerson:latest
+    - docker push $DOCKER_USERNAME/memerson:latest
   on:
     tags: true
 notifications:
