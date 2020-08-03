@@ -10,8 +10,14 @@ import javax.validation.Valid;
 
 import br.com.controle.financeiro.controller.api.linkbuilder.TransactionDTOResourceAssembler;
 import br.com.controle.financeiro.model.dto.TransactionDTO;
+import br.com.controle.financeiro.model.entity.BankAccount;
+import br.com.controle.financeiro.model.entity.Card;
+import br.com.controle.financeiro.model.entity.Client;
 import br.com.controle.financeiro.model.entity.Transaction;
 import br.com.controle.financeiro.model.exception.TransactionNotFoundException;
+import br.com.controle.financeiro.model.repository.BankAccountRepository;
+import br.com.controle.financeiro.model.repository.CardRepository;
+import br.com.controle.financeiro.model.repository.ClientRepository;
 import br.com.controle.financeiro.model.repository.TransactionRepository;
 
 import org.slf4j.Logger;
@@ -36,12 +42,19 @@ public class TransactionController {
 
     private static final Logger LOG = LoggerFactory.getLogger(TransactionController.class);
 
+    private final BankAccountRepository accountRepository;
+    private final CardRepository cardRepository;
+    private final ClientRepository clientRepository;
     private final TransactionRepository transactionRepository;
 
     private final TransactionDTOResourceAssembler transactionDTOResourceAssembler;
 
-    public TransactionController(final TransactionRepository transactionRepository,
+    public TransactionController(final BankAccountRepository accountRepository, final CardRepository cardRepository,
+                                 final ClientRepository clientRepository, final TransactionRepository transactionRepository,
                                  final TransactionDTOResourceAssembler transactionDTOResourceAssembler) {
+        this.accountRepository = accountRepository;
+        this.cardRepository = cardRepository;
+        this.clientRepository = clientRepository;
         this.transactionRepository = transactionRepository;
         this.transactionDTOResourceAssembler = transactionDTOResourceAssembler;
     }
@@ -63,8 +76,14 @@ public class TransactionController {
     public Resource<TransactionDTO> newTransaction(@RequestBody @Valid final TransactionDTO transaction) {
         LOG.debug("creating newTransaction");
         //TODO deal when an transaction doesn't belong to a card and a bank account simultaneously
+        //TODO extract to service
+        Client owner = clientRepository.findById(transaction.getOwner()).get();
+        BankAccount account = accountRepository.findById(transaction.getAccount()).orElse(null);
+        Card card = cardRepository.findById(transaction.getCard()).orElse(null);
+
         TransactionDTO savedTransacation =
-                TransactionDTO.fromTransaction(transactionRepository.save(transaction.toTransaction()));
+                TransactionDTO.fromTransaction(transactionRepository.save(transaction.toTransaction(owner, account,
+                                                                                                    card)));
         return transactionDTOResourceAssembler.toResource(savedTransacation);
     }
 
@@ -85,8 +104,13 @@ public class TransactionController {
             transaction.setName(newTransaction.getName());
             return transactionRepository.save(transaction);
         }).orElseGet(() -> {
+            //TODO extract to service
+            Client owner = clientRepository.findById(newTransaction.getOwner()).get();
+            BankAccount account = accountRepository.findById(newTransaction.getAccount()).orElse(null);
+            Card card = cardRepository.findById(newTransaction.getCard()).orElse(null);
             newTransaction.setId(id);
-            return transactionRepository.save(newTransaction.toTransaction());
+
+            return transactionRepository.save(newTransaction.toTransaction(owner, account, card));
         });
 
         return transactionDTOResourceAssembler.toResource(TransactionDTO.fromTransaction(savedTransaction));

@@ -22,7 +22,7 @@ public class UserEntity implements UserDetails {
     @Id
     @Column(name = "id_user")
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long userId;
+    private Long id;
 
     @Column(name = "username", nullable = false, unique = true)
     private String username;
@@ -70,12 +70,12 @@ public class UserEntity implements UserDetails {
         return true;
     }
 
-    public void setUserId(Long id) {
-        this.userId = id;
+    public void setId(Long id) {
+        this.id = id;
     }
 
-    public Long getUserId() {
-        return userId;
+    public Long getId() {
+        return id;
     }
 
     public void setUsername(String username) {

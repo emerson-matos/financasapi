@@ -21,7 +21,7 @@ public class Transaction implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id_expense")
-    private Long expenseId;
+    private Long id;
 
     private String name;
 
@@ -45,29 +45,17 @@ public class Transaction implements Serializable {
         super();
     }
 
-    public Transaction(final BigDecimal value, final Currency currency, final String name, final LocalDateTime date,
-                       final Client owner, final BankAccount account, final Card card) {
+    public Transaction(Long id, String name, LocalDateTime transactionDate, BigDecimal value, Currency currency,
+                       Client owner, BankAccount account, Card card) {
         super();
-        this.setName(name);
-        this.setTransactionDate(date);
-        this.setOwner(owner);
-        this.setValue(value);
-        this.setCurrency(currency);
-        this.setBankAccount(account);
-        this.setCard(card);
-    }
-
-    public Transaction(final BigDecimal value, final Currency currency, final String name, final LocalDateTime date,
-                       final Client owner, final BankAccount account, final Card card, final Long expenseId) {
-        super();
-        this.setId(expenseId);
-        this.setName(name);
-        this.setTransactionDate(date);
-        this.setOwner(owner);
-        this.setValue(value);
-        this.setCurrency(currency);
-        this.setBankAccount(account);
-        this.setCard(card);
+        this.id = id;
+        this.name = name;
+        this.transactionDate = transactionDate;
+        this.value = value;
+        this.currency = currency;
+        this.owner = owner;
+        this.account = account;
+        this.card = card;
     }
 
     public void setCard(final Card card) {
@@ -119,11 +107,11 @@ public class Transaction implements Serializable {
     }
 
     public Long getId() {
-        return expenseId;
+        return id;
     }
 
     public void setId(Long expenseId) {
-        this.expenseId = expenseId;
+        this.id = expenseId;
     }
 
     public BankAccount getAccount() {

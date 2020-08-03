@@ -60,9 +60,7 @@ public class TransactionControllerTests {
     }
 
     private void setupTransaction() {
-        transaction = new Transaction(new BigDecimal(1), Currency.getInstance("BRL"), "name", LocalDateTime.now(),
-                                      new Client(), new BankAccount(), new Card());
-        transaction.setId(1L);
+        transaction = new Transaction(1L,"name", LocalDateTime.now(), new BigDecimal(1), Currency.getInstance("BRL"), new Client(), new BankAccount(), new Card());
     }
 
     @Test

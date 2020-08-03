@@ -1,70 +1,57 @@
 package br.com.controle.financeiro.model.dto;
 
 import java.io.Serializable;
+import java.util.UUID;
 
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
 import br.com.controle.financeiro.model.entity.BankAccount;
 import br.com.controle.financeiro.model.entity.Client;
 import br.com.controle.financeiro.model.entity.Institution;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonProperty.Access;
 
 public class BankAccountDTO implements Serializable {
 
     private Long accountId;
+
+    @NotBlank
+    private String agency;
+
+    @NotBlank
+    private String number;
+
+    @NotBlank
+    private String dac;
+
     @NotNull
-    private String agency = "";
+    private UUID responsible;
+
     @NotNull
-    private String number = "";
-    @NotNull
-    private String dac = "";
+    private Long institution;
 
-    @JsonProperty(access = Access.WRITE_ONLY)
-    private Long ownerId;
-
-    @JsonProperty(access = Access.WRITE_ONLY)
-    private Long institutionId;
-
-    @JsonProperty(access = Access.READ_ONLY)
-    private Client owner;
-
-    @JsonProperty(access = Access.READ_ONLY)
-    private Institution institution;
 
     public BankAccountDTO() {
         super();
     }
 
-    public BankAccountDTO(final String agency, final String number, final String dac, final Long owner,
-                          final Long institution) {
+    public BankAccountDTO(Long id, String agency, String number, String dac, UUID responsible,
+                          Long institution) {
         super();
-        this.agency = agency;
-        this.number = number;
-        this.dac = dac;
-        this.ownerId = owner;
-        this.institutionId = institution;
-    }
-
-    public BankAccountDTO(Long id, String agency, String number, String dac, Client owner, Institution institution) {
-        super();
-        this.agency = agency;
         this.accountId = id;
+        this.agency = agency;
         this.number = number;
         this.dac = dac;
-        this.owner = owner;
+        this.responsible = responsible;
         this.institution = institution;
     }
 
     public static BankAccountDTO fromBankAccount(BankAccount account) {
         return new BankAccountDTO(account.getId(), account.getAgency(), account.getNumber(), account.getDac(),
-                                  account.getOwner(), account.getInstitution());
+                                  account.getResponsible().getId(), account.getInstitution().getId());
     }
 
-    public BankAccount toBankAccount() {
-        Client client = new Client().withId(this.ownerId);
-        Institution instObj = new Institution().withId(institutionId);
-        return new BankAccount(client, instObj, this.agency, this.number, this.dac, this.accountId);
+    public BankAccount toBankAccount(Client responsible, Institution institution) {
+        return new BankAccount(this.accountId, this.agency, this.number, this.dac, responsible, institution);
     }
 
     public Long getId() {
@@ -99,35 +86,19 @@ public class BankAccountDTO implements Serializable {
         this.dac = dac;
     }
 
-    public Long getOwnerId() {
-        return this.ownerId;
+    public UUID getResponsible() {
+        return this.responsible;
     }
 
-    public void setOwner(final Long owner) {
-        this.ownerId = owner;
+    public void setOwner(final UUID owner) {
+        this.responsible = owner;
     }
 
-    public Long getInstitutionId() {
-        return this.institutionId;
-    }
-
-    public void setInstitution(final Long institutionId) {
-        this.institutionId = institutionId;
-    }
-
-    public Client getOwner() {
-        return this.owner;
-    }
-
-    public void setOwner(final Client owner) {
-        this.owner = owner;
-    }
-
-    public Institution getInstitution() {
+    public Long getInstitution() {
         return this.institution;
     }
 
-    public void setInstitution(final Institution institution) {
+    public void setInstitution(final Long institution) {
         this.institution = institution;
     }
 

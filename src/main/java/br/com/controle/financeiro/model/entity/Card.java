@@ -18,7 +18,7 @@ public class Card implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id_card")
-    private Long cardId;
+    private Long id;
 
     private String name;
     private String number;
@@ -38,15 +38,7 @@ public class Card implements Serializable {
     public Card(final Long id, final String name, final String number, final Client owner,
                 final Institution institution) {
         super();
-        this.cardId = id;
-        this.name = name;
-        this.number = number;
-        this.owner = owner;
-        this.institution = institution;
-    }
-
-    public Card(final String name, final String number, final Client owner, final Institution institution) {
-        super();
+        this.id = id;
         this.name = name;
         this.number = number;
         this.owner = owner;
@@ -86,11 +78,11 @@ public class Card implements Serializable {
     }
 
     public Long getId() {
-        return cardId;
+        return id;
     }
 
     public void setId(Long cardId) {
-        this.cardId = cardId;
+        this.id = cardId;
     }
 
     public Card withId(Long id) {

@@ -18,7 +18,7 @@ public class BankAccount implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id_account")
-    private Long accountId;
+    private Long id;
 
     private String agency;
     private String number;
@@ -26,7 +26,7 @@ public class BankAccount implements Serializable {
 
     @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.DETACH)
     @JoinColumn(name = "id_client")
-    private Client owner;
+    private Client responsible;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "id_institution")
@@ -36,23 +36,23 @@ public class BankAccount implements Serializable {
         super();
     }
 
-    public BankAccount(final Client owner, final Institution institution, final String agency, final String number,
-                       final String dac, final Long accountId) {
+    public BankAccount(final Long id, final String agency, final String number, final String dac,
+                       final Client responsible, final Institution institution) {
         super();
-        this.owner = owner;
-        this.institution = institution;
+        this.id = id;
         this.agency = agency;
         this.number = number;
-        this.accountId = accountId;
         this.dac = dac;
+        this.responsible = responsible;
+        this.institution = institution;
     }
 
-    public Client getOwner() {
-        return owner;
+    public Client getResponsible() {
+        return responsible;
     }
 
-    public void setDono(final Client owner) {
-        this.owner = owner;
+    public void setResponsible(final Client owner) {
+        this.responsible = owner;
     }
 
     public Institution getInstitution() {
@@ -88,11 +88,11 @@ public class BankAccount implements Serializable {
     }
 
     public Long getId() {
-        return accountId;
+        return id;
     }
 
     public void setId(Long accountId) {
-        this.accountId = accountId;
+        this.id = accountId;
     }
 
     public BankAccount withId(Long id) {

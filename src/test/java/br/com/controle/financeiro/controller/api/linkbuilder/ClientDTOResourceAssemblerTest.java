@@ -4,6 +4,8 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
+import java.util.UUID;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -28,7 +30,7 @@ public class ClientDTOResourceAssemblerTest {
 	@Test
 	public void testToResource() {
 		ClientDTO clientMock = new ClientDTO();
-		clientMock.setId(1L);
+		clientMock.setId(UUID.randomUUID());
 		clientMock.setName("mock");
 		Resource<ClientDTO> response = resourceAssembler.toResource(clientMock);
 		assertTrue(response.hasLinks());

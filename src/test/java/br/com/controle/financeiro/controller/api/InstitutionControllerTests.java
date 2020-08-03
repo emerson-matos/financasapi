@@ -11,6 +11,7 @@ import br.com.controle.financeiro.controller.RestResponseEntityExceptionHandler;
 import br.com.controle.financeiro.controller.api.linkbuilder.InstitutionDTOResourceAssembler;
 import br.com.controle.financeiro.model.entity.Institution;
 import br.com.controle.financeiro.model.repository.InstitutionRepository;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -53,8 +54,7 @@ public class InstitutionControllerTests {
     }
 
     private void setupInstitution() {
-        institution = new Institution("mock");
-        institution.setId(1L);
+        institution = new Institution(1L, "mock", "mock");
     }
 
     @Test

@@ -1,46 +1,51 @@
 package br.com.controle.financeiro.model.dto;
 
 import java.io.Serializable;
+import java.util.UUID;
 
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
 import br.com.controle.financeiro.model.entity.Client;
+import br.com.controle.financeiro.model.entity.UserEntity;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class ClientDTO implements Serializable {
 
-    private Long clientId;
+    @NotBlank
+    private String name;
+
     @NotNull
-    private String name = "";
+    private UUID client;
+
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
+    private Long owner;
 
     public ClientDTO() {
         super();
     }
 
-    public ClientDTO(final String name) {
+    private ClientDTO(final UUID id, final String name, final Long owner) {
         super();
+        this.client = id;
         this.name = name;
-    }
-
-    private ClientDTO(Long id, String name) {
-        super();
-        this.name = name;
-        this.clientId = id;
+        this.owner = owner;
     }
 
     public static ClientDTO fromClient(Client client) {
-        return new ClientDTO(client.getId(), client.getName());
+        return new ClientDTO(client.getId(), client.getName(), client.getOwner().getId());
     }
 
-    public Client toClient() {
-        return new Client(this.name, this.clientId);
+    public Client toClient(UserEntity owner) {
+        return new Client(this.client, this.name, owner);
     }
 
-    public Long getId() {
-        return this.clientId;
+    public UUID getId() {
+        return this.client;
     }
 
-    public void setId(final Long id) {
-        this.clientId = id;
+    public void setId(final UUID id) {
+        this.client = id;
     }
 
     public String getName() {
@@ -49,6 +54,14 @@ public class ClientDTO implements Serializable {
 
     public void setName(final String name) {
         this.name = name;
+    }
+
+    public Long getOwner() {
+        return owner;
+    }
+
+    public void setOwner(Long owner) {
+        this.owner = owner;
     }
 
 }

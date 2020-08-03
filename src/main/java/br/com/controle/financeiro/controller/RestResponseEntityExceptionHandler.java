@@ -22,7 +22,7 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 @RestControllerAdvice
 public class RestResponseEntityExceptionHandler extends ResponseEntityExceptionHandler {
 
-    private HttpHeaders headers = new HttpHeaders();
+    private final HttpHeaders headers = new HttpHeaders();
 
     @ResponseBody
     @ExceptionHandler({ ClientNotFoundException.class, InstitutionNotFoundException.class, CardNotFoundException.class,
@@ -48,6 +48,8 @@ public class RestResponseEntityExceptionHandler extends ResponseEntityExceptionH
         logException(ex);
         return handleExceptionInternal(ex, ex.getCause(), headers, HttpStatus.FORBIDDEN, request);
     }
+
+    //TODO NoSuchElementException
 
     private void logException(RuntimeException ex) {
         logger.info("handleException");

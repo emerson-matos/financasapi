@@ -4,6 +4,7 @@ import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.validation.Valid;
@@ -11,8 +12,12 @@ import javax.validation.Valid;
 import br.com.controle.financeiro.controller.api.linkbuilder.CardDTOResourceAssembler;
 import br.com.controle.financeiro.model.dto.CardDTO;
 import br.com.controle.financeiro.model.entity.Card;
+import br.com.controle.financeiro.model.entity.Client;
+import br.com.controle.financeiro.model.entity.Institution;
 import br.com.controle.financeiro.model.exception.CardNotFoundException;
 import br.com.controle.financeiro.model.repository.CardRepository;
+import br.com.controle.financeiro.model.repository.ClientRepository;
+import br.com.controle.financeiro.model.repository.InstitutionRepository;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -37,13 +42,16 @@ public class CardController {
     private static final Logger LOG = LoggerFactory.getLogger(CardController.class);
 
     private final CardRepository cardRepository;
-
     private final CardDTOResourceAssembler cardDTOResourceAssembler;
+    private final ClientRepository clientRepository;
+    private final InstitutionRepository institutionRepository;
 
-    public CardController(final CardRepository cardRepository,
-                          final CardDTOResourceAssembler cardDTOResourceAssembler) {
+    public CardController(final CardRepository cardRepository, final CardDTOResourceAssembler cardDTOResourceAssembler,
+                          final ClientRepository clientRepository, final InstitutionRepository institutionRepository) {
         this.cardRepository = cardRepository;
         this.cardDTOResourceAssembler = cardDTOResourceAssembler;
+        this.clientRepository = clientRepository;
+        this.institutionRepository = institutionRepository;
     }
 
     @GetMapping
@@ -61,7 +69,10 @@ public class CardController {
     @PostMapping(consumes = { MediaType.APPLICATION_JSON_UTF8_VALUE })
     public Resource<CardDTO> newCard(@RequestBody @Valid final CardDTO card) {
         LOG.debug("creating newCard");
-        CardDTO savedCard = CardDTO.fromCard(cardRepository.save(card.toCard()));
+        //TODO extract to service
+        Optional<Client> c = clientRepository.findById(card.getClient());
+        Optional<Institution> i = institutionRepository.findById(card.getInstitution());
+        CardDTO savedCard = CardDTO.fromCard(cardRepository.save(card.toCard(c.get(), i.get())));
         return cardDTOResourceAssembler.toResource(savedCard);
     }
 
@@ -80,8 +91,11 @@ public class CardController {
             card.setName(newCard.getName());
             return cardRepository.save(card);
         }).orElseGet(() -> {
+            //TODO extract to service
+            Optional<Client> c = clientRepository.findById(newCard.getClient());
+            Optional<Institution> i = institutionRepository.findById(newCard.getInstitution());
             newCard.setId(id);
-            return cardRepository.save(newCard.toCard());
+            return cardRepository.save(newCard.toCard(c.get(), i.get()));
         });
 
         return cardDTOResourceAssembler.toResource(CardDTO.fromCard(savedCard));

@@ -1,17 +1,19 @@
 package br.com.controle.financeiro.controller.api;
 
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
 
 import java.util.Optional;
+import java.util.UUID;
 
 import br.com.controle.financeiro.controlefinanceiro.ControleFinanceiroApplication;
 import br.com.controle.financeiro.controller.RestResponseEntityExceptionHandler;
 import br.com.controle.financeiro.controller.api.linkbuilder.ClientDTOResourceAssembler;
 import br.com.controle.financeiro.model.entity.Client;
+import br.com.controle.financeiro.model.entity.UserEntity;
 import br.com.controle.financeiro.model.repository.ClientRepository;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -55,8 +57,7 @@ public class ClientControllerTests {
     }
 
     private void setupClient() {
-        client = new Client("mock");
-        client.setId(1L);
+        client = new Client(UUID.randomUUID(), "mock", new UserEntity());
     }
 
     @Test
@@ -81,7 +82,7 @@ public class ClientControllerTests {
 
     @Test
     public void clientPutNewClientTest() throws Exception {
-        when(clientRepository.findById(anyLong())).thenReturn(Optional.of(client));
+        when(clientRepository.findById(any())).thenReturn(Optional.of(client));
 
         mockMvc.perform(MockMvcRequestBuilders.put(API_CLIENT + "/{id}", 1).contentType(MediaType.APPLICATION_JSON_UTF8)
                                               .content(CLIENT_JSON))
@@ -96,7 +97,7 @@ public class ClientControllerTests {
 
     @Test
     public void clientGetOneFoundTest() throws Exception {
-        when(clientRepository.findById(anyLong())).thenReturn(Optional.of(client));
+        when(clientRepository.findById(any())).thenReturn(Optional.of(client));
 
         mockMvc.perform(MockMvcRequestBuilders.get(API_CLIENT + "/{id}", 1).accept(MediaType.APPLICATION_JSON_UTF8))
                .andExpect(MockMvcResultMatchers.status().isOk()).andReturn();
@@ -110,7 +111,7 @@ public class ClientControllerTests {
 
     @Test
     public void clientDeleteNotFoundTest() throws Exception {
-        doThrow(new EmptyResultDataAccessException(1)).when(clientRepository).deleteById(anyLong());
+        doThrow(new EmptyResultDataAccessException(5)).when(clientRepository).deleteById(any());
 
         mockMvc.perform(MockMvcRequestBuilders.delete(API_CLIENT + "/{id}", 5))
                .andExpect(MockMvcResultMatchers.status().isNoContent()).andReturn();
