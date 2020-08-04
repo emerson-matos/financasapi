@@ -7,8 +7,6 @@ import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
 import javax.validation.constraints.Email;
@@ -21,10 +19,9 @@ public class UserEntity implements UserDetails {
 
     @Id
     @Column(name = "id_user")
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
+    private String id;
 
-    @Column(name = "username", nullable = false, unique = true)
+    @Column(name = "username")
     private String username;
 
     @Column(name = "password", nullable = false)
@@ -36,19 +33,6 @@ public class UserEntity implements UserDetails {
 
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private List<Role> authorities;
-
-    @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        return authorities;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public String getUsername() {
-        return username;
-    }
 
     @Override
     public boolean isAccountNonExpired() {
@@ -70,24 +54,30 @@ public class UserEntity implements UserDetails {
         return true;
     }
 
-    public void setId(Long id) {
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return authorities;
+    }
+
+    public void setId(String id) {
         this.id = id;
     }
 
-    public Long getId() {
+    public String getId() {
         return id;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
     }
 
     public void setAuthorities(List<Role> authorities) {
         this.authorities = authorities;
+    }
+
+    @Override
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 
     public void setEmail(String email) {
@@ -96,6 +86,15 @@ public class UserEntity implements UserDetails {
 
     public String getEmail() {
         return email;
+    }
+
+    @Override
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
     }
 
 }

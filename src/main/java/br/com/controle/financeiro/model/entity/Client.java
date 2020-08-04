@@ -4,23 +4,14 @@ import java.io.Serializable;
 import java.util.UUID;
 
 import javax.persistence.CascadeType;
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 
-import org.hibernate.annotations.GenericGenerator;
+import org.springframework.data.jpa.domain.AbstractPersistable;
 
 @Entity(name = "client")
-public class Client implements Serializable {
-
-    @Id
-    @GeneratedValue(generator = "UUID")
-    @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
-    @Column(name = "id_client", updatable = false, nullable = false)
-    private UUID id;
+public class Client extends AbstractPersistable<UUID> implements Serializable {
 
     private String name;
 
@@ -33,17 +24,9 @@ public class Client implements Serializable {
 
     public Client(final UUID id, final String name, final UserEntity owner) {
         super();
-        this.id = id;
+        this.setId(id);
         this.name = name;
         this.owner = owner;
-    }
-
-    public UUID getId() {
-        return this.id;
-    }
-
-    public void setId(final UUID id) {
-        this.id = id;
     }
 
     public String getName() {

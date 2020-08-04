@@ -11,11 +11,13 @@ public interface UserService extends UserDetailsService {
     class RegisterUserInit {
         private final String userName;
         private final String email;
+        private final String id;
 
-        public RegisterUserInit(String userName, String email) {
+        public RegisterUserInit(String userName, String email, String id) {
             super();
             this.userName = userName;
             this.email = email;
+            this.id = id;
         }
 
         public String getUserName() {
@@ -24,6 +26,10 @@ public interface UserService extends UserDetailsService {
 
         public String getEmail() {
             return email;
+        }
+
+        public String getId() {
+            return id;
         }
 
     }

@@ -4,6 +4,7 @@ import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
 
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 import javax.validation.Valid;
@@ -88,7 +89,7 @@ public class TransactionController {
     }
 
     @GetMapping(path = "/{id}")
-    public Resource<TransactionDTO> oneTransaction(@PathVariable(value = "id") final long id) {
+    public Resource<TransactionDTO> oneTransaction(@PathVariable(value = "id") final UUID id) {
         LOG.debug("searching oneTransaction ${}", id);
         final Transaction transaction =
                 transactionRepository.findById(id).orElseThrow(() -> new TransactionNotFoundException(id));
@@ -97,7 +98,7 @@ public class TransactionController {
 
     @PutMapping(path = "/{id}")
     public Resource<TransactionDTO> replaceTransaction(@RequestBody final TransactionDTO newTransaction,
-                                                       @PathVariable final Long id) {
+                                                       @PathVariable final UUID id) {
         LOG.info("replaceTransaction");
         //TODO verify DTO integrity
         Transaction savedTransaction = transactionRepository.findById(id).map(transaction -> {
@@ -118,7 +119,7 @@ public class TransactionController {
 
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @DeleteMapping(path = "/{id}")
-    public void deleteTransaction(@PathVariable final Long id) {
+    public void deleteTransaction(@PathVariable final UUID id) {
         LOG.debug("trying to deleteTransaction ${}", id);
         transactionRepository.deleteById(id);
     }

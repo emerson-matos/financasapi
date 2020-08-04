@@ -55,7 +55,7 @@ public class UserServiceImpl implements UserService {
             grantedAuthorities.add(new SimpleGrantedAuthority(role.getAuthority()));
         }
 
-        return new User(userDetails.getUsername(), userDetails.getPassword(), userDetails.getAuthorities());
+        return new User(userDetails.getId(), userDetails.getPassword(), userDetails.getAuthorities());
     }
 
     @Override
@@ -63,13 +63,13 @@ public class UserServiceImpl implements UserService {
     @Secured(value = Roles.ROLE_ANONYMOUS)
     public UserEntity registerUser(RegisterUserInit init) {
 
-        Optional<UserEntity> userLoaded = userDao.findByUsername(init.getUserName());
+        Optional<UserEntity> userLoaded = userDao.findById(init.getId());
 
         if (userLoaded.isEmpty()) {
             UserEntity userEntity = new UserEntity();
             userEntity.setUsername(init.getUserName());
             userEntity.setEmail(init.getEmail());
-
+            userEntity.setId(init.getId());
             userEntity.setAuthorities(getUserRoles());
             // TODO firebase users should not be able to login via username and
             // password so for now generation of password is OK
@@ -91,7 +91,7 @@ public class UserServiceImpl implements UserService {
             adminEntity.setUsername("admin");
             adminEntity.setPassword(new BCryptPasswordEncoder().encode("admin"));
             adminEntity.setEmail("some@one.com");
-
+            adminEntity.setId(UUID.randomUUID().toString());
             adminEntity.setAuthorities(getAdminRoles());
             userDao.save(adminEntity);
 
@@ -100,7 +100,7 @@ public class UserServiceImpl implements UserService {
             userEntity.setPassword(new BCryptPasswordEncoder().encode("user1"));
             userEntity.setEmail("some@one.com");
             userEntity.setAuthorities(getUserRoles());
-
+            userEntity.setId(UUID.randomUUID().toString());
             userDao.save(userEntity);
         }
     }

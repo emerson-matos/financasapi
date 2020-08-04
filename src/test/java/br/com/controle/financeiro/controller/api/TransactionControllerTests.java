@@ -8,6 +8,7 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.Currency;
 import java.util.Optional;
+import java.util.UUID;
 
 import br.com.controle.financeiro.controlefinanceiro.ControleFinanceiroApplication;
 import br.com.controle.financeiro.controller.RestResponseEntityExceptionHandler;
@@ -60,7 +61,7 @@ public class TransactionControllerTests {
     }
 
     private void setupTransaction() {
-        transaction = new Transaction(1L,"name", LocalDateTime.now(), new BigDecimal(1), Currency.getInstance("BRL"), new Client(), new BankAccount(), new Card());
+        transaction = new Transaction(UUID.randomUUID(), "name", LocalDateTime.now(), new BigDecimal(1), Currency.getInstance("BRL"), new Client(), new BankAccount(), new Card());
     }
 
     @Test
@@ -88,7 +89,7 @@ public class TransactionControllerTests {
 
     @Test
     public void transactionPutNewTransactionTest() throws Exception {
-        when(transactionRepository.findById(anyLong())).thenReturn(Optional.of(transaction));
+        when(transactionRepository.findById(any())).thenReturn(Optional.of(transaction));
 
         mockMvc.perform(
                 MockMvcRequestBuilders.put(API_TRANSACTION + "/{id}", 1).contentType(MediaType.APPLICATION_JSON_UTF8)
@@ -106,7 +107,7 @@ public class TransactionControllerTests {
 
     @Test
     public void transactionGetOneFoundTest() throws Exception {
-        when(transactionRepository.findById(anyLong())).thenReturn(Optional.of(transaction));
+        when(transactionRepository.findById(any())).thenReturn(Optional.of(transaction));
 
         mockMvc.perform(MockMvcRequestBuilders.get(API_TRANSACTION + "/{id}", 1)
                                               .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))

@@ -59,9 +59,9 @@ public class ClientController {
     @GetMapping
     public Resources<Resource<ClientDTO>> allClients() {
         LOG.debug("finding allClients");
-
+        UserEntity owner = userRepository.findById(getUser()).get();
         final List<ClientDTO> clients =
-                clientRepository.findAll().stream().map(ClientDTO::fromClient).collect(Collectors.toList());
+                clientRepository.findAllByOwner(owner).stream().map(ClientDTO::fromClient).collect(Collectors.toList());
         List<Resource<ClientDTO>> cr =
                 clients.stream().map(clientDTOResourceAssembler::toResource).collect(Collectors.toList());
 
@@ -73,7 +73,7 @@ public class ClientController {
     public Resource<ClientDTO> newClient(@RequestBody @Valid final ClientDTO client) {
         LOG.debug("creating newClient");
         // TODO extract to service
-        UserEntity owner = userRepository.findByUsername(getUser()).get();
+        UserEntity owner = userRepository.findById(getUser()).get();
         client.setOwner(owner.getId());
         ClientDTO clientDTO = ClientDTO.fromClient(clientRepository.save(client.toClient(owner)));
         return clientDTOResourceAssembler.toResource(clientDTO);
@@ -96,7 +96,7 @@ public class ClientController {
         }).orElseGet(() -> {
             newClient.setId(id);
             // TODO extract to service
-            UserEntity owner = userRepository.findByUsername(getUser()).get();
+            UserEntity owner = userRepository.findById(getUser()).get();
             return clientRepository.save(newClient.toClient(owner));
         });
 

@@ -4,10 +4,10 @@ import static org.junit.Assert.assertEquals;
 
 import java.util.UUID;
 
-import org.junit.Test;
-
 import br.com.controle.financeiro.model.entity.Client;
 import br.com.controle.financeiro.model.entity.UserEntity;
+
+import org.junit.Test;
 
 public class ClientDTOTest {
 
@@ -26,15 +26,14 @@ public class ClientDTOTest {
     public void testToClientShouldReturnAValidClient() {
         Client client;
         ClientDTO mock = new ClientDTO();
-        UserEntity user = new UserEntity();
-        user.setId(1L);
-        mock.setId(UUID.randomUUID());
-        mock.setName("client");
-        mock.setOwner(user.getId());
 
-        client = mock.toClient(user);
+        mock.setName("client");
+        mock.setId(UUID.randomUUID());
+        mock.setOwner("owner");
+        client = mock.toClient(new UserEntity());
 
         assertEquals(mock.getId(), client.getId());
         assertEquals(mock.getName(), client.getName());
     }
+
 }

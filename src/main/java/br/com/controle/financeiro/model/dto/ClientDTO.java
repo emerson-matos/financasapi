@@ -4,7 +4,6 @@ import java.io.Serializable;
 import java.util.UUID;
 
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
 
 import br.com.controle.financeiro.model.entity.Client;
 import br.com.controle.financeiro.model.entity.UserEntity;
@@ -15,17 +14,16 @@ public class ClientDTO implements Serializable {
     @NotBlank
     private String name;
 
-    @NotNull
     private UUID client;
 
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
-    private Long owner;
+    private String owner;
 
     public ClientDTO() {
         super();
     }
 
-    private ClientDTO(final UUID id, final String name, final Long owner) {
+    private ClientDTO(final UUID id, final String name, final String owner) {
         super();
         this.client = id;
         this.name = name;
@@ -33,7 +31,7 @@ public class ClientDTO implements Serializable {
     }
 
     public static ClientDTO fromClient(Client client) {
-        return new ClientDTO(client.getId(), client.getName(), client.getOwner().getId());
+        return new ClientDTO(client.getId(), client.getName(), client.getOwner().getUsername());
     }
 
     public Client toClient(UserEntity owner) {
@@ -56,11 +54,11 @@ public class ClientDTO implements Serializable {
         this.name = name;
     }
 
-    public Long getOwner() {
+    public String getOwner() {
         return owner;
     }
 
-    public void setOwner(Long owner) {
+    public void setOwner(String owner) {
         this.owner = owner;
     }
 

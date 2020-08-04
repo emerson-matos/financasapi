@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.Currency;
+import java.util.UUID;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -21,7 +22,7 @@ public class Transaction implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id_expense")
-    private Long id;
+    private UUID id;
 
     private String name;
 
@@ -45,7 +46,7 @@ public class Transaction implements Serializable {
         super();
     }
 
-    public Transaction(Long id, String name, LocalDateTime transactionDate, BigDecimal value, Currency currency,
+    public Transaction(UUID id, String name, LocalDateTime transactionDate, BigDecimal value, Currency currency,
                        Client owner, BankAccount account, Card card) {
         super();
         this.id = id;
@@ -106,11 +107,11 @@ public class Transaction implements Serializable {
         this.name = name;
     }
 
-    public Long getId() {
+    public UUID getId() {
         return id;
     }
 
-    public void setId(Long expenseId) {
+    public void setId(UUID expenseId) {
         this.id = expenseId;
     }
 

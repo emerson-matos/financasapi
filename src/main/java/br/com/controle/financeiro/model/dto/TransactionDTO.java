@@ -20,13 +20,13 @@ import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
 
 public class TransactionDTO implements Serializable {
 
-    private Long expenseId;
+    private UUID expenseId;
 
     @NotBlank
     private String name;
 
     @NotNull
-    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     @JsonDeserialize(using = LocalDateTimeDeserializer.class)
     private LocalDateTime transactionDate = LocalDateTime.now();
 
@@ -47,9 +47,8 @@ public class TransactionDTO implements Serializable {
         super();
     }
 
-    public TransactionDTO(Long expenseId, @NotNull String name, @NotNull LocalDateTime transactionDate,
-                          @NotNull BigDecimal value, @NotNull Currency currency, UUID owner, Long account,
-                          Long card) {
+    public TransactionDTO(UUID expenseId, @NotNull String name, @NotNull LocalDateTime transactionDate,
+                          @NotNull BigDecimal value, @NotNull Currency currency, UUID owner, Long account, Long card) {
         super();
         this.expenseId = expenseId;
         this.name = name;
@@ -119,11 +118,11 @@ public class TransactionDTO implements Serializable {
         this.name = name;
     }
 
-    public Long getId() {
+    public UUID getId() {
         return expenseId;
     }
 
-    public void setId(Long expenseId) {
+    public void setId(UUID expenseId) {
         this.expenseId = expenseId;
     }
 
