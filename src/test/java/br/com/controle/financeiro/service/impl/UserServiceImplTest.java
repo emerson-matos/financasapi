@@ -50,11 +50,11 @@ public class UserServiceImplTest {
     @Test
     public void loadUserByUsernameSucess() {
         UserEntity entity = mock(UserEntity.class);
-        Collection<Role> rolesList = new ArrayList();
+        Collection<Role> rolesList = new ArrayList<>();
 
         Collections.addAll(rolesList, new Role("user"), new Role("user"));
 
-        doReturn(Optional.of(entity)).when(userDao).findByUsername(anyString());
+        doReturn(Optional.of(entity)).when(userDao).findById(anyString());
         doReturn("someone").when(entity).getUsername();
         doReturn("123456").when(entity).getPassword();
         doReturn(rolesList).when(entity).getAuthorities();

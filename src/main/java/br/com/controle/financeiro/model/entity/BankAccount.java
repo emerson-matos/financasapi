@@ -1,24 +1,18 @@
 package br.com.controle.financeiro.model.entity;
 
 import java.io.Serializable;
+import java.util.UUID;
 
 import javax.persistence.CascadeType;
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
-@Entity(name = "bank_account")
-public class BankAccount implements Serializable {
+import org.springframework.data.jpa.domain.AbstractPersistable;
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "id_account")
-    private Long id;
+@Entity(name = "bank_account")
+public class BankAccount extends AbstractPersistable<UUID> implements Serializable {
 
     private String agency;
     private String number;
@@ -32,19 +26,24 @@ public class BankAccount implements Serializable {
     @JoinColumn(name = "id_institution")
     private Institution institution;
 
+    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.DETACH)
+    @JoinColumn(name = "id_user")
+    private UserEntity owner;
+
     public BankAccount() {
         super();
     }
 
-    public BankAccount(final Long id, final String agency, final String number, final String dac,
-                       final Client responsible, final Institution institution) {
+    public BankAccount(final UUID id, final String agency, final String number, final String dac,
+                       final Client responsible, final Institution institution, UserEntity owner) {
         super();
-        this.id = id;
+        this.setId(id);
         this.agency = agency;
         this.number = number;
         this.dac = dac;
         this.responsible = responsible;
         this.institution = institution;
+        this.owner = owner;
     }
 
     public Client getResponsible() {
@@ -87,17 +86,12 @@ public class BankAccount implements Serializable {
         this.dac = dac;
     }
 
-    public Long getId() {
-        return id;
+    public UserEntity getOwner() {
+        return owner;
     }
 
-    public void setId(Long accountId) {
-        this.id = accountId;
-    }
-
-    public BankAccount withId(Long id) {
-        this.setId(id);
-        return this;
+    public void setOwner(UserEntity owner) {
+        this.owner = owner;
     }
 
 }

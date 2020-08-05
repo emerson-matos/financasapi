@@ -21,8 +21,8 @@ public class UserEntity implements UserDetails {
     @Column(name = "id_user")
     private String id;
 
-    @Column(name = "username")
-    private String username;
+    @Column(name = "name")
+    private String name;
 
     @Column(name = "password", nullable = false)
     private String password;
@@ -90,11 +90,15 @@ public class UserEntity implements UserDetails {
 
     @Override
     public String getUsername() {
-        return username;
+        return this.getId();
     }
 
-    public void setUsername(String username) {
-        this.username = username;
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getName() {
+        return name;
     }
 
 }

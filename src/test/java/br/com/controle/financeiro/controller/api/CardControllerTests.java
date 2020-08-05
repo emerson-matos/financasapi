@@ -1,10 +1,10 @@
 package br.com.controle.financeiro.controller.api;
 
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.when;
 
 import java.util.Optional;
+import java.util.UUID;
 
 import br.com.controle.financeiro.controlefinanceiro.ControleFinanceiroApplication;
 import br.com.controle.financeiro.controller.RestResponseEntityExceptionHandler;
@@ -54,7 +54,6 @@ public class CardControllerTests {
 
     private void setupCard() {
         card = new Card();
-        card.setId(1L);
     }
 
     @Test
@@ -73,40 +72,40 @@ public class CardControllerTests {
     @Test
     public void cardPutOldCardTest() throws Exception {
         mockMvc.perform(
-                MockMvcRequestBuilders.put(API_CARD_URL + "/{id}", 1).contentType(MediaType.APPLICATION_JSON_UTF8)
+                MockMvcRequestBuilders.put(API_CARD_URL + "/{id}", UUID.randomUUID()).contentType(MediaType.APPLICATION_JSON_UTF8)
                                       .content(CARD_JSON)).andExpect(MockMvcResultMatchers.status().is2xxSuccessful())
                .andReturn();
     }
 
     @Test
     public void cardPutNewCardTest() throws Exception {
-        when(cardRepository.findById(anyLong())).thenReturn(Optional.of(card));
+        when(cardRepository.findById(any())).thenReturn(Optional.of(card));
 
         mockMvc.perform(
-                MockMvcRequestBuilders.put(API_CARD_URL + "/{id}", 1).contentType(MediaType.APPLICATION_JSON_UTF8)
+                MockMvcRequestBuilders.put(API_CARD_URL + "/{id}", UUID.randomUUID()).contentType(MediaType.APPLICATION_JSON_UTF8)
                                       .content(CARD_JSON)).andExpect(MockMvcResultMatchers.status().is2xxSuccessful())
                .andReturn();
     }
 
     @Test
     public void cardGetOneNotFoundTest() throws Exception {
-        mockMvc.perform(MockMvcRequestBuilders.get(API_CARD_URL + "/{id}", 1)
+        mockMvc.perform(MockMvcRequestBuilders.get(API_CARD_URL + "/{id}", UUID.randomUUID())
                                               .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
                .andExpect(MockMvcResultMatchers.status().isNotFound()).andReturn();
     }
 
     @Test
     public void cardGetOneFoundTest() throws Exception {
-        when(cardRepository.findById(anyLong())).thenReturn(Optional.of(card));
+        when(cardRepository.findById(any())).thenReturn(Optional.of(card));
 
-        mockMvc.perform(MockMvcRequestBuilders.get(API_CARD_URL + "/{id}", 1)
+        mockMvc.perform(MockMvcRequestBuilders.get(API_CARD_URL + "/{id}", UUID.randomUUID())
                                               .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
                .andExpect(MockMvcResultMatchers.status().isOk()).andReturn();
     }
 
     @Test
     public void cardDeleteTest() throws Exception {
-        mockMvc.perform(MockMvcRequestBuilders.delete(API_CARD_URL + "/{id}", 5))
+        mockMvc.perform(MockMvcRequestBuilders.delete(API_CARD_URL + "/{id}", UUID.randomUUID()))
                .andExpect(MockMvcResultMatchers.status().isNoContent()).andReturn();
     }
 

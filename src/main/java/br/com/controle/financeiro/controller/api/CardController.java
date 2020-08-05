@@ -4,7 +4,7 @@ import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
 
 import java.util.List;
-import java.util.Optional;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 import javax.validation.Valid;
@@ -14,10 +14,12 @@ import br.com.controle.financeiro.model.dto.CardDTO;
 import br.com.controle.financeiro.model.entity.Card;
 import br.com.controle.financeiro.model.entity.Client;
 import br.com.controle.financeiro.model.entity.Institution;
+import br.com.controle.financeiro.model.entity.UserEntity;
 import br.com.controle.financeiro.model.exception.CardNotFoundException;
 import br.com.controle.financeiro.model.repository.CardRepository;
 import br.com.controle.financeiro.model.repository.ClientRepository;
 import br.com.controle.financeiro.model.repository.InstitutionRepository;
+import br.com.controle.financeiro.service.UserService;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -45,21 +47,24 @@ public class CardController {
     private final CardDTOResourceAssembler cardDTOResourceAssembler;
     private final ClientRepository clientRepository;
     private final InstitutionRepository institutionRepository;
+    private final UserService userService;
 
     public CardController(final CardRepository cardRepository, final CardDTOResourceAssembler cardDTOResourceAssembler,
-                          final ClientRepository clientRepository, final InstitutionRepository institutionRepository) {
+                          final ClientRepository clientRepository, final InstitutionRepository institutionRepository,
+                          final UserService userService) {
         this.cardRepository = cardRepository;
         this.cardDTOResourceAssembler = cardDTOResourceAssembler;
         this.clientRepository = clientRepository;
         this.institutionRepository = institutionRepository;
+        this.userService = userService;
     }
 
     @GetMapping
     public Resources<Resource<CardDTO>> allCards() {
         LOG.debug("finding allCards");
-
+        UserEntity owner = userService.getAuthenticatedUser();
         final List<Resource<CardDTO>> cards =
-                cardRepository.findAll().stream().map(CardDTO::fromCard).map(cardDTOResourceAssembler::toResource)
+                cardRepository.findAllByOwner(owner).stream().map(CardDTO::fromCard).map(cardDTOResourceAssembler::toResource)
                               .collect(Collectors.toList());
 
         return new Resources<>(cards, linkTo(methodOn(CardController.class).allCards()).withSelfRel());
@@ -70,32 +75,35 @@ public class CardController {
     public Resource<CardDTO> newCard(@RequestBody @Valid final CardDTO card) {
         LOG.debug("creating newCard");
         //TODO extract to service
-        Optional<Client> c = clientRepository.findById(card.getClient());
-        Optional<Institution> i = institutionRepository.findById(card.getInstitution());
-        CardDTO savedCard = CardDTO.fromCard(cardRepository.save(card.toCard(c.get(), i.get())));
+        UserEntity owner = userService.getAuthenticatedUser();
+        Client client = clientRepository.findByIdAndOwner(card.getClient(), owner).orElseThrow();
+        Institution institution = institutionRepository.findById(card.getInstitution()).orElseThrow();
+        CardDTO savedCard = CardDTO.fromCard(cardRepository.save(card.toCard(client, institution, owner)));
         return cardDTOResourceAssembler.toResource(savedCard);
     }
 
     @GetMapping(path = "/{id}")
-    public Resource<CardDTO> oneCard(@PathVariable(value = "id") final long id) {
+    public Resource<CardDTO> oneCard(@PathVariable(value = "id") final UUID id) {
         LOG.debug("searching oneCard ${}", id);
-        final Card savedCard = cardRepository.findById(id).orElseThrow(() -> new CardNotFoundException(id));
+        UserEntity owner = userService.getAuthenticatedUser();
+        final Card savedCard = cardRepository.findByIdAndOwner(id, owner).orElseThrow(() -> new CardNotFoundException(id));
         return cardDTOResourceAssembler.toResource(CardDTO.fromCard(savedCard));
     }
 
     @PutMapping(path = "/{id}")
-    public Resource<CardDTO> replaceCard(@RequestBody final CardDTO newCard, @PathVariable final Long id) {
+    public Resource<CardDTO> replaceCard(@RequestBody final CardDTO newCard, @PathVariable final UUID id) {
         LOG.info("replaceCard");
         //TODO verify DTO integrity
-        Card savedCard = cardRepository.findById(id).map(card -> {
+        final UserEntity owner = userService.getAuthenticatedUser();
+        Card savedCard = cardRepository.findByIdAndOwner(id, owner).map(card -> {
             card.setName(newCard.getName());
             return cardRepository.save(card);
         }).orElseGet(() -> {
             //TODO extract to service
-            Optional<Client> c = clientRepository.findById(newCard.getClient());
-            Optional<Institution> i = institutionRepository.findById(newCard.getInstitution());
+            Client c = clientRepository.findByIdAndOwner(newCard.getClient(), owner).orElseThrow();
+            Institution i = institutionRepository.findById(newCard.getInstitution()).orElseThrow();
             newCard.setId(id);
-            return cardRepository.save(newCard.toCard(c.get(), i.get()));
+            return cardRepository.save(newCard.toCard(c, i, owner));
         });
 
         return cardDTOResourceAssembler.toResource(CardDTO.fromCard(savedCard));
@@ -103,8 +111,9 @@ public class CardController {
 
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @DeleteMapping(path = "/{id}")
-    public void deleteCard(@PathVariable final Long id) {
+    public void deleteCard(@PathVariable final UUID id) {
         LOG.debug("trying to deleteCard ${}", id);
+        //TODO verify authenticated permission
         cardRepository.deleteById(id);
     }
 

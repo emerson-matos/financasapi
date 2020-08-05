@@ -9,10 +9,11 @@ import javax.validation.constraints.NotNull;
 import br.com.controle.financeiro.model.entity.Card;
 import br.com.controle.financeiro.model.entity.Client;
 import br.com.controle.financeiro.model.entity.Institution;
+import br.com.controle.financeiro.model.entity.UserEntity;
 
 public class CardDTO implements Serializable {
 
-    private Long cardId;
+    private UUID cardId;
 
     @NotBlank
     private String name;
@@ -24,13 +25,13 @@ public class CardDTO implements Serializable {
     private UUID client;
 
     @NotNull
-    private Long institution;
+    private UUID institution;
 
     public CardDTO() {
         super();
     }
 
-    private CardDTO(final Long id, final String name, final String number, final UUID client, final Long institution) {
+    private CardDTO(final UUID id, final String name, final String number, final UUID client, final UUID institution) {
         super();
         this.cardId = id;
         this.name = name;
@@ -40,19 +41,19 @@ public class CardDTO implements Serializable {
     }
 
     public static CardDTO fromCard(final Card card) {
-        return new CardDTO(card.getId(), card.getName(), card.getNumber(), card.getOwner().getId(),
+        return new CardDTO(card.getId(), card.getName(), card.getNumber(), card.getResponsible().getId(),
                            card.getInstitution().getId());
     }
 
-    public Card toCard(Client client, Institution institution) {
-        return new Card(this.cardId, this.name, this.number, client, institution);
+    public Card toCard(Client client, Institution institution, UserEntity owner) {
+        return new Card(this.cardId, this.name, this.number, client, institution, owner);
     }
 
-    public Long getId() {
+    public UUID getId() {
         return this.cardId;
     }
 
-    public void setId(final Long id) {
+    public void setId(final UUID id) {
         this.cardId = id;
     }
 
@@ -80,11 +81,11 @@ public class CardDTO implements Serializable {
         this.client = client;
     }
 
-    public Long getInstitution() {
+    public UUID getInstitution() {
         return this.institution;
     }
 
-    public void setInstitution(final Long institution) {
+    public void setInstitution(final UUID institution) {
         this.institution = institution;
     }
 

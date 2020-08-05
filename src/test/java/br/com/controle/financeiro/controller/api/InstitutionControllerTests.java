@@ -5,6 +5,7 @@ import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.when;
 
 import java.util.Optional;
+import java.util.UUID;
 
 import br.com.controle.financeiro.controlefinanceiro.ControleFinanceiroApplication;
 import br.com.controle.financeiro.controller.RestResponseEntityExceptionHandler;
@@ -54,7 +55,7 @@ public class InstitutionControllerTests {
     }
 
     private void setupInstitution() {
-        institution = new Institution(1L, "mock", "mock");
+        institution = new Institution(UUID.randomUUID(), "mock", "mock");
     }
 
     @Test
@@ -80,7 +81,7 @@ public class InstitutionControllerTests {
 
     @Test
     public void institutionPutNewInstitutionTest() throws Exception {
-        when(institutionRepository.findById(anyLong())).thenReturn(Optional.of(institution));
+        when(institutionRepository.findById(any())).thenReturn(Optional.of(institution));
 
         mockMvc.perform(
                 MockMvcRequestBuilders.put(API_INSTITUTION + "/{id}", 1).contentType(MediaType.APPLICATION_JSON_UTF8)
@@ -96,7 +97,7 @@ public class InstitutionControllerTests {
 
     @Test
     public void institutionGetOneFoundTest() throws Exception {
-        when(institutionRepository.findById(anyLong())).thenReturn(Optional.of(institution));
+        when(institutionRepository.findById(any())).thenReturn(Optional.of(institution));
 
         mockMvc.perform(MockMvcRequestBuilders.get(API_INSTITUTION + "/{id}", 1))
                .andExpect(MockMvcResultMatchers.status().isOk()).andReturn();

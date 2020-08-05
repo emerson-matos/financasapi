@@ -14,7 +14,7 @@ public class ClientDTO implements Serializable {
     @NotBlank
     private String name;
 
-    private UUID client;
+    private UUID id;
 
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private String owner;
@@ -25,7 +25,7 @@ public class ClientDTO implements Serializable {
 
     private ClientDTO(final UUID id, final String name, final String owner) {
         super();
-        this.client = id;
+        this.id = id;
         this.name = name;
         this.owner = owner;
     }
@@ -35,15 +35,15 @@ public class ClientDTO implements Serializable {
     }
 
     public Client toClient(UserEntity owner) {
-        return new Client(this.client, this.name, owner);
+        return new Client(this.id, this.name, owner);
     }
 
     public UUID getId() {
-        return this.client;
+        return this.id;
     }
 
     public void setId(final UUID id) {
-        this.client = id;
+        this.id = id;
     }
 
     public String getName() {

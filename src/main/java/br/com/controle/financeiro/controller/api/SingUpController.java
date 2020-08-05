@@ -29,7 +29,7 @@ public class SingUpController {
             throw new IllegalArgumentException("FirebaseTokenBlank");
         }
         FirebaseTokenHolder tokenHolder = firebaseService.parseToken(token);
-        userService.registerUser(new UserService.RegisterUserInit(tokenHolder.getName(), tokenHolder.getEmail(), tokenHolder.getUid()));
+        userService.registerUser(new UserService.RegisterUserInit(tokenHolder.getUid(), tokenHolder.getEmail(), tokenHolder.getName()));
     }
 
 }

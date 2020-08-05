@@ -6,6 +6,7 @@ import java.util.UUID;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
 import org.springframework.data.jpa.domain.AbstractPersistable;
@@ -16,6 +17,7 @@ public class Client extends AbstractPersistable<UUID> implements Serializable {
     private String name;
 
     @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.DETACH)
+    @JoinColumn(name = "id_user")
     private UserEntity owner;
 
     public Client() {
@@ -43,11 +45,6 @@ public class Client extends AbstractPersistable<UUID> implements Serializable {
 
     public void setOwner(UserEntity owner) {
         this.owner = owner;
-    }
-
-    public Client withId(UUID id) {
-        this.setId(id);
-        return this;
     }
 
 }

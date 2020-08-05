@@ -4,6 +4,7 @@ import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
 
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 import javax.validation.Valid;
@@ -13,10 +14,12 @@ import br.com.controle.financeiro.model.dto.BankAccountDTO;
 import br.com.controle.financeiro.model.entity.BankAccount;
 import br.com.controle.financeiro.model.entity.Client;
 import br.com.controle.financeiro.model.entity.Institution;
+import br.com.controle.financeiro.model.entity.UserEntity;
 import br.com.controle.financeiro.model.exception.BankAccountNotFoundException;
 import br.com.controle.financeiro.model.repository.BankAccountRepository;
 import br.com.controle.financeiro.model.repository.ClientRepository;
 import br.com.controle.financeiro.model.repository.InstitutionRepository;
+import br.com.controle.financeiro.service.UserService;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -43,25 +46,30 @@ public class BankAccountController {
     private final BankAccountRepository bankAccountRepository;
 
     private final BankAccountDTOResourceAssembler bankAccountDTOResourceAssembler;
+
     private final ClientRepository clientRepository;
+
     private final InstitutionRepository institutionRepository;
+
+    private final UserService userService;
 
     public BankAccountController(final BankAccountRepository bankAccountRepository,
                                  final BankAccountDTOResourceAssembler bankAccountDTOResourceAssembler,
                                  final ClientRepository clientRepository,
-                                 final InstitutionRepository institutionRepository) {
+                                 final InstitutionRepository institutionRepository, final UserService userService) {
         this.bankAccountRepository = bankAccountRepository;
         this.bankAccountDTOResourceAssembler = bankAccountDTOResourceAssembler;
         this.clientRepository = clientRepository;
         this.institutionRepository = institutionRepository;
+        this.userService = userService;
     }
 
     @GetMapping
     public Resources<Resource<BankAccountDTO>> allBankAccounts() {
-        LOG.debug("finding allBankAccounts");
-
+        LOG.debug("finding user BankAccounts");
+        UserEntity owner = userService.getAuthenticatedUser();
         final List<Resource<BankAccountDTO>> bankAccounts =
-                bankAccountRepository.findAll().stream().map(BankAccountDTO::fromBankAccount)
+                bankAccountRepository.findAllByOwner(owner).stream().map(BankAccountDTO::fromBankAccount)
                                      .map(bankAccountDTOResourceAssembler::toResource).collect(Collectors.toList());
 
         return new Resources<>(bankAccounts,
@@ -73,38 +81,41 @@ public class BankAccountController {
     public Resource<BankAccountDTO> newBankAccount(@RequestBody @Valid BankAccountDTO bankAccount) {
         LOG.debug("creating newBankAccount");
         //TODO extract to service
-        Client client = clientRepository.findById(bankAccount.getResponsible()).orElseThrow();
+        UserEntity owner = userService.getAuthenticatedUser();
+        Client client = clientRepository.findByIdAndOwner(bankAccount.getResponsible(), owner).orElseThrow();
         Institution institution = institutionRepository.findById(bankAccount.getInstitution()).orElseThrow();
         BankAccountDTO savedBankAccountDTO = BankAccountDTO
-                .fromBankAccount(bankAccountRepository.save(bankAccount.toBankAccount(client, institution)));
+                .fromBankAccount(bankAccountRepository.save(bankAccount.toBankAccount(client, institution, owner)));
 
         return bankAccountDTOResourceAssembler.toResource(savedBankAccountDTO);
     }
 
     @GetMapping(path = "/{id}")
-    public Resource<BankAccountDTO> oneBankAccount(@PathVariable(value = "id") final long id) {
+    public Resource<BankAccountDTO> oneBankAccount(@PathVariable(value = "id") final UUID id) {
         LOG.debug("searching oneBankAccount ${}", id);
-        final BankAccount account =
-                bankAccountRepository.findById(id).orElseThrow(() -> new BankAccountNotFoundException(id));
+        UserEntity owner = userService.getAuthenticatedUser();
+        final BankAccount account = bankAccountRepository.findByIdAndOwner(id, owner)
+                                                         .orElseThrow(() -> new BankAccountNotFoundException(id));
         return bankAccountDTOResourceAssembler.toResource(BankAccountDTO.fromBankAccount(account));
     }
 
     @PutMapping(path = "/{id}")
     public BankAccountDTO replaceBankAccount(@RequestBody final BankAccountDTO newBankAccountDTO,
-                                             @PathVariable final Long id) {
+                                             @PathVariable final UUID id) {
         LOG.info("replaceBankAccount");
         //TODO verify DTO integrity
-        BankAccount savedAccount = bankAccountRepository.findById(id).map(bankAccount -> {
+        final UserEntity owner = userService.getAuthenticatedUser();
+        BankAccount savedAccount = bankAccountRepository.findByIdAndOwner(id, owner).map(bankAccount -> {
             bankAccount.setAgency(newBankAccountDTO.getAgency());
             bankAccount.setDac(newBankAccountDTO.getDac());
             bankAccount.setNumber(newBankAccountDTO.getNumber());
             return bankAccountRepository.save(bankAccount);
         }).orElseGet(() -> {
             //TODO extract to service
-            Client client = clientRepository.findById(newBankAccountDTO.getResponsible()).get();
-            Institution institution = institutionRepository.findById(newBankAccountDTO.getInstitution()).get();
+            Client client = clientRepository.findByIdAndOwner(newBankAccountDTO.getResponsible(), owner).orElseThrow();
+            Institution institution = institutionRepository.findById(newBankAccountDTO.getInstitution()).orElseThrow();
             newBankAccountDTO.setId(id);
-            return bankAccountRepository.save(newBankAccountDTO.toBankAccount(client, institution));
+            return bankAccountRepository.save(newBankAccountDTO.toBankAccount(client, institution, owner));
         });
 
         return BankAccountDTO.fromBankAccount(savedAccount);
@@ -112,8 +123,9 @@ public class BankAccountController {
 
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @DeleteMapping(path = "/{id}")
-    public void deleteBankAccount(@PathVariable final Long id) {
+    public void deleteBankAccount(@PathVariable final UUID id) {
         LOG.debug("trying to deleteBankAccount ${}", id);
+        //TODO verify authenticated permission
         bankAccountRepository.deleteById(id);
     }
 

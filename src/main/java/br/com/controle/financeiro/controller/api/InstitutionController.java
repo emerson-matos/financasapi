@@ -4,6 +4,7 @@ import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
 
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 import javax.validation.Valid;
@@ -68,7 +69,7 @@ public class InstitutionController {
     }
 
     @GetMapping(path = "/{id}")
-    public Resource<InstitutionDTO> oneInstitution(@PathVariable(value = "id") final long id) {
+    public Resource<InstitutionDTO> oneInstitution(@PathVariable(value = "id") final UUID id) {
         LOG.debug("searching oneInstitution ${}", id);
         final Institution institution =
                 institutionRepository.findById(id).orElseThrow(() -> new InstitutionNotFoundException(id));
@@ -77,7 +78,7 @@ public class InstitutionController {
 
     @PutMapping(path = "/{id}")
     public Resource<InstitutionDTO> replaceInstitution(@RequestBody final InstitutionDTO newInstitution,
-                                                       @PathVariable final Long id) {
+                                                       @PathVariable final UUID id) {
         LOG.info("replaceInstitution");
         //TODO verify DTO integrity
         Institution savedInstitution = institutionRepository.findById(id).map(inst -> {
@@ -93,8 +94,9 @@ public class InstitutionController {
 
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @DeleteMapping(path = "/{id}")
-    public void deleteInstitution(@PathVariable final Long id) {
+    public void deleteInstitution(@PathVariable final UUID id) {
         LOG.debug("trying to deleteInstitution ${}", id);
+        //TODO verify authenticated permission
         institutionRepository.deleteById(id);
     }
 

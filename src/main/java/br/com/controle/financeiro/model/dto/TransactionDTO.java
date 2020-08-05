@@ -39,16 +39,16 @@ public class TransactionDTO implements Serializable {
     @NotNull
     private UUID owner;
 
-    private Long account;
+    private UUID account;
 
-    private Long card;
+    private UUID card;
 
     public TransactionDTO() {
         super();
     }
 
     public TransactionDTO(UUID expenseId, @NotNull String name, @NotNull LocalDateTime transactionDate,
-                          @NotNull BigDecimal value, @NotNull Currency currency, UUID owner, Long account, Long card) {
+                          @NotNull BigDecimal value, @NotNull Currency currency, UUID owner, UUID account, UUID card) {
         super();
         this.expenseId = expenseId;
         this.name = name;
@@ -70,19 +70,19 @@ public class TransactionDTO implements Serializable {
                                this.getCurrency(), owner, accountObj, cardObj);
     }
 
-    public void setCard(final Long id) {
+    public void setCard(final UUID id) {
         this.card = id;
     }
 
-    public Long getCard() {
+    public UUID getCard() {
         return this.card;
     }
 
-    public void setAccount(final Long account) {
+    public void setAccount(final UUID account) {
         this.account = account;
     }
 
-    public Long getAccount() {
+    public UUID getAccount() {
         return this.account;
     }
 

@@ -9,14 +9,13 @@ import java.util.stream.Collectors;
 
 import javax.validation.Valid;
 
-import br.com.controle.financeiro.configuration.security.auth.firebase.FirebaseAuthenticationToken;
 import br.com.controle.financeiro.controller.api.linkbuilder.ClientDTOResourceAssembler;
 import br.com.controle.financeiro.model.dto.ClientDTO;
 import br.com.controle.financeiro.model.entity.Client;
 import br.com.controle.financeiro.model.entity.UserEntity;
 import br.com.controle.financeiro.model.exception.ClientNotFoundException;
 import br.com.controle.financeiro.model.repository.ClientRepository;
-import br.com.controle.financeiro.model.repository.UserRepository;
+import br.com.controle.financeiro.service.UserService;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,9 +23,6 @@ import org.springframework.hateoas.Resource;
 import org.springframework.hateoas.Resources;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -45,21 +41,21 @@ public class ClientController {
 
     private final ClientRepository clientRepository;
 
-    private final UserRepository userRepository;
+    private final UserService userService;
 
     private final ClientDTOResourceAssembler clientDTOResourceAssembler;
 
-    public ClientController(final ClientRepository clientRepository, final UserRepository userRepository,
+    public ClientController(final ClientRepository clientRepository, final UserService userService,
                             final ClientDTOResourceAssembler clientDTOResourceAssembler) {
         this.clientRepository = clientRepository;
-        this.userRepository = userRepository;
+        this.userService = userService;
         this.clientDTOResourceAssembler = clientDTOResourceAssembler;
     }
 
     @GetMapping
     public Resources<Resource<ClientDTO>> allClients() {
         LOG.debug("finding allClients");
-        UserEntity owner = userRepository.findById(getUser()).get();
+        UserEntity owner = userService.getAuthenticatedUser();
         final List<ClientDTO> clients =
                 clientRepository.findAllByOwner(owner).stream().map(ClientDTO::fromClient).collect(Collectors.toList());
         List<Resource<ClientDTO>> cr =
@@ -73,7 +69,7 @@ public class ClientController {
     public Resource<ClientDTO> newClient(@RequestBody @Valid final ClientDTO client) {
         LOG.debug("creating newClient");
         // TODO extract to service
-        UserEntity owner = userRepository.findById(getUser()).get();
+        UserEntity owner = userService.getAuthenticatedUser();
         client.setOwner(owner.getId());
         ClientDTO clientDTO = ClientDTO.fromClient(clientRepository.save(client.toClient(owner)));
         return clientDTOResourceAssembler.toResource(clientDTO);
@@ -82,13 +78,15 @@ public class ClientController {
     @GetMapping(path = "/{id}")
     public Resource<ClientDTO> oneClient(@PathVariable(value = "id") final UUID id) {
         LOG.debug("searching oneClient {}", id);
-        Client client = clientRepository.findById(id).orElseThrow(() -> new ClientNotFoundException(id));
+        UserEntity owner = userService.getAuthenticatedUser();
+        Client client = clientRepository.findByIdAndOwner(id, owner).orElseThrow(() -> new ClientNotFoundException(id));
         return clientDTOResourceAssembler.toResource(ClientDTO.fromClient(client));
     }
 
     @PutMapping(path = "/{id}")
     public Resource<ClientDTO> replaceClient(@RequestBody final ClientDTO newClient, @PathVariable final UUID id) {
         LOG.info("replaceClient");
+        // TODO verify authenticated permission
         //TODO verify DTO integrity
         Client savedClient = clientRepository.findById(id).map(client -> {
             client.setName(newClient.getName());
@@ -96,7 +94,7 @@ public class ClientController {
         }).orElseGet(() -> {
             newClient.setId(id);
             // TODO extract to service
-            UserEntity owner = userRepository.findById(getUser()).get();
+            UserEntity owner = userService.getAuthenticatedUser();
             return clientRepository.save(newClient.toClient(owner));
         });
 
@@ -107,18 +105,8 @@ public class ClientController {
     @DeleteMapping(path = "/{id}")
     public void deleteClient(@PathVariable final UUID id) {
         LOG.debug("trying to deleteClient {}", id);
+        //TODO verify authenticated permission
         clientRepository.deleteById(id);
-    }
-
-
-    // TODO() extrair para um service
-    public static String getUser() {
-        String user = null;
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        if (auth instanceof FirebaseAuthenticationToken) {
-            user = String.valueOf(((UserDetails) auth.getPrincipal()).getUsername());
-        }
-        return user;
     }
 
 }

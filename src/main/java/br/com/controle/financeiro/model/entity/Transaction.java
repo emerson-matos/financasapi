@@ -7,22 +7,15 @@ import java.util.Currency;
 import java.util.UUID;
 
 import javax.persistence.CascadeType;
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
-@Entity(name = "transaction")
-public class Transaction implements Serializable {
+import org.springframework.data.jpa.domain.AbstractPersistable;
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "id_expense")
-    private UUID id;
+@Entity(name = "transaction")
+public class Transaction extends AbstractPersistable<UUID> implements Serializable {
 
     private String name;
 
@@ -49,7 +42,7 @@ public class Transaction implements Serializable {
     public Transaction(UUID id, String name, LocalDateTime transactionDate, BigDecimal value, Currency currency,
                        Client owner, BankAccount account, Card card) {
         super();
-        this.id = id;
+        this.setId(id);
         this.name = name;
         this.transactionDate = transactionDate;
         this.value = value;
@@ -105,14 +98,6 @@ public class Transaction implements Serializable {
 
     public void setName(final String name) {
         this.name = name;
-    }
-
-    public UUID getId() {
-        return id;
-    }
-
-    public void setId(UUID expenseId) {
-        this.id = expenseId;
     }
 
     public BankAccount getAccount() {

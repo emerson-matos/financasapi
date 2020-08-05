@@ -121,6 +121,7 @@ public class TransactionController {
     @DeleteMapping(path = "/{id}")
     public void deleteTransaction(@PathVariable final UUID id) {
         LOG.debug("trying to deleteTransaction ${}", id);
+        //TODO verify authenticated permission
         transactionRepository.deleteById(id);
     }
 

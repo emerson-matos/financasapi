@@ -1,10 +1,10 @@
 package br.com.controle.financeiro.controller.api;
 
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.when;
 
 import java.util.Optional;
+import java.util.UUID;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -55,7 +55,6 @@ public class BankAccountControllerTests {
 
     private void setupBankAccount() {
         bankAccount = new BankAccount();
-        bankAccount.setId(1L);
     }
 
     @Test
@@ -73,39 +72,39 @@ public class BankAccountControllerTests {
 
     @Test
     public void bankAccountPutOldAccountTest() throws Exception {
-        mockMvc.perform(MockMvcRequestBuilders.put(BANK_ACCOUNT_URI + "/{id}", 1)
+        mockMvc.perform(MockMvcRequestBuilders.put(BANK_ACCOUNT_URI + "/{id}", UUID.randomUUID())
                                               .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE).content(ACCOUNT_JSON))
                .andExpect(MockMvcResultMatchers.status().is2xxSuccessful()).andReturn();
     }
 
     @Test
     public void bankAccountPutNewAccountTest() throws Exception {
-        when(accountRepository.findById(anyLong())).thenReturn(Optional.of(bankAccount));
+        when(accountRepository.findById(any())).thenReturn(Optional.of(bankAccount));
 
-        mockMvc.perform(MockMvcRequestBuilders.put(BANK_ACCOUNT_URI + "/{id}", 1)
+        mockMvc.perform(MockMvcRequestBuilders.put(BANK_ACCOUNT_URI + "/{id}", UUID.randomUUID())
                                               .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE).content(ACCOUNT_JSON))
                .andExpect(MockMvcResultMatchers.status().is2xxSuccessful()).andReturn();
     }
 
     @Test
     public void bankAccountGetOneNotFoundTest() throws Exception {
-        mockMvc.perform(MockMvcRequestBuilders.get(BANK_ACCOUNT_URI + "/{id}", 1)
+        mockMvc.perform(MockMvcRequestBuilders.get(BANK_ACCOUNT_URI + "/{id}", UUID.randomUUID())
                                               .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
                .andExpect(MockMvcResultMatchers.status().isNotFound()).andReturn();
     }
 
     @Test
     public void bankAccountGetOneFoundTest() throws Exception {
-        when(accountRepository.findById(anyLong())).thenReturn(Optional.of(bankAccount));
+        when(accountRepository.findById(any())).thenReturn(Optional.of(bankAccount));
 
-        mockMvc.perform(MockMvcRequestBuilders.get(BANK_ACCOUNT_URI + "/{id}", 1)
+        mockMvc.perform(MockMvcRequestBuilders.get(BANK_ACCOUNT_URI + "/{id}", UUID.randomUUID())
                                               .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
                .andExpect(MockMvcResultMatchers.status().isOk()).andReturn();
     }
 
     @Test
     public void bankAccountDeleteTest() throws Exception {
-        mockMvc.perform(MockMvcRequestBuilders.delete(BANK_ACCOUNT_URI + "/{id}", 5))
+        mockMvc.perform(MockMvcRequestBuilders.delete(BANK_ACCOUNT_URI + "/{id}", UUID.randomUUID()))
                .andExpect(MockMvcResultMatchers.status().isNoContent()).andReturn();
     }
 

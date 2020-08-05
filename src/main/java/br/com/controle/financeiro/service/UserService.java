@@ -8,16 +8,18 @@ public interface UserService extends UserDetailsService {
 
     UserEntity registerUser(RegisterUserInit init);
 
+    UserEntity getAuthenticatedUser();
+
     class RegisterUserInit {
         private final String userName;
         private final String email;
-        private final String id;
+        private final String name;
 
-        public RegisterUserInit(String userName, String email, String id) {
+        public RegisterUserInit(String userName, String email, String name) {
             super();
             this.userName = userName;
             this.email = email;
-            this.id = id;
+            this.name = name;
         }
 
         public String getUserName() {
@@ -28,8 +30,8 @@ public interface UserService extends UserDetailsService {
             return email;
         }
 
-        public String getId() {
-            return id;
+        public String getName() {
+            return name;
         }
 
     }
