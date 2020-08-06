@@ -38,7 +38,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 public class InstitutionControllerTests {
 
     public static final String API_INSTITUTION = "/api/institution";
-    public static final String INSTITUTION_JSON = "{\"name\":\"institution\"}";
+    public static final String INSTITUTION_JSON = "{\"name\":\"institution\", \"identifier\": \"bank\"}";
 
     @Autowired
     private MockMvc mockMvc;
@@ -74,7 +74,7 @@ public class InstitutionControllerTests {
     @Test
     public void institutionPutOldInstitutionTest() throws Exception {
         mockMvc.perform(
-                MockMvcRequestBuilders.put(API_INSTITUTION + "/{id}", 1).contentType(MediaType.APPLICATION_JSON_UTF8)
+                MockMvcRequestBuilders.put(API_INSTITUTION + "/{id}", UUID.randomUUID()).contentType(MediaType.APPLICATION_JSON_UTF8)
                                       .content(INSTITUTION_JSON))
                .andExpect(MockMvcResultMatchers.status().is2xxSuccessful()).andReturn();
     }
@@ -84,14 +84,14 @@ public class InstitutionControllerTests {
         when(institutionRepository.findById(any())).thenReturn(Optional.of(institution));
 
         mockMvc.perform(
-                MockMvcRequestBuilders.put(API_INSTITUTION + "/{id}", 1).contentType(MediaType.APPLICATION_JSON_UTF8)
+                MockMvcRequestBuilders.put(API_INSTITUTION + "/{id}", UUID.randomUUID()).contentType(MediaType.APPLICATION_JSON_UTF8)
                                       .content(INSTITUTION_JSON))
                .andExpect(MockMvcResultMatchers.status().is2xxSuccessful()).andReturn();
     }
 
     @Test
     public void institutionGetOneNotFoundTest() throws Exception {
-        mockMvc.perform(MockMvcRequestBuilders.get(API_INSTITUTION + "/{id}", 1))
+        mockMvc.perform(MockMvcRequestBuilders.get(API_INSTITUTION + "/{id}", UUID.randomUUID()))
                .andExpect(MockMvcResultMatchers.status().isNotFound()).andReturn();
     }
 
@@ -99,13 +99,13 @@ public class InstitutionControllerTests {
     public void institutionGetOneFoundTest() throws Exception {
         when(institutionRepository.findById(any())).thenReturn(Optional.of(institution));
 
-        mockMvc.perform(MockMvcRequestBuilders.get(API_INSTITUTION + "/{id}", 1))
+        mockMvc.perform(MockMvcRequestBuilders.get(API_INSTITUTION + "/{id}", UUID.randomUUID()))
                .andExpect(MockMvcResultMatchers.status().isOk()).andReturn();
     }
 
     @Test
     public void institutionDeleteTest() throws Exception {
-        mockMvc.perform(MockMvcRequestBuilders.delete(API_INSTITUTION + "/{id}", 5))
+        mockMvc.perform(MockMvcRequestBuilders.delete(API_INSTITUTION + "/{id}", UUID.randomUUID()))
                .andExpect(MockMvcResultMatchers.status().isNoContent()).andReturn();
     }
 
