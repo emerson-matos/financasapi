@@ -62,7 +62,7 @@ public class TransactionDTO implements Serializable {
 
     public static TransactionDTO fromTransaction(Transaction t) {
         return new TransactionDTO(t.getId(), t.getName(), t.getTransactionDate(), t.getValue(), t.getCurrency(),
-                                  t.getOwner().getId(), t.getAccount().getId(), t.getCard().getId());
+                                  t.getResponsible().getId(), t.getAccount().getId(), t.getCard().getId());
     }
 
     public Transaction toTransaction(Client owner, BankAccount accountObj, Card cardObj) {
