@@ -9,6 +9,10 @@ cache:
       - "$HOME/.m2/repository"
       - "$HOME/.sonar/cache"
 before_script:
+  - echo "POM $POM_VERSION"
+  - echo "POM $POM_VERSION"
+  - echo "POM $POM_VERSION"
+  - echo "POM $POM_VERSION"
   - psql -c 'create database controle;' -U $SPRING_DATASOURCE_USERNAME
 after_success:
   - bash <(curl -s https://codecov.io/bash)
