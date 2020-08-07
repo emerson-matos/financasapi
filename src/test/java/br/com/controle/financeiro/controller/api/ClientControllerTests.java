@@ -108,7 +108,7 @@ public class ClientControllerTests extends BaseModelTemplate {
 
     @Test
     public void clientDeleteNotFoundTest() throws Exception {
-        doThrow(new EmptyResultDataAccessException(5)).when(clientRepository).deleteById(any());
+        doThrow(new EmptyResultDataAccessException(1)).when(clientRepository).deleteById(any());
 
         mockMvc.perform(MockMvcRequestBuilders.delete(API_CLIENT + "/{id}", UUID.randomUUID()))
                .andExpect(MockMvcResultMatchers.status().isNoContent()).andReturn();

@@ -58,7 +58,7 @@ public class BaseModelTemplate {
         owner.setPassword(new BCryptPasswordEncoder().encode("owner"));
         owner.setEmail("some@one.com");
         owner.setId(UUID.randomUUID().toString());
-        owner.setAuthorities(Collections.singletonList(new Role(SecurityConfig.Roles.ROLE_ADMIN)));
+        owner.setAuthorities(Collections.singletonList(new Role(SecurityConfig.Roles.ROLE_USER)));
     }
 
     private void setupBankAccount() {

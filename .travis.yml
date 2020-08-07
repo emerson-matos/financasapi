@@ -10,7 +10,6 @@ cache:
       - "$HOME/.sonar/cache"
 before_script:
   - echo "POM $POM_VERSION"
-  - echo "ARTIFACT $ARTIFACT_VERSION"
   - psql -c 'create database controle;' -U $SPRING_DATASOURCE_USERNAME
 after_success:
   - ./snapshot.sh
