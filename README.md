@@ -31,6 +31,7 @@ You will need to set the following environment variables:
 * GOOGLE_APPLICATION_CREDENTIALS
 > If you want to use google firebase credentials from a json file located somewhere on your machine
 
+
 To turn firebase auth off just change the value of `br.com.controle.financeiro.firebase.enabled` to `false`
 
 After that step we will need [postgres](https://www.postgresql.org/download/), [maven](https://maven.apache.org/download.cgi) and [Java JDK 11](https://java.com/en/download/help/download_options.xml)
