@@ -35,12 +35,16 @@ public class Transaction extends AbstractPersistable<UUID> implements Serializab
     @JoinColumn(name = "id_card")
     private Card card;
 
+    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.DETACH)
+    @JoinColumn(name = "id_user")
+    private UserEntity owner;
+
     public Transaction() {
         super();
     }
 
     public Transaction(UUID id, String name, LocalDateTime transactionDate, BigDecimal value, Currency currency,
-                       Client responsible, BankAccount account, Card card) {
+                       Client responsible, BankAccount account, Card card, UserEntity owner) {
         super();
         this.setId(id);
         this.name = name;
@@ -50,6 +54,7 @@ public class Transaction extends AbstractPersistable<UUID> implements Serializab
         this.responsible = responsible;
         this.account = account;
         this.card = card;
+        this.owner = owner;
     }
 
     public void setCard(final Card card) {

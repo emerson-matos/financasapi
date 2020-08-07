@@ -14,6 +14,7 @@ import br.com.controle.financeiro.model.entity.BankAccount;
 import br.com.controle.financeiro.model.entity.Card;
 import br.com.controle.financeiro.model.entity.Client;
 import br.com.controle.financeiro.model.entity.Transaction;
+import br.com.controle.financeiro.model.entity.UserEntity;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
@@ -36,8 +37,8 @@ public class TransactionDTO implements Serializable {
     @NotNull
     private Currency currency = Currency.getInstance(new Locale("pt", "BR"));
 
-    @NotNull
-    private UUID owner;
+    @NotBlank
+    private UUID client;
 
     private UUID account;
 
@@ -48,14 +49,14 @@ public class TransactionDTO implements Serializable {
     }
 
     public TransactionDTO(UUID expenseId, @NotNull String name, @NotNull LocalDateTime transactionDate,
-                          @NotNull BigDecimal value, @NotNull Currency currency, UUID owner, UUID account, UUID card) {
+                          @NotNull BigDecimal value, @NotNull Currency currency, UUID client, UUID account, UUID card) {
         super();
         this.expenseId = expenseId;
         this.name = name;
         this.transactionDate = transactionDate;
         this.value = value;
         this.currency = currency;
-        this.owner = owner;
+        this.client = client;
         this.account = account;
         this.card = card;
     }
@@ -65,9 +66,9 @@ public class TransactionDTO implements Serializable {
                                   t.getResponsible().getId(), t.getAccount().getId(), t.getCard().getId());
     }
 
-    public Transaction toTransaction(Client owner, BankAccount accountObj, Card cardObj) {
+    public Transaction toTransaction(Client client, BankAccount accountObj, Card cardObj, UserEntity owner) {
         return new Transaction(this.getId(), this.getName(), this.getTransactionDate(), this.getValue(),
-                               this.getCurrency(), owner, accountObj, cardObj);
+                               this.getCurrency(), client, accountObj, cardObj, owner);
     }
 
     public void setCard(final UUID id) {
@@ -90,12 +91,12 @@ public class TransactionDTO implements Serializable {
         return value;
     }
 
-    public UUID getOwner() {
-        return owner;
+    public UUID getClient() {
+        return client;
     }
 
-    public void setOwner(final UUID owner) {
-        this.owner = owner;
+    public void setClient(final UUID client) {
+        this.client = client;
     }
 
     public void setValue(final BigDecimal value) {
