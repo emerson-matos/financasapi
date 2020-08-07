@@ -37,7 +37,7 @@ jobs:
         - docker images
         - docker tag memerson $DOCKER_USERNAME/memerson:$POM_VERSION
         - docker push $DOCKER_USERNAME/memerson:$POM_VERSION
-      if: env(POM_VERSION) =~ /^(\d)+\.(\d)+\.(\d)+$/
+      if: env(POM_VERSION) =~ ^(\d)+\.(\d)+\.(\d)+\-SNAPSHOT$
 
 deploy:
   provider: script
