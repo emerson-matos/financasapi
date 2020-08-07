@@ -35,15 +35,7 @@ jobs:
 
 deploy:
   provider: script
-  script:
-    - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
-    - docker build -t memerson .
-    - docker images
-    - docker tag memerson $DOCKER_USERNAME/memerson:latest
-    - docker tag memerson $DOCKER_USERNAME/memerson:$POM_VERSION
-    - docker push $DOCKER_USERNAME/memerson:latest
-    - docker push $DOCKER_USERNAME/memerson:$POM_VERSION
-    - mvn deploy -s .travis.settings.xml -DskipTests
+  script: ./deploy.sh
   on:
     tags: true
 notifications:
