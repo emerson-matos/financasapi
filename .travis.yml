@@ -13,6 +13,7 @@ before_script:
   - echo "ARTIFACT $ARTIFACT_VERSION"
   - psql -c 'create database controle;' -U $SPRING_DATASOURCE_USERNAME
 after_success:
+  - ./snapshot.sh
   - bash <(curl -s https://codecov.io/bash)
 addons:
   sonarcloud:
@@ -32,13 +33,7 @@ jobs:
       script: mvn clean verify sonar:sonar -Dsonar.projectKey=emerson-matos_financasapi -Pcoverage
       if: type = pull_request
     - stage: snapshot
-      script:
-        - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
-        - docker build -t memerson .
-        - docker images
-        - docker tag memerson $DOCKER_USERNAME/memerson:$POM_VERSION
-        - docker push $DOCKER_USERNAME/memerson:$POM_VERSION
-      if: env(POM_VERSION) =~ ^([0-9]+\.[0-9]+\.[0-9]+\-SNAPSHOT)$
+      script: ./snapshot.sh
 
 deploy:
   provider: script
