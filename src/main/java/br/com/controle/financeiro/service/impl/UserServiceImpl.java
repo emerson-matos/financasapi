@@ -8,7 +8,6 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 
-import javax.annotation.PostConstruct;
 import javax.transaction.Transactional;
 
 import br.com.controle.financeiro.configuration.security.SecurityConfig.Roles;
@@ -30,7 +29,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service(value = UserServiceImpl.NAME)
@@ -95,32 +93,6 @@ public class UserServiceImpl implements UserService {
             return userRepository.findById(user).orElseThrow();
         }
         throw new UsernameNotFoundException("Bad credentials");
-    }
-
-    @PostConstruct
-    public void init() {
-
-        if (userRepository.count() == 0) {
-            UserEntity adminEntity = new UserEntity();
-            adminEntity.setName("admin");
-            adminEntity.setPassword(new BCryptPasswordEncoder().encode("admin"));
-            adminEntity.setEmail("some@one.com");
-            adminEntity.setId(UUID.randomUUID().toString());
-            adminEntity.setAuthorities(getAdminRoles());
-            userRepository.save(adminEntity);
-
-            UserEntity userEntity = new UserEntity();
-            userEntity.setName("user1");
-            userEntity.setPassword(new BCryptPasswordEncoder().encode("user1"));
-            userEntity.setEmail("some@one.com");
-            userEntity.setAuthorities(getUserRoles());
-            userEntity.setId(UUID.randomUUID().toString());
-            userRepository.save(userEntity);
-        }
-    }
-
-    private List<Role> getAdminRoles() {
-        return Collections.singletonList(getRole(Roles.ROLE_ADMIN));
     }
 
     private List<Role> getUserRoles() {
