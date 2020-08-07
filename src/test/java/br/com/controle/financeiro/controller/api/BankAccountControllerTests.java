@@ -36,7 +36,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 @ActiveProfiles(profiles = "test")
 @Import({ RestResponseEntityExceptionHandler.class })
 @WithMockUser(value = "someone")
-public class BankAccountControllerTests extends BaseTemplateTest {
+public class BankAccountControllerTests extends BaseModelTemplate {
 
     private static final String BANK_ACCOUNT_URI = "/api/bankaccount";
     private static final String ACCOUNT_JSON =

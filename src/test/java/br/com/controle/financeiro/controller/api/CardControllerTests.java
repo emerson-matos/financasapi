@@ -37,7 +37,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 @ActiveProfiles(profiles = "test")
 @Import({ RestResponseEntityExceptionHandler.class })
 @WithMockUser(value = "someone")
-public class CardControllerTests extends BaseTemplateTest {
+public class CardControllerTests extends BaseModelTemplate {
 
     private static final String CARD_JSON =
             "{\"name\": \"Emerson\",\"number\": \"5423\",\"client\": \"a3dbfd2a-8e96-417e-bc01-ff7a798bf4c4\"," +

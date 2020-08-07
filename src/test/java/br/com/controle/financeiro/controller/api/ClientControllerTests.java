@@ -4,17 +4,12 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
 
-import java.util.Collections;
 import java.util.Optional;
 import java.util.UUID;
 
-import br.com.controle.financeiro.configuration.security.SecurityConfig;
 import br.com.controle.financeiro.controlefinanceiro.ControleFinanceiroApplication;
 import br.com.controle.financeiro.controller.RestResponseEntityExceptionHandler;
 import br.com.controle.financeiro.controller.api.linkbuilder.ClientDTOResourceAssembler;
-import br.com.controle.financeiro.model.entity.Client;
-import br.com.controle.financeiro.model.entity.Role;
-import br.com.controle.financeiro.model.entity.UserEntity;
 import br.com.controle.financeiro.model.repository.ClientRepository;
 import br.com.controle.financeiro.service.UserService;
 
@@ -28,7 +23,6 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.MediaType;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -42,7 +36,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 @ActiveProfiles(profiles = "test")
 @Import({ RestResponseEntityExceptionHandler.class })
 @WithMockUser(value = "someone")
-public class ClientControllerTests extends BaseTemplateTest {
+public class ClientControllerTests extends BaseModelTemplate {
 
     public static final String API_CLIENT = "/api/client";
     public static final String CLIENT_JSON = "{\"name\":\"Pedro\"}";

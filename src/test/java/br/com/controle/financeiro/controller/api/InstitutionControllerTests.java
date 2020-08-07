@@ -1,7 +1,6 @@
 package br.com.controle.financeiro.controller.api;
 
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.when;
 
 import java.util.Optional;
@@ -10,7 +9,6 @@ import java.util.UUID;
 import br.com.controle.financeiro.controlefinanceiro.ControleFinanceiroApplication;
 import br.com.controle.financeiro.controller.RestResponseEntityExceptionHandler;
 import br.com.controle.financeiro.controller.api.linkbuilder.InstitutionDTOResourceAssembler;
-import br.com.controle.financeiro.model.entity.Institution;
 import br.com.controle.financeiro.model.repository.InstitutionRepository;
 
 import org.junit.Before;
@@ -35,7 +33,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 @ActiveProfiles(profiles = "test")
 @Import({ RestResponseEntityExceptionHandler.class })
 @WithMockUser(value = "someone")
-public class InstitutionControllerTests extends BaseTemplateTest {
+public class InstitutionControllerTests extends BaseModelTemplate {
 
     public static final String API_INSTITUTION = "/api/institution";
     public static final String INSTITUTION_JSON = "{\"name\":\"institution\", \"identifier\": \"bank\"}";

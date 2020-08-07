@@ -37,7 +37,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 @ActiveProfiles(profiles = "test")
 @Import({ RestResponseEntityExceptionHandler.class })
 @WithMockUser(value = "someone")
-public class TransactionControllerTests extends BaseTemplateTest {
+public class TransactionControllerTests extends BaseModelTemplate {
 
     public static final String API_TRANSACTION = "/api/transaction";
     public static final String TRANSACTION_JSON =
