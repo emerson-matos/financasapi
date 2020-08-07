@@ -10,6 +10,7 @@ cache:
       - "$HOME/.sonar/cache"
 before_script:
   - echo "POM $POM_VERSION"
+  - echo "ARTIFACT $ARTIFACT_VERSION"
   - psql -c 'create database controle;' -U $SPRING_DATASOURCE_USERNAME
 after_success:
   - bash <(curl -s https://codecov.io/bash)
@@ -37,7 +38,7 @@ jobs:
         - docker images
         - docker tag memerson $DOCKER_USERNAME/memerson:$POM_VERSION
         - docker push $DOCKER_USERNAME/memerson:$POM_VERSION
-      if: $POM_VERSION =~ ^(\d)+\.(\d)+\.(\d)+\-SNAPSHOT$
+      if: env(POM_VERSION) =~ ^(\d)+\.(\d)+\.(\d)+\-SNAPSHOT$
 
 deploy:
   provider: script
