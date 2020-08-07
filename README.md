@@ -33,7 +33,6 @@ You will need to set the following environment variables:
 
 - To turn firebase auth off just change the value of `br.com.controle.financeiro.firebase.enabled` to `false`
 
-
 After that step we will need [postgres](https://www.postgresql.org/download/), [maven](https://maven.apache.org/download.cgi) and [Java JDK 11](https://java.com/en/download/help/download_options.xml)
 
 You need to create a database and change on application.properties for your Spring Profile these properties:
