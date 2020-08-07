@@ -29,6 +29,9 @@ jobs:
     - stage: unit tests
       script: mvn clean verify sonar:sonar -Dsonar.projectKey=emerson-matos_financasapi -Pcoverage
       if: type = pull_request
+    - stage: package
+      script: mvn clean package
+      if: type != pull_request AND type != commit
 
 deploy:
   provider: script
