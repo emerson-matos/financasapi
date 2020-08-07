@@ -13,13 +13,13 @@ The objective of this project is to be able to study Spring Framework with somet
 
 ## Running
 
-### With [docker](https://www.docker.com/):
+### With [Docker](https://www.docker.com/):
 ```
 docker-compose up -d
 ```
 then just go to [localhost on port 8080](http://localhost:8080)
 
-### Without Docker:
+### Without [Docker](https://www.docker.com/):
 
 You will need to set the following environment variables:
 * FIREBASE_URL
@@ -30,8 +30,7 @@ You will need to set the following environment variables:
 > If you want to use google firebase credentials like a string without a json file
 * GOOGLE_APPLICATION_CREDENTIALS
 > If you want to use google firebase credentials from a json file located somewhere on your machine
-
-
+___
 To turn firebase auth off just change the value of `br.com.controle.financeiro.firebase.enabled` to `false`
 
 After that step we will need [postgres](https://www.postgresql.org/download/), [maven](https://maven.apache.org/download.cgi) and [Java JDK 11](https://java.com/en/download/help/download_options.xml)
