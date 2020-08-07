@@ -25,10 +25,10 @@ public class BankAccountDTO implements Serializable {
     private String dac;
 
     @NotNull
-    private UUID responsible;
+    private UUID responsible = UUID.randomUUID();
 
     @NotNull
-    private UUID institution;
+    private UUID institution = UUID.randomUUID();
 
 
     public BankAccountDTO() {

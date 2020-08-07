@@ -22,10 +22,10 @@ public class CardDTO implements Serializable {
     private String number;
 
     @NotNull
-    private UUID client;
+    private UUID client = UUID.randomUUID();
 
     @NotNull
-    private UUID institution;
+    private UUID institution = UUID.randomUUID();
 
     public CardDTO() {
         super();

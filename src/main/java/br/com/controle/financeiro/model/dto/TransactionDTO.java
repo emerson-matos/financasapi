@@ -38,7 +38,7 @@ public class TransactionDTO implements Serializable {
     private Currency currency = Currency.getInstance(new Locale("pt", "BR"));
 
     @NotNull
-    private UUID client;
+    private UUID client = UUID.randomUUID();
 
     private UUID account;
 
