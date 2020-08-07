@@ -43,7 +43,7 @@ deploy:
     - docker tag memerson $DOCKER_USERNAME/memerson:$POM_VERSION
     - docker push $DOCKER_USERNAME/memerson:latest
     - docker push $DOCKER_USERNAME/memerson:$POM_VERSION
-    - mvn deploy
+    - mvn deploy -s .travis.settings.xml -DskipTests
   on:
     tags: true
 notifications:
