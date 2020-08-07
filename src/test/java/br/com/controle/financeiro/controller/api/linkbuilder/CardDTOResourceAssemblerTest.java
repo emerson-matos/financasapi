@@ -4,6 +4,8 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
+import java.util.UUID;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -28,7 +30,7 @@ public class CardDTOResourceAssemblerTest {
 	@Test
 	public void testToResource() {
 		CardDTO cardMock = new CardDTO();
-		cardMock.setId(1L);
+		cardMock.setId(UUID.randomUUID());
 		cardMock.setName("mock");
 		Resource<CardDTO> response = resourceAssembler.toResource(cardMock);
 		assertTrue(response.hasLinks());

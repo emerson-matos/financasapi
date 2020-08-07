@@ -1,24 +1,27 @@
 package br.com.controle.financeiro.model.dto;
 
 import java.io.Serializable;
+import java.util.UUID;
 
-import javax.validation.constraints.NotNull;
+import javax.validation.constraints.NotBlank;
 
 import br.com.controle.financeiro.model.entity.Institution;
 
 public class InstitutionDTO implements Serializable {
 
-    private Long institutionId;
-    @NotNull
-    private String name = "";
-    @NotNull
-    private String identifier = "";
+    private UUID institutionId;
+
+    @NotBlank
+    private String name;
+
+    @NotBlank
+    private String identifier;
 
     public InstitutionDTO() {
         super();
     }
 
-    public InstitutionDTO(final Long id, final String identifier, final String name) {
+    public InstitutionDTO(final UUID id, final String identifier, final String name) {
         super();
         this.institutionId = id;
         this.identifier = identifier;
@@ -33,11 +36,11 @@ public class InstitutionDTO implements Serializable {
         return new Institution(this.institutionId, this.identifier, this.name);
     }
 
-    public Long getId() {
+    public UUID getId() {
         return institutionId;
     }
 
-    public void setId(final Long institutionId) {
+    public void setId(final UUID institutionId) {
         this.institutionId = institutionId;
     }
 

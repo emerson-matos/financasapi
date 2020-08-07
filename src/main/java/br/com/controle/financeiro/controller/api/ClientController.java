@@ -4,6 +4,7 @@ import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
 
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 import javax.validation.Valid;
@@ -11,8 +12,10 @@ import javax.validation.Valid;
 import br.com.controle.financeiro.controller.api.linkbuilder.ClientDTOResourceAssembler;
 import br.com.controle.financeiro.model.dto.ClientDTO;
 import br.com.controle.financeiro.model.entity.Client;
+import br.com.controle.financeiro.model.entity.UserEntity;
 import br.com.controle.financeiro.model.exception.ClientNotFoundException;
 import br.com.controle.financeiro.model.repository.ClientRepository;
+import br.com.controle.financeiro.service.UserService;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -38,20 +41,23 @@ public class ClientController {
 
     private final ClientRepository clientRepository;
 
+    private final UserService userService;
+
     private final ClientDTOResourceAssembler clientDTOResourceAssembler;
 
-    public ClientController(final ClientRepository clientRepository,
+    public ClientController(final ClientRepository clientRepository, final UserService userService,
                             final ClientDTOResourceAssembler clientDTOResourceAssembler) {
         this.clientRepository = clientRepository;
+        this.userService = userService;
         this.clientDTOResourceAssembler = clientDTOResourceAssembler;
     }
 
     @GetMapping
     public Resources<Resource<ClientDTO>> allClients() {
         LOG.debug("finding allClients");
-
+        UserEntity owner = userService.getAuthenticatedUser();
         final List<ClientDTO> clients =
-                clientRepository.findAll().stream().map(ClientDTO::fromClient).collect(Collectors.toList());
+                clientRepository.findAllByOwner(owner).stream().map(ClientDTO::fromClient).collect(Collectors.toList());
         List<Resource<ClientDTO>> cr =
                 clients.stream().map(clientDTOResourceAssembler::toResource).collect(Collectors.toList());
 
@@ -62,27 +68,34 @@ public class ClientController {
     @PostMapping(consumes = { MediaType.APPLICATION_JSON_UTF8_VALUE })
     public Resource<ClientDTO> newClient(@RequestBody @Valid final ClientDTO client) {
         LOG.debug("creating newClient");
-        ClientDTO clientDTO = ClientDTO.fromClient(clientRepository.save(client.toClient()));
+        // TODO extract to service
+        UserEntity owner = userService.getAuthenticatedUser();
+        client.setOwner(owner.getId());
+        ClientDTO clientDTO = ClientDTO.fromClient(clientRepository.save(client.toClient(owner)));
         return clientDTOResourceAssembler.toResource(clientDTO);
     }
 
     @GetMapping(path = "/{id}")
-    public Resource<ClientDTO> oneClient(@PathVariable(value = "id") final long id) {
+    public Resource<ClientDTO> oneClient(@PathVariable(value = "id") final UUID id) {
         LOG.debug("searching oneClient {}", id);
-        Client client = clientRepository.findById(id).orElseThrow(() -> new ClientNotFoundException(id));
+        UserEntity owner = userService.getAuthenticatedUser();
+        Client client = clientRepository.findByIdAndOwner(id, owner).orElseThrow(() -> new ClientNotFoundException(id));
         return clientDTOResourceAssembler.toResource(ClientDTO.fromClient(client));
     }
 
     @PutMapping(path = "/{id}")
-    public Resource<ClientDTO> replaceClient(@RequestBody final ClientDTO newClient, @PathVariable final Long id) {
+    public Resource<ClientDTO> replaceClient(@RequestBody final ClientDTO newClient, @PathVariable final UUID id) {
         LOG.info("replaceClient");
+        // TODO verify authenticated permission
         //TODO verify DTO integrity
         Client savedClient = clientRepository.findById(id).map(client -> {
             client.setName(newClient.getName());
             return clientRepository.save(client);
         }).orElseGet(() -> {
             newClient.setId(id);
-            return clientRepository.save(newClient.toClient());
+            // TODO extract to service
+            UserEntity owner = userService.getAuthenticatedUser();
+            return clientRepository.save(newClient.toClient(owner));
         });
 
         return clientDTOResourceAssembler.toResource(ClientDTO.fromClient(savedClient));
@@ -90,8 +103,9 @@ public class ClientController {
 
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @DeleteMapping(path = "/{id}")
-    public void deleteClient(@PathVariable final Long id) {
+    public void deleteClient(@PathVariable final UUID id) {
         LOG.debug("trying to deleteClient {}", id);
+        //TODO verify authenticated permission
         clientRepository.deleteById(id);
     }
 

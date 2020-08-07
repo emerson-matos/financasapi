@@ -1,16 +1,16 @@
 package br.com.controle.financeiro.controller.api;
 
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.when;
 
 import java.util.Optional;
+import java.util.UUID;
 
 import br.com.controle.financeiro.controlefinanceiro.ControleFinanceiroApplication;
 import br.com.controle.financeiro.controller.RestResponseEntityExceptionHandler;
 import br.com.controle.financeiro.controller.api.linkbuilder.InstitutionDTOResourceAssembler;
-import br.com.controle.financeiro.model.entity.Institution;
 import br.com.controle.financeiro.model.repository.InstitutionRepository;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -33,10 +33,10 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 @ActiveProfiles(profiles = "test")
 @Import({ RestResponseEntityExceptionHandler.class })
 @WithMockUser(value = "someone")
-public class InstitutionControllerTests {
+public class InstitutionControllerTests extends BaseModelTemplate {
 
     public static final String API_INSTITUTION = "/api/institution";
-    public static final String INSTITUTION_JSON = "{\"name\":\"institution\"}";
+    public static final String INSTITUTION_JSON = "{\"name\":\"institution\", \"identifier\": \"bank\"}";
 
     @Autowired
     private MockMvc mockMvc;
@@ -44,17 +44,10 @@ public class InstitutionControllerTests {
     @MockBean
     private InstitutionRepository institutionRepository;
 
-    private Institution institution;
-
     @Before
     public void setup() {
-        setupInstitution();
+        this.setupModel();
         when(institutionRepository.save(any())).thenReturn(institution);
-    }
-
-    private void setupInstitution() {
-        institution = new Institution("mock");
-        institution.setId(1L);
     }
 
     @Test
@@ -73,38 +66,38 @@ public class InstitutionControllerTests {
     @Test
     public void institutionPutOldInstitutionTest() throws Exception {
         mockMvc.perform(
-                MockMvcRequestBuilders.put(API_INSTITUTION + "/{id}", 1).contentType(MediaType.APPLICATION_JSON_UTF8)
+                MockMvcRequestBuilders.put(API_INSTITUTION + "/{id}", UUID.randomUUID()).contentType(MediaType.APPLICATION_JSON_UTF8)
                                       .content(INSTITUTION_JSON))
                .andExpect(MockMvcResultMatchers.status().is2xxSuccessful()).andReturn();
     }
 
     @Test
     public void institutionPutNewInstitutionTest() throws Exception {
-        when(institutionRepository.findById(anyLong())).thenReturn(Optional.of(institution));
+        when(institutionRepository.findById(any())).thenReturn(Optional.of(institution));
 
         mockMvc.perform(
-                MockMvcRequestBuilders.put(API_INSTITUTION + "/{id}", 1).contentType(MediaType.APPLICATION_JSON_UTF8)
+                MockMvcRequestBuilders.put(API_INSTITUTION + "/{id}", UUID.randomUUID()).contentType(MediaType.APPLICATION_JSON_UTF8)
                                       .content(INSTITUTION_JSON))
                .andExpect(MockMvcResultMatchers.status().is2xxSuccessful()).andReturn();
     }
 
     @Test
     public void institutionGetOneNotFoundTest() throws Exception {
-        mockMvc.perform(MockMvcRequestBuilders.get(API_INSTITUTION + "/{id}", 1))
+        mockMvc.perform(MockMvcRequestBuilders.get(API_INSTITUTION + "/{id}", UUID.randomUUID()))
                .andExpect(MockMvcResultMatchers.status().isNotFound()).andReturn();
     }
 
     @Test
     public void institutionGetOneFoundTest() throws Exception {
-        when(institutionRepository.findById(anyLong())).thenReturn(Optional.of(institution));
+        when(institutionRepository.findById(any())).thenReturn(Optional.of(institution));
 
-        mockMvc.perform(MockMvcRequestBuilders.get(API_INSTITUTION + "/{id}", 1))
+        mockMvc.perform(MockMvcRequestBuilders.get(API_INSTITUTION + "/{id}", UUID.randomUUID()))
                .andExpect(MockMvcResultMatchers.status().isOk()).andReturn();
     }
 
     @Test
     public void institutionDeleteTest() throws Exception {
-        mockMvc.perform(MockMvcRequestBuilders.delete(API_INSTITUTION + "/{id}", 5))
+        mockMvc.perform(MockMvcRequestBuilders.delete(API_INSTITUTION + "/{id}", UUID.randomUUID()))
                .andExpect(MockMvcResultMatchers.status().isNoContent()).andReturn();
     }
 

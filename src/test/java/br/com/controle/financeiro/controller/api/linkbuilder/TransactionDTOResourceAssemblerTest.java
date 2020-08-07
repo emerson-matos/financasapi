@@ -4,6 +4,8 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
+import java.util.UUID;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -27,7 +29,7 @@ public class TransactionDTOResourceAssemblerTest {
 	@Test
 	public void testToResource() {
 		TransactionDTO transactionMock = new TransactionDTO();
-		transactionMock.setId(1L);
+		transactionMock.setId(UUID.randomUUID());
 		Resource<TransactionDTO> response = resourceAssembler.toResource(transactionMock);
 		assertTrue(response.hasLinks());
 		assertNotNull(response.getLink("self"));

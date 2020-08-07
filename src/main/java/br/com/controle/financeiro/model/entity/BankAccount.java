@@ -1,24 +1,18 @@
 package br.com.controle.financeiro.model.entity;
 
 import java.io.Serializable;
+import java.util.UUID;
 
 import javax.persistence.CascadeType;
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
-@Entity(name = "bank_account")
-public class BankAccount implements Serializable {
+import org.springframework.data.jpa.domain.AbstractPersistable;
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "id_account")
-    private Long accountId;
+@Entity(name = "bank_account")
+public class BankAccount extends AbstractPersistable<UUID> implements Serializable {
 
     private String agency;
     private String number;
@@ -26,33 +20,38 @@ public class BankAccount implements Serializable {
 
     @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.DETACH)
     @JoinColumn(name = "id_client")
-    private Client owner;
+    private Client responsible;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "id_institution")
     private Institution institution;
 
+    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.DETACH)
+    @JoinColumn(name = "id_user")
+    private UserEntity owner;
+
     public BankAccount() {
         super();
     }
 
-    public BankAccount(final Client owner, final Institution institution, final String agency, final String number,
-                       final String dac, final Long accountId) {
+    public BankAccount(final UUID id, final String agency, final String number, final String dac,
+                       final Client responsible, final Institution institution, UserEntity owner) {
         super();
-        this.owner = owner;
-        this.institution = institution;
+        this.setId(id);
         this.agency = agency;
         this.number = number;
-        this.accountId = accountId;
         this.dac = dac;
-    }
-
-    public Client getOwner() {
-        return owner;
-    }
-
-    public void setDono(final Client owner) {
+        this.responsible = responsible;
+        this.institution = institution;
         this.owner = owner;
+    }
+
+    public Client getResponsible() {
+        return responsible;
+    }
+
+    public void setResponsible(final Client owner) {
+        this.responsible = owner;
     }
 
     public Institution getInstitution() {
@@ -87,17 +86,12 @@ public class BankAccount implements Serializable {
         this.dac = dac;
     }
 
-    public Long getId() {
-        return accountId;
+    public UserEntity getOwner() {
+        return owner;
     }
 
-    public void setId(Long accountId) {
-        this.accountId = accountId;
-    }
-
-    public BankAccount withId(Long id) {
-        this.setId(id);
-        return this;
+    public void setOwner(UserEntity owner) {
+        this.owner = owner;
     }
 
 }
