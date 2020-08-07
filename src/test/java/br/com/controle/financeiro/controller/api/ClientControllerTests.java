@@ -42,7 +42,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 @ActiveProfiles(profiles = "test")
 @Import({ RestResponseEntityExceptionHandler.class })
 @WithMockUser(value = "someone")
-public class ClientControllerTests {
+public class ClientControllerTests extends BaseTemplateTest {
 
     public static final String API_CLIENT = "/api/client";
     public static final String CLIENT_JSON = "{\"name\":\"Pedro\"}";
@@ -56,28 +56,11 @@ public class ClientControllerTests {
     @MockBean
     private UserService userService;
 
-    private Client client;
-    private UserEntity owner;
-
     @Before
     public void setup() {
-        setupClient();
-        setupOwner();
+        this.setupModel();
         when(clientRepository.save(any())).thenReturn(client);
         when(userService.getAuthenticatedUser()).thenReturn(owner);
-    }
-
-    private void setupOwner() {
-        owner = new UserEntity();
-        owner.setName("owner");
-        owner.setPassword(new BCryptPasswordEncoder().encode("owner"));
-        owner.setEmail("some@one.com");
-        owner.setId(UUID.randomUUID().toString());
-        owner.setAuthorities(Collections.singletonList(new Role(SecurityConfig.Roles.ROLE_ADMIN)));
-    }
-
-    private void setupClient() {
-        client = new Client(UUID.randomUUID(), "mock", new UserEntity());
     }
 
     @Test

@@ -34,9 +34,6 @@ public class SingUpControllerTest {
     @MockBean
     private FirebaseService firebaseService;
 
-    @MockBean
-    private UserService userService;
-
     @Test
     public void signUp() throws Exception {
         FirebaseTokenHolder holder = mock(FirebaseTokenHolder.class);

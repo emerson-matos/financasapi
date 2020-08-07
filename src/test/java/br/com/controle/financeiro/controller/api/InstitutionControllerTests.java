@@ -35,7 +35,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 @ActiveProfiles(profiles = "test")
 @Import({ RestResponseEntityExceptionHandler.class })
 @WithMockUser(value = "someone")
-public class InstitutionControllerTests {
+public class InstitutionControllerTests extends BaseTemplateTest {
 
     public static final String API_INSTITUTION = "/api/institution";
     public static final String INSTITUTION_JSON = "{\"name\":\"institution\", \"identifier\": \"bank\"}";
@@ -46,16 +46,10 @@ public class InstitutionControllerTests {
     @MockBean
     private InstitutionRepository institutionRepository;
 
-    private Institution institution;
-
     @Before
     public void setup() {
-        setupInstitution();
+        this.setupModel();
         when(institutionRepository.save(any())).thenReturn(institution);
-    }
-
-    private void setupInstitution() {
-        institution = new Institution(UUID.randomUUID(), "mock", "mock");
     }
 
     @Test
