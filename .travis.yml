@@ -25,14 +25,25 @@ jobs:
     - stage: unit tests
       script: mvn clean verify sonar:sonar -Dsonar.projectKey=emerson-matos_financasapi -Pcoverage
       if: type = pull_request
+    - stage: snapshot
+      script:
+        - POM_VERSION=$(mvn -q -Dexec.executable=echo -Dexec.args='${project.version}' --non-recursive exec:exec)
+        - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+        - docker build -t memerson .
+        - docker images
+        - docker tag memerson $DOCKER_USERNAME/memerson:$POM_VERSION
+        - docker push $DOCKER_USERNAME/memerson:$POM_VERSION
+      if: env(POM_VERSION) =~ /^(\d)+\.(\d)+\.(\d)+\-SNAPSHOT$/
 
 deploy:
   provider: script
   script:
+    - POM_VERSION=$(mvn -q -Dexec.executable=echo -Dexec.args='${project.version}' --non-recursive exec:exec)
     - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
     - docker build -t memerson .
     - docker images
     - docker tag memerson $DOCKER_USERNAME/memerson:latest
+    - docker tag memerson $DOCKER_USERNAME/memerson:$POM_VERSION
     - docker push $DOCKER_USERNAME/memerson:latest
   on:
     tags: true
