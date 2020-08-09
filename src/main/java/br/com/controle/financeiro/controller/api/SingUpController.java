@@ -21,7 +21,7 @@ public class SingUpController {
     @Autowired
     private UserService userService;
 
-    @PostMapping(path = "/open/signup")
+    @PostMapping(path = "/api/open/signup")
     @Transactional
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void signUp(@RequestHeader(name = "X-Firebase-User") String token) {
