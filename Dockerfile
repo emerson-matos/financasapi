@@ -1,4 +1,5 @@
 FROM tomcat:9.0.37-jdk11-openjdk
-ARG JAR_FILE=target/*.war
-COPY ${JAR_FILE} /usr/local/tomcat/webapps/
+ARG FILE=target/gestao-financeira-*.war
+COPY ${FILE} /usr/local/tomcat/webapps/gestao-financeira.war
 COPY spring/server.xml /usr/local/tomcat/conf/
+RUN ls /usr/local/tomcat/webapps/
