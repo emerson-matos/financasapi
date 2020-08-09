@@ -1,5 +1,6 @@
 #!/bin/bash
-
+echo "LIMPANDO IMAGENS"
+docker images | grep memerson | tr -s ' ' | cut -d ' ' -f 2 | xargs -I {} docker rmi emegson/memerson:{}
 echo "INICIANDO DEPLOY.SH"
 echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
 echo "MVN DEPLOY"
