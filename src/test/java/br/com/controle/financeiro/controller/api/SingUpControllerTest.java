@@ -42,19 +42,19 @@ public class SingUpControllerTest {
         doReturn("some@one.tk").when(holder).getEmail();
         doReturn("123456").when(holder).getUid();
 
-        mockMvc.perform(MockMvcRequestBuilders.post("/open/signup").header("X-Firebase-User", "123"))
+        mockMvc.perform(MockMvcRequestBuilders.post("/api/open/signup").header("X-Firebase-User", "123"))
                .andExpect(MockMvcResultMatchers.status().isNoContent());
     }
 
     @Test(expected = Exception.class)
     public void signUpWithBlackToken() throws Exception {
-        mockMvc.perform(MockMvcRequestBuilders.post("/open/signup").header("X-Firebase-User", "")).andDo(print())
+        mockMvc.perform(MockMvcRequestBuilders.post("/api/open/signup").header("X-Firebase-User", "")).andDo(print())
                .andExpect(MockMvcResultMatchers.status().isNoContent());
     }
 
     @Test
     public void signUpWithoutToken() throws Exception {
-        mockMvc.perform(MockMvcRequestBuilders.post("/open/signup"))
+        mockMvc.perform(MockMvcRequestBuilders.post("/api/open/signup"))
                .andExpect(MockMvcResultMatchers.status().isBadRequest());
     }
 

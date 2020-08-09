@@ -75,8 +75,10 @@ public class SecurityConfig extends GlobalMethodSecurityConfiguration {
     protected static class ApplicationSecurity extends WebSecurityConfigurerAdapter {
 
         private static final String[] ADMIN_ENDPOINT = { "/admin/**", "/actuator/**" };
-        private static final String[] OPEN_ENDPOINT = { "/**" };
-        private static final String[] USER_ENDPOINT = { "/api/**" };
+        private static final String[] OPEN_ENDPOINT = { "/api/open/**", "/**" };
+        private static final String[] USER_ENDPOINT =
+                { "/api/bankaccount/**", "/api/card/**", "/api/client/**", "/api/institution/**",
+                        "/api/transaction/**" };
 
         @Value("${br.com.controle.financeiro.firebase.enabled}")
         private Boolean firebaseEnabled;
@@ -96,7 +98,7 @@ public class SecurityConfig extends GlobalMethodSecurityConfiguration {
             http.authorizeRequests()//
                 .antMatchers(ADMIN_ENDPOINT).hasAnyRole(Roles.ADMIN)//
                 .antMatchers(USER_ENDPOINT).hasRole(Roles.USER)//
-                .antMatchers(OPEN_ENDPOINT).hasAnyRole(Roles.ANONYMOUS)//
+                .antMatchers(OPEN_ENDPOINT).hasRole(Roles.ANONYMOUS)//
                 .and().csrf().disable()//
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)//
                 .and().anonymous().authorities(Roles.ROLE_ANONYMOUS);//
