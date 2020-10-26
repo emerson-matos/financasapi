@@ -2,7 +2,7 @@ package br.com.controle.financeiro.controller.api;
 
 import javax.transaction.Transactional;
 
-import br.com.controle.financeiro.configuration.auth.firebase.FirebaseTokenHolder;
+import br.com.controle.financeiro.configuration.security.auth.firebase.FirebaseTokenHolder;
 import br.com.controle.financeiro.service.FirebaseService;
 import br.com.controle.financeiro.service.UserService;
 
@@ -21,7 +21,7 @@ public class SingUpController {
     @Autowired
     private UserService userService;
 
-    @PostMapping(path = "/open/signup")
+    @PostMapping(path = "/api/open/signup")
     @Transactional
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void signUp(@RequestHeader(name = "X-Firebase-User") String token) {
@@ -29,7 +29,7 @@ public class SingUpController {
             throw new IllegalArgumentException("FirebaseTokenBlank");
         }
         FirebaseTokenHolder tokenHolder = firebaseService.parseToken(token);
-        userService.registerUser(new UserService.RegisterUserInit(tokenHolder.getUid(), tokenHolder.getEmail()));
+        userService.registerUser(new UserService.RegisterUserInit(tokenHolder.getUid(), tokenHolder.getEmail(), tokenHolder.getName()));
     }
 
 }

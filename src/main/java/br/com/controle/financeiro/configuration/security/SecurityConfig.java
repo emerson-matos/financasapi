@@ -1,7 +1,7 @@
-package br.com.controle.financeiro.configuration;
+package br.com.controle.financeiro.configuration.security;
 
-import br.com.controle.financeiro.configuration.auth.firebase.FirebaseAuthenticationProvider;
-import br.com.controle.financeiro.configuration.auth.firebase.FirebaseFilter;
+import br.com.controle.financeiro.configuration.security.auth.firebase.FirebaseAuthenticationProvider;
+import br.com.controle.financeiro.configuration.security.auth.firebase.FirebaseFilter;
 import br.com.controle.financeiro.service.FirebaseService;
 import br.com.controle.financeiro.service.impl.UserServiceImpl;
 
@@ -16,6 +16,7 @@ import org.springframework.security.config.annotation.authentication.configurati
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.method.configuration.GlobalMethodSecurityConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -74,11 +75,20 @@ public class SecurityConfig extends GlobalMethodSecurityConfiguration {
     protected static class ApplicationSecurity extends WebSecurityConfigurerAdapter {
 
         private static final String[] ADMIN_ENDPOINT = { "/admin/**", "/actuator/**" };
-        private static final String[] OPEN_ENDPOINT = { "/**" };
-        private static final String[] USER_ENDPOINT = { "/api/**" };
+        private static final String[] OPEN_ENDPOINT = { "/api/open/**", "/**" };
+        private static final String[] USER_ENDPOINT =
+                { "/api/bankaccount/**", "/api/card/**", "/api/client/**", "/api/institution/**",
+                        "/api/transaction/**" };
 
         @Value("${br.com.controle.financeiro.firebase.enabled}")
         private Boolean firebaseEnabled;
+
+        @Override
+        public void configure(WebSecurity web) throws Exception {
+            web.ignoring()
+               .antMatchers("/v2/api-docs", "/configuration/ui", "/swagger-resources/**", "/configuration/security",
+                            "/swagger-ui.html", "/webjars/**", "/v2/swagger.json");
+        }
 
         @Override
         protected void configure(HttpSecurity http) throws Exception {
@@ -88,7 +98,7 @@ public class SecurityConfig extends GlobalMethodSecurityConfiguration {
             http.authorizeRequests()//
                 .antMatchers(ADMIN_ENDPOINT).hasAnyRole(Roles.ADMIN)//
                 .antMatchers(USER_ENDPOINT).hasRole(Roles.USER)//
-                .antMatchers(OPEN_ENDPOINT).hasAnyRole(Roles.ANONYMOUS)//
+                .antMatchers(OPEN_ENDPOINT).hasRole(Roles.ANONYMOUS)//
                 .and().csrf().disable()//
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)//
                 .and().anonymous().authorities(Roles.ROLE_ANONYMOUS);//

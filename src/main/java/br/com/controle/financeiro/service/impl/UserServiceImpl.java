@@ -8,10 +8,10 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 
-import javax.annotation.PostConstruct;
 import javax.transaction.Transactional;
 
-import br.com.controle.financeiro.configuration.SecurityConfig.Roles;
+import br.com.controle.financeiro.configuration.security.SecurityConfig.Roles;
+import br.com.controle.financeiro.configuration.security.auth.firebase.FirebaseAuthenticationToken;
 import br.com.controle.financeiro.model.entity.Role;
 import br.com.controle.financeiro.model.entity.UserEntity;
 import br.com.controle.financeiro.model.repository.RoleRepository;
@@ -22,12 +22,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service(value = UserServiceImpl.NAME)
@@ -37,13 +38,13 @@ public class UserServiceImpl implements UserService {
     private static final Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
 
     @Autowired
-    private UserRepository userDao;
+    private UserRepository userRepository;
 
     @Autowired
     private RoleRepository roleRepository;
 
     public UserDetails loadUserByUsername(String username) {
-        Optional<UserEntity> user = userDao.findByUsername(username);
+        Optional<UserEntity> user = userRepository.findById(username);
         if (user.isEmpty()) {
             throw new UsernameNotFoundException("Bad credentials");
         }
@@ -63,18 +64,18 @@ public class UserServiceImpl implements UserService {
     @Secured(value = Roles.ROLE_ANONYMOUS)
     public UserEntity registerUser(RegisterUserInit init) {
 
-        Optional<UserEntity> userLoaded = userDao.findByUsername(init.getUserName());
+        Optional<UserEntity> userLoaded = userRepository.findById(init.getUserName());
 
         if (userLoaded.isEmpty()) {
             UserEntity userEntity = new UserEntity();
-            userEntity.setUsername(init.getUserName());
+            userEntity.setName(init.getName());
             userEntity.setEmail(init.getEmail());
-
+            userEntity.setId(init.getUserName());
             userEntity.setAuthorities(getUserRoles());
             // TODO firebase users should not be able to login via username and
             // password so for now generation of password is OK
             userEntity.setPassword(UUID.randomUUID().toString());
-            userDao.save(userEntity);
+            userRepository.save(userEntity);
             logger.info("registerUser -> user created");
             return userEntity;
         } else {
@@ -83,30 +84,15 @@ public class UserServiceImpl implements UserService {
         }
     }
 
-    @PostConstruct
-    public void init() {
-
-        if (userDao.count() == 0) {
-            UserEntity adminEntity = new UserEntity();
-            adminEntity.setUsername("admin");
-            adminEntity.setPassword(new BCryptPasswordEncoder().encode("admin"));
-            adminEntity.setEmail("some@one.com");
-
-            adminEntity.setAuthorities(getAdminRoles());
-            userDao.save(adminEntity);
-
-            UserEntity userEntity = new UserEntity();
-            userEntity.setUsername("user1");
-            userEntity.setPassword(new BCryptPasswordEncoder().encode("user1"));
-            userEntity.setEmail("some@one.com");
-            userEntity.setAuthorities(getUserRoles());
-
-            userDao.save(userEntity);
+    @Override
+    public UserEntity getAuthenticatedUser() {
+        String user;
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if (auth instanceof FirebaseAuthenticationToken) {
+            user = String.valueOf(((UserDetails) auth.getPrincipal()).getUsername());
+            return userRepository.findById(user).orElseThrow();
         }
-    }
-
-    private List<Role> getAdminRoles() {
-        return Collections.singletonList(getRole(Roles.ROLE_ADMIN));
+        throw new UsernameNotFoundException("Bad credentials");
     }
 
     private List<Role> getUserRoles() {

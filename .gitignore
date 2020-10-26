@@ -55,8 +55,9 @@ buildNumber.properties
 ### Docker
 postgres/
 pgadming/
+!spring/server.xml
+spring/*
 
-.classpath
 .settings/org.eclipse.core.resources.prefs
 .settings/org.eclipse.jdt.apt.core.prefs
 .settings/org.eclipse.jdt.core.prefs
@@ -70,6 +71,8 @@ pgadming/
 .idea/**/usage.statistics.xml
 .idea/**/dictionaries
 .idea/**/shelf
+.idea/**/dataSources.xml
+.idea/**/sonarlint-state.xml
 
 # Generated files
 .idea/**/contentModel.xml

@@ -1,21 +1,21 @@
 package br.com.controle.financeiro.controller.api.linkbuilder;
 
-import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
-import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 import br.com.controle.financeiro.controller.api.InstitutionController;
 import br.com.controle.financeiro.model.dto.InstitutionDTO;
 
-import org.springframework.hateoas.Resource;
-import org.springframework.hateoas.ResourceAssembler;
+import org.springframework.hateoas.EntityModel;
+import org.springframework.hateoas.server.RepresentationModelAssembler;
 import org.springframework.stereotype.Component;
 
 @Component
-public class InstitutionDTOResourceAssembler implements ResourceAssembler<InstitutionDTO, Resource<InstitutionDTO>> {
+public class InstitutionDTOResourceAssembler implements RepresentationModelAssembler<InstitutionDTO, EntityModel<InstitutionDTO>> {
 
     @Override
-    public Resource<InstitutionDTO> toResource(InstitutionDTO entity) {
-        return new Resource<>(entity, linkTo(methodOn(InstitutionController.class).oneInstitution(entity.getId()))
+    public EntityModel<InstitutionDTO> toModel(InstitutionDTO entity) {
+        return new EntityModel<>(entity, linkTo(methodOn(InstitutionController.class).oneInstitution(entity.getId()))
                 .withSelfRel(),
                               linkTo(methodOn(InstitutionController.class).allInstitutions()).withRel("institutions"));
     }

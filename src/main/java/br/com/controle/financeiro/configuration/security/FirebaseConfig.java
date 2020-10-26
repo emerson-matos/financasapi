@@ -1,4 +1,4 @@
-package br.com.controle.financeiro.configuration;
+package br.com.controle.financeiro.configuration.security;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;

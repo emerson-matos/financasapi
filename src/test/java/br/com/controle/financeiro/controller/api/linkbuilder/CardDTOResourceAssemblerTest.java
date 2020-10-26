@@ -4,12 +4,14 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
+import java.util.UUID;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.hateoas.Resource;
+import org.springframework.hateoas.EntityModel;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 
@@ -28,9 +30,9 @@ public class CardDTOResourceAssemblerTest {
 	@Test
 	public void testToResource() {
 		CardDTO cardMock = new CardDTO();
-		cardMock.setId(1L);
+		cardMock.setId(UUID.randomUUID());
 		cardMock.setName("mock");
-		Resource<CardDTO> response = resourceAssembler.toResource(cardMock);
+		EntityModel<CardDTO> response = resourceAssembler.toModel(cardMock);
 		assertTrue(response.hasLinks());
 		assertNotNull(response.getLink("self"));
 		assertNotNull(response.getLink("cards"));

@@ -5,106 +5,85 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.Currency;
 import java.util.Locale;
+import java.util.UUID;
 
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
 import br.com.controle.financeiro.model.entity.BankAccount;
 import br.com.controle.financeiro.model.entity.Card;
 import br.com.controle.financeiro.model.entity.Client;
 import br.com.controle.financeiro.model.entity.Transaction;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonProperty.Access;
+import br.com.controle.financeiro.model.entity.UserEntity;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
 
 public class TransactionDTO implements Serializable {
 
-    private Long expenseId;
+    private UUID expenseId;
+
+    @NotBlank
+    private String name;
+
     @NotNull
-    private String name = "";
-    @NotNull
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @JsonDeserialize(using = LocalDateTimeDeserializer.class)
     private LocalDateTime transactionDate = LocalDateTime.now();
+
     @NotNull
     private BigDecimal value = BigDecimal.ZERO;
+
     @NotNull
     private Currency currency = Currency.getInstance(new Locale("pt", "BR"));
 
-    @JsonProperty(access = Access.WRITE_ONLY)
-    private Long ownerId;
+    @NotNull
+    private UUID client = UUID.randomUUID();
 
-    @JsonProperty(access = Access.WRITE_ONLY)
-    private Long accountId;
+    private UUID account;
 
-    @JsonProperty(access = Access.WRITE_ONLY)
-    private Long cardId;
-
-    @JsonProperty(access = Access.READ_ONLY)
-    private Client owner;
-
-    @JsonProperty(access = Access.READ_ONLY)
-    private BankAccount account;
-
-    @JsonProperty(access = Access.READ_ONLY)
-    private Card card;
+    private UUID card;
 
     public TransactionDTO() {
         super();
     }
 
-    public TransactionDTO(final BigDecimal value, final Currency currency, final String name, final LocalDateTime date,
-                          final Long owner, final Long account, final Long card, final Long id) {
+    public TransactionDTO(UUID expenseId, @NotNull String name, @NotNull LocalDateTime transactionDate,
+                          @NotNull BigDecimal value, @NotNull Currency currency, UUID client, UUID account, UUID card) {
         super();
-        this.setCurrency(currency);
-        this.setId(id);
-        this.setName(name);
-        this.setTransactionDate(date);
-        this.setOwnerId(owner);
-        this.setValue(value);
-        this.setBankAccountId(account);
-        this.setCardId(card);
-    }
-
-    public static TransactionDTO fromTransaction(Transaction t) {
-        return new TransactionDTO(t.getValue(), t.getCurrency(), t.getName(), t.getTransactionDate(),
-                                  t.getOwner().getId(), t.getAccount().getId(), t.getCard().getId(), t.getId());
-    }
-
-    public Transaction toTransaction() {
-        Card cardObj = new Card().withId(this.cardId);
-        BankAccount accountObj = new BankAccount().withId(this.accountId);
-        Client client = new Client().withId(this.ownerId);
-
-        return new Transaction(this.getValue(), this.getCurrency(), this.getName(), this.getTransactionDate(), client,
-                               accountObj, cardObj, this.getId());
-    }
-
-    public void setCard(final Card card) {
+        this.expenseId = expenseId;
+        this.name = name;
+        this.transactionDate = transactionDate;
+        this.value = value;
+        this.currency = currency;
+        this.client = client;
+        this.account = account;
         this.card = card;
     }
 
-    public Card getCard() {
+    public static TransactionDTO fromTransaction(Transaction t) {
+        return new TransactionDTO(t.getId(), t.getName(), t.getTransactionDate(), t.getValue(), t.getCurrency(),
+                                  t.getResponsible().getId(), t.getAccount().getId(), t.getCard().getId());
+    }
+
+    public Transaction toTransaction(Client client, BankAccount accountObj, Card cardObj, UserEntity owner) {
+        return new Transaction(this.getId(), this.getName(), this.getTransactionDate(), this.getValue(),
+                               this.getCurrency(), client, accountObj, cardObj, owner);
+    }
+
+    public void setCard(final UUID id) {
+        this.card = id;
+    }
+
+    public UUID getCard() {
         return this.card;
     }
 
-    public void setCardId(final Long id) {
-        this.cardId = id;
-    }
-
-    public Long getCardId() {
-        return this.cardId;
-    }
-
-    public void setBankAccountId(final Long accountId) {
-        this.accountId = accountId;
-    }
-
-    public Long getBankAccountId() {
-        return this.accountId;
-    }
-
-    public void setBankAccount(final BankAccount account) {
+    public void setAccount(final UUID account) {
         this.account = account;
     }
 
-    public BankAccount getBankAccount() {
+    public UUID getAccount() {
         return this.account;
     }
 
@@ -112,20 +91,12 @@ public class TransactionDTO implements Serializable {
         return value;
     }
 
-    public Long getOwnerId() {
-        return ownerId;
+    public UUID getClient() {
+        return client;
     }
 
-    public void setOwnerId(final Long owner) {
-        this.ownerId = owner;
-    }
-
-    public Client getOwner() {
-        return owner;
-    }
-
-    public void setOwner(final Client owner) {
-        this.owner = owner;
+    public void setClient(final UUID client) {
+        this.client = client;
     }
 
     public void setValue(final BigDecimal value) {
@@ -148,11 +119,11 @@ public class TransactionDTO implements Serializable {
         this.name = name;
     }
 
-    public Long getId() {
+    public UUID getId() {
         return expenseId;
     }
 
-    public void setId(Long expenseId) {
+    public void setId(UUID expenseId) {
         this.expenseId = expenseId;
     }
 

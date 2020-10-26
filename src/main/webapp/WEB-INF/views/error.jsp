@@ -1,9 +1,10 @@
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!doctype html>
 
 <html lang="en">
 
 <head>
-    <title>Controle Financeiro</title>
+    <title>${message}</title>
     <meta name="description" content="The HTML5 Herald"/>
     <meta name="author" content="emerson-matos"/>
     <meta charset="utf-8"/>
@@ -30,7 +31,7 @@
     <link rel="icon" type="image/png" sizes="16x16"
           href="https://cdn.glitch.com/9c389208-b279-4e96-bcbc-e5f8712d8706%2Ffavicon-16x16.png?1553712190383"/>
 </head>
-<body class="mdc-typography mainContainer border text-center">
+<body class=" mdc-typography mainContainer border text-center">
 <div class="container-xl d-flex w-100 h-100 p-3 mx-auto flex-column">
     <header class="masthead mb-auto">
         <div class="inner">
@@ -38,15 +39,15 @@
             <nav class="nav nav-masthead justify-content-center">
                 <a class="nav-link active" href="${pageContext.request.contextPath}/">Home</a>
                 <a class="nav-link" href="https://github.com/emerson-matos/financasapi/blob/master/README.md">Sobre</a>
-                <a class="nav-link" href="${pageContext.request.contextPath}/swagger-ui.html">Docs</a>
             </nav>
         </div>
     </header>
 
     <main role="main" class="inner cover">
-        <h1 class="cover-heading">Controle Financeiro</h1>
-        <p class="lead">Application to help stay financial health</p>
-
+        <h1>Something went wrong! </h1>
+        <h2>Our Engineers are on it</h2>
+        <h3><a href="<c:url value="/"/>">Go Home</a></h3>
+        <h4>${status}</h4>
     </main>
 
     <footer class="mastfoot mt-auto">
@@ -54,9 +55,12 @@
             <li class="list-inline-item"><a class="nav-link" href="https://github.com/emerson-matos/"><img
                     src="https://img.icons8.com/material-sharp/26/000000/github.png" alt="github icon"/></a></li>
             <li class="list-inline-item"><a class="nav-link" href="https://www.linkedin.com/in/emerson-matos/"><img
-                    src="https://img.icons8.com/material-sharp/26/000000/linkedin.png" alt="linkedin icon" /></a></li>
+                    src="https://img.icons8.com/material-sharp/26/000000/linkedin.png" alt="linkedin icon"/></a>
+            </li>
             <li class="list-inline-item"><a class="nav-link" href="https://www.instagram.com/emerson.a.matos"><img
-                    src="https://img.icons8.com/material-sharp/26/000000/instagram-new.png" alt="instagram icon"/></a></li>
+                    src="https://img.icons8.com/material-sharp/26/000000/instagram-new.png"
+                    alt="instagram icon"/></a>
+            </li>
             <li>
                 <div class="hide">
                     <a href="https://icons8.com/icon/AZOZNnY73haj/github">icons by Icons8</a>

@@ -1,9 +1,10 @@
 package br.com.controle.financeiro.controller.api;
 
-import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
-import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 import javax.validation.Valid;
@@ -16,8 +17,8 @@ import br.com.controle.financeiro.model.repository.InstitutionRepository;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.hateoas.Resource;
-import org.springframework.hateoas.Resources;
+import org.springframework.hateoas.EntityModel;
+import org.springframework.hateoas.CollectionModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -31,7 +32,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping(value = "/api/institution", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+@RequestMapping(value = "/api/institution", produces = MediaType.APPLICATION_JSON_VALUE)
 public class InstitutionController {
 
     private static final Logger LOG = LoggerFactory.getLogger(InstitutionController.class);
@@ -47,37 +48,37 @@ public class InstitutionController {
     }
 
     @GetMapping
-    public Resources<Resource<InstitutionDTO>> allInstitutions() {
+    public CollectionModel<EntityModel<InstitutionDTO>> allInstitutions() {
         LOG.debug("finding allInstitutions");
 
-        final List<Resource<InstitutionDTO>> institutions =
+        final List<EntityModel<InstitutionDTO>> institutions =
                 institutionRepository.findAll().stream().map(InstitutionDTO::fromInstitution)
-                                     .map(institutionDTOResourceAssembler::toResource).collect(Collectors.toList());
+                                     .map(institutionDTOResourceAssembler::toModel).collect(Collectors.toList());
 
-        return new Resources<>(institutions,
+        return new CollectionModel<>(institutions,
                                linkTo(methodOn(InstitutionController.class).allInstitutions()).withSelfRel());
     }
 
     @ResponseStatus(HttpStatus.CREATED)
-    @PostMapping(consumes = { MediaType.APPLICATION_JSON_UTF8_VALUE })
-    public Resource<InstitutionDTO> newInstitution(@RequestBody @Valid final InstitutionDTO institution) {
+    @PostMapping(consumes = { MediaType.APPLICATION_JSON_VALUE })
+    public EntityModel<InstitutionDTO> newInstitution(@RequestBody @Valid final InstitutionDTO institution) {
         LOG.debug("creating newInstitution");
         InstitutionDTO savedInstitution =
                 InstitutionDTO.fromInstitution(institutionRepository.save(institution.toInstitution()));
-        return institutionDTOResourceAssembler.toResource(savedInstitution);
+        return institutionDTOResourceAssembler.toModel(savedInstitution);
     }
 
     @GetMapping(path = "/{id}")
-    public Resource<InstitutionDTO> oneInstitution(@PathVariable(value = "id") final long id) {
+    public EntityModel<InstitutionDTO> oneInstitution(@PathVariable(value = "id") final UUID id) {
         LOG.debug("searching oneInstitution ${}", id);
         final Institution institution =
                 institutionRepository.findById(id).orElseThrow(() -> new InstitutionNotFoundException(id));
-        return institutionDTOResourceAssembler.toResource(InstitutionDTO.fromInstitution(institution));
+        return institutionDTOResourceAssembler.toModel(InstitutionDTO.fromInstitution(institution));
     }
 
     @PutMapping(path = "/{id}")
-    public Resource<InstitutionDTO> replaceInstitution(@RequestBody final InstitutionDTO newInstitution,
-                                                       @PathVariable final Long id) {
+    public EntityModel<InstitutionDTO> replaceInstitution(@RequestBody final InstitutionDTO newInstitution,
+                                                       @PathVariable final UUID id) {
         LOG.info("replaceInstitution");
         //TODO verify DTO integrity
         Institution savedInstitution = institutionRepository.findById(id).map(inst -> {
@@ -88,13 +89,14 @@ public class InstitutionController {
             return institutionRepository.save(newInstitution.toInstitution());
         });
 
-        return institutionDTOResourceAssembler.toResource(InstitutionDTO.fromInstitution(savedInstitution));
+        return institutionDTOResourceAssembler.toModel(InstitutionDTO.fromInstitution(savedInstitution));
     }
 
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @DeleteMapping(path = "/{id}")
-    public void deleteInstitution(@PathVariable final Long id) {
+    public void deleteInstitution(@PathVariable final UUID id) {
         LOG.debug("trying to deleteInstitution ${}", id);
+        //TODO verify authenticated permission
         institutionRepository.deleteById(id);
     }
 

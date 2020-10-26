@@ -1,43 +1,34 @@
 package br.com.controle.financeiro.model.entity;
 
 import java.io.Serializable;
+import java.util.UUID;
 
-import javax.persistence.Column;
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+
+import org.springframework.data.jpa.domain.AbstractPersistable;
 
 @Entity(name = "client")
-public class Client implements Serializable {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "id_client")
-    private Long clientId;
+public class Client extends AbstractPersistable<UUID> implements Serializable {
 
     private String name;
+
+    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.DETACH)
+    @JoinColumn(name = "id_user")
+    private UserEntity owner;
 
     public Client() {
         super();
     }
 
-    public Client(final String name) {
+    public Client(final UUID id, final String name, final UserEntity owner) {
         super();
+        this.setId(id);
         this.name = name;
-    }
-
-    public Client(String name, Long id) {
-        this.name = name;
-        this.clientId = id;
-    }
-
-    public Long getId() {
-        return this.clientId;
-    }
-
-    public void setId(final Long id) {
-        this.clientId = id;
+        this.owner = owner;
     }
 
     public String getName() {
@@ -48,9 +39,12 @@ public class Client implements Serializable {
         this.name = name;
     }
 
-    public Client withId(Long id) {
-        this.setId(id);
-        return this;
+    public UserEntity getOwner() {
+        return owner;
+    }
+
+    public void setOwner(UserEntity owner) {
+        this.owner = owner;
     }
 
 }

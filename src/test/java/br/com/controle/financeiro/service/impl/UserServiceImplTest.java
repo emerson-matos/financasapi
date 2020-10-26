@@ -13,7 +13,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Optional;
 
-import br.com.controle.financeiro.configuration.SecurityConfig;
+import br.com.controle.financeiro.configuration.security.SecurityConfig;
 import br.com.controle.financeiro.model.entity.Role;
 import br.com.controle.financeiro.model.entity.UserEntity;
 import br.com.controle.financeiro.model.repository.RoleRepository;
@@ -42,7 +42,7 @@ public class UserServiceImplTest {
 
     @Test(expected = UsernameNotFoundException.class)
     public void loadUserByUsernameNotFound() {
-        when(userDao.findByUsername(anyString())).thenReturn(Optional.empty());
+        when(userDao.findById(anyString())).thenReturn(Optional.empty());
 
         service.loadUserByUsername("someone");
     }
@@ -50,11 +50,11 @@ public class UserServiceImplTest {
     @Test
     public void loadUserByUsernameSucess() {
         UserEntity entity = mock(UserEntity.class);
-        Collection<Role> rolesList = new ArrayList();
+        Collection<Role> rolesList = new ArrayList<>();
 
         Collections.addAll(rolesList, new Role("user"), new Role("user"));
 
-        doReturn(Optional.of(entity)).when(userDao).findByUsername(anyString());
+        doReturn(Optional.of(entity)).when(userDao).findById(anyString());
         doReturn("someone").when(entity).getUsername();
         doReturn("123456").when(entity).getPassword();
         doReturn(rolesList).when(entity).getAuthorities();
@@ -70,21 +70,21 @@ public class UserServiceImplTest {
     public void registerUserAlredyRegistered() {
         UserEntity entity = mock(UserEntity.class);
 
-        doReturn(Optional.of(entity)).when(userDao).findByUsername(anyString());
+        doReturn(Optional.of(entity)).when(userDao).findById(anyString());
 
-        assertEquals(entity, service.registerUser(new UserService.RegisterUserInit("someone", "some@one.tk")));
+        assertEquals(entity, service.registerUser(new UserService.RegisterUserInit("someone", "some@one.tk", "id")));
     }
 
     @Test
     public void registerUserWithSucess() {
 
-        doReturn(Optional.empty()).when(userDao).findByUsername(anyString());
-        UserEntity entity = service.registerUser(new UserService.RegisterUserInit("someone", "some@one.tk"));
+        doReturn(Optional.empty()).when(userDao).findById(anyString());
+        UserEntity entity = service.registerUser(new UserService.RegisterUserInit("someone", "some@one.tk", "id"));
         assertEquals("someone", entity.getUsername());
         assertEquals("some@one.tk", entity.getEmail());
         assertEquals(1, entity.getAuthorities().size());
-        assertTrue(entity.getAuthorities().stream().anyMatch(x -> x.getAuthority()
-                                                                   .equals(SecurityConfig.Roles.ROLE_USER)));
+        assertTrue(entity.getAuthorities().stream()
+                         .anyMatch(x -> x.getAuthority().equals(SecurityConfig.Roles.ROLE_USER)));
     }
 
 }

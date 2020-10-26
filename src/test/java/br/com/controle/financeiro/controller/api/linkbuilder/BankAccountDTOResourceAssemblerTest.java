@@ -4,12 +4,14 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
+import java.util.UUID;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.hateoas.Resource;
+import org.springframework.hateoas.EntityModel;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 
@@ -28,8 +30,8 @@ public class BankAccountDTOResourceAssemblerTest {
 	@Test
 	public void testToResource() {
 		BankAccountDTO bankAccountMock = new BankAccountDTO();
-		bankAccountMock.setId(1L);
-		Resource<BankAccountDTO> response = resourceAssembler.toResource(bankAccountMock);
+		bankAccountMock.setId(UUID.randomUUID());
+		EntityModel<BankAccountDTO> response = resourceAssembler.toModel(bankAccountMock);
 		assertTrue(response.hasLinks());
 		assertNotNull(response.getLink("self"));
 		assertNotNull(response.getLink("bankaccounts"));
