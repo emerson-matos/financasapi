@@ -1,7 +1,7 @@
 package br.com.controle.financeiro.controller.api;
 
-import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
-import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 import java.util.List;
 import java.util.UUID;
@@ -25,8 +25,8 @@ import br.com.controle.financeiro.service.UserService;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.hateoas.Resource;
-import org.springframework.hateoas.Resources;
+import org.springframework.hateoas.EntityModel;
+import org.springframework.hateoas.CollectionModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -40,7 +40,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping(value = "/api/transaction", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+@RequestMapping(value = "/api/transaction", produces = MediaType.APPLICATION_JSON_VALUE)
 public class TransactionController {
 
     private static final Logger LOG = LoggerFactory.getLogger(TransactionController.class);
@@ -66,20 +66,20 @@ public class TransactionController {
     }
 
     @GetMapping
-    public Resources<Resource<TransactionDTO>> allTransactions() {
+    public CollectionModel<EntityModel<TransactionDTO>> allTransactions() {
         LOG.debug("finding allTransactions");
         final UserEntity owner = userService.getAuthenticatedUser();
-        final List<Resource<TransactionDTO>> transactions =
+        final List<EntityModel<TransactionDTO>> transactions =
                 transactionRepository.findAllByOwner(owner).stream().map(TransactionDTO::fromTransaction)
-                                     .map(transactionDTOResourceAssembler::toResource).collect(Collectors.toList());
+                                     .map(transactionDTOResourceAssembler::toModel).collect(Collectors.toList());
 
-        return new Resources<>(transactions,
+        return new CollectionModel<>(transactions,
                                linkTo(methodOn(TransactionController.class).allTransactions()).withSelfRel());
     }
 
     @ResponseStatus(HttpStatus.CREATED)
-    @PostMapping(consumes = { MediaType.APPLICATION_JSON_UTF8_VALUE })
-    public Resource<TransactionDTO> newTransaction(@RequestBody @Valid final TransactionDTO transaction) {
+    @PostMapping(consumes = { MediaType.APPLICATION_JSON_VALUE })
+    public EntityModel<TransactionDTO> newTransaction(@RequestBody @Valid final TransactionDTO transaction) {
         LOG.debug("creating newTransaction");
         //TODO deal when an transaction doesn't belong to a card and a bank account simultaneously
         //TODO extract to service
@@ -91,21 +91,21 @@ public class TransactionController {
         TransactionDTO savedTransaction = TransactionDTO
                 .fromTransaction(transactionRepository.save(transaction.toTransaction(client, account, card, owner)));
 
-        return transactionDTOResourceAssembler.toResource(savedTransaction);
+        return transactionDTOResourceAssembler.toModel(savedTransaction);
     }
 
     @GetMapping(path = "/{id}")
-    public Resource<TransactionDTO> oneTransaction(@PathVariable(value = "id") final UUID id) {
+    public EntityModel<TransactionDTO> oneTransaction(@PathVariable(value = "id") final UUID id) {
         LOG.debug("searching oneTransaction ${}", id);
         final UserEntity owner = userService.getAuthenticatedUser();
         final Transaction transaction =
                 transactionRepository.findByIdAndOwner(id, owner).orElseThrow(() -> new TransactionNotFoundException(id));
 
-        return transactionDTOResourceAssembler.toResource(TransactionDTO.fromTransaction(transaction));
+        return transactionDTOResourceAssembler.toModel(TransactionDTO.fromTransaction(transaction));
     }
 
     @PutMapping(path = "/{id}")
-    public Resource<TransactionDTO> replaceTransaction(@RequestBody final TransactionDTO newTransaction,
+    public EntityModel<TransactionDTO> replaceTransaction(@RequestBody final TransactionDTO newTransaction,
                                                        @PathVariable final UUID id) {
         LOG.info("replaceTransaction");
         //TODO verify DTO integrity
@@ -123,7 +123,7 @@ public class TransactionController {
             return transactionRepository.save(newTransaction.toTransaction(client, account, card, owner));
         });
 
-        return transactionDTOResourceAssembler.toResource(TransactionDTO.fromTransaction(savedTransaction));
+        return transactionDTOResourceAssembler.toModel(TransactionDTO.fromTransaction(savedTransaction));
     }
 
     @ResponseStatus(HttpStatus.NO_CONTENT)
