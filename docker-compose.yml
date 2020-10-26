@@ -27,24 +27,24 @@ services:
     networks:
       - postgres
     restart: unless-stopped
-  api:
-    container_name: financasbackend_container
-    build: .
-    volumes:
-      - ./spring:/home/spring/
-    environment:
-      SPRING_PROFILE: ${SPRING_PROFILE:-dev}
-      FIREBASE_URL: ${FIREBASE_URL:-https://financas-98f0c.firebaseio.com/}
-      GOOGLE_APPLICATION_CREDENTIALS: ${GOOGLE_APPLICATION_CREDENTIALS}
-      GOOGLE_CREDENTIALS: ${GOOGLE_CREDENTIALS:-""}
-      SPRING_DATASOURCE_URL: ${SPRING_DATASOURCE_URL:-jdbc:postgresql://postgres:5432/controle}
-      SPRING_DATASOURCE_USERNAME: ${SPRING_DATASOURCE_USERNAME:-postgres}
-      SPRING_DATASOURCE_PASSWORD: ${SPRING_DATASOURCE_PASSWORD:-postgres}
-    ports:
-      - "8080:8080"
-    networks:
-      - postgres
-    restart: unless-stopped
+#  api:
+#    container_name: financasbackend_container
+#    build: .
+#    volumes:
+#      - ./spring:/home/spring/
+#    environment:
+#      SPRING_PROFILE: ${SPRING_PROFILE:-dev}
+#      FIREBASE_URL: ${FIREBASE_URL:-https://financas-98f0c.firebaseio.com/}
+#      GOOGLE_APPLICATION_CREDENTIALS: ${GOOGLE_APPLICATION_CREDENTIALS}
+#      GOOGLE_CREDENTIALS: ${GOOGLE_CREDENTIALS:-""}
+#      SPRING_DATASOURCE_URL: ${SPRING_DATASOURCE_URL:-jdbc:postgresql://postgres:5432/controle}
+#      SPRING_DATASOURCE_USERNAME: ${SPRING_DATASOURCE_USERNAME:-postgres}
+#      SPRING_DATASOURCE_PASSWORD: ${SPRING_DATASOURCE_PASSWORD:-postgres}
+#    ports:
+#      - "8080:8080"
+#    networks:
+#      - postgres
+#    restart: unless-stopped
 
 networks:
   postgres:

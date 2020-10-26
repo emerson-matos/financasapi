@@ -1,7 +1,7 @@
 package br.com.controle.financeiro.controller.api;
 
-import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
-import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 import java.util.List;
 import java.util.UUID;
@@ -23,8 +23,8 @@ import br.com.controle.financeiro.service.UserService;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.hateoas.Resource;
-import org.springframework.hateoas.Resources;
+import org.springframework.hateoas.EntityModel;
+import org.springframework.hateoas.CollectionModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -38,7 +38,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping(value = "/api/bankaccount", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+@RequestMapping(value = "/api/bankaccount", produces = MediaType.APPLICATION_JSON_VALUE)
 public class BankAccountController {
 
     private static final Logger LOG = LoggerFactory.getLogger(BankAccountController.class);
@@ -65,20 +65,20 @@ public class BankAccountController {
     }
 
     @GetMapping
-    public Resources<Resource<BankAccountDTO>> allBankAccounts() {
+    public CollectionModel<EntityModel<BankAccountDTO>> allBankAccounts() {
         LOG.debug("finding user BankAccounts");
         UserEntity owner = userService.getAuthenticatedUser();
-        final List<Resource<BankAccountDTO>> bankAccounts =
+        final List<EntityModel<BankAccountDTO>> bankAccounts =
                 bankAccountRepository.findAllByOwner(owner).stream().map(BankAccountDTO::fromBankAccount)
-                                     .map(bankAccountDTOResourceAssembler::toResource).collect(Collectors.toList());
+                                     .map(bankAccountDTOResourceAssembler::toModel).collect(Collectors.toList());
 
-        return new Resources<>(bankAccounts,
+        return new CollectionModel<>(bankAccounts,
                                linkTo(methodOn(BankAccountController.class).allBankAccounts()).withSelfRel());
     }
 
     @ResponseStatus(HttpStatus.CREATED)
-    @PostMapping(consumes = { MediaType.APPLICATION_JSON_UTF8_VALUE })
-    public Resource<BankAccountDTO> newBankAccount(@RequestBody @Valid BankAccountDTO bankAccount) {
+    @PostMapping(consumes = { MediaType.APPLICATION_JSON_VALUE })
+    public EntityModel<BankAccountDTO> newBankAccount(@RequestBody @Valid BankAccountDTO bankAccount) {
         LOG.debug("creating newBankAccount");
         //TODO extract to service
         UserEntity owner = userService.getAuthenticatedUser();
@@ -87,16 +87,16 @@ public class BankAccountController {
         BankAccountDTO savedBankAccountDTO = BankAccountDTO
                 .fromBankAccount(bankAccountRepository.save(bankAccount.toBankAccount(client, institution, owner)));
 
-        return bankAccountDTOResourceAssembler.toResource(savedBankAccountDTO);
+        return bankAccountDTOResourceAssembler.toModel(savedBankAccountDTO);
     }
 
     @GetMapping(path = "/{id}")
-    public Resource<BankAccountDTO> oneBankAccount(@PathVariable(value = "id") final UUID id) {
+    public EntityModel<BankAccountDTO> oneBankAccount(@PathVariable(value = "id") final UUID id) {
         LOG.debug("searching oneBankAccount ${}", id);
         UserEntity owner = userService.getAuthenticatedUser();
         final BankAccount account = bankAccountRepository.findByIdAndOwner(id, owner)
                                                          .orElseThrow(() -> new BankAccountNotFoundException(id));
-        return bankAccountDTOResourceAssembler.toResource(BankAccountDTO.fromBankAccount(account));
+        return bankAccountDTOResourceAssembler.toModel(BankAccountDTO.fromBankAccount(account));
     }
 
     @PutMapping(path = "/{id}")

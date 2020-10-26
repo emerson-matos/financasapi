@@ -11,7 +11,7 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.hateoas.Resource;
+import org.springframework.hateoas.EntityModel;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 
@@ -31,7 +31,7 @@ public class BankAccountDTOResourceAssemblerTest {
 	public void testToResource() {
 		BankAccountDTO bankAccountMock = new BankAccountDTO();
 		bankAccountMock.setId(UUID.randomUUID());
-		Resource<BankAccountDTO> response = resourceAssembler.toResource(bankAccountMock);
+		EntityModel<BankAccountDTO> response = resourceAssembler.toModel(bankAccountMock);
 		assertTrue(response.hasLinks());
 		assertNotNull(response.getLink("self"));
 		assertNotNull(response.getLink("bankaccounts"));
