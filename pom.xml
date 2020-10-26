@@ -18,6 +18,7 @@
 
     <properties>
         <java.version>11</java.version>
+        <tomcat.version>9.0.39</tomcat.version>
     </properties>
 
     <distributionManagement>
