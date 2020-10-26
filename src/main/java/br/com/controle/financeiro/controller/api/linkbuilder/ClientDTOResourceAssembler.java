@@ -1,21 +1,21 @@
 package br.com.controle.financeiro.controller.api.linkbuilder;
 
-import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
-import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 import br.com.controle.financeiro.controller.api.ClientController;
 import br.com.controle.financeiro.model.dto.ClientDTO;
 
-import org.springframework.hateoas.Resource;
-import org.springframework.hateoas.ResourceAssembler;
+import org.springframework.hateoas.EntityModel;
+import org.springframework.hateoas.server.RepresentationModelAssembler;
 import org.springframework.stereotype.Component;
 
 @Component
-public class ClientDTOResourceAssembler implements ResourceAssembler<ClientDTO, Resource<ClientDTO>> {
+public class ClientDTOResourceAssembler implements RepresentationModelAssembler<ClientDTO, EntityModel<ClientDTO>> {
 
     @Override
-    public Resource<ClientDTO> toResource(ClientDTO entity) {
-        return new Resource<>(entity, linkTo(methodOn(ClientController.class).oneClient(entity.getId())).withSelfRel(),
+    public EntityModel<ClientDTO> toModel(ClientDTO entity) {
+        return new EntityModel<>(entity, linkTo(methodOn(ClientController.class).oneClient(entity.getId())).withSelfRel(),
                               linkTo(methodOn(ClientController.class).allClients()).withRel("clients"));
     }
 

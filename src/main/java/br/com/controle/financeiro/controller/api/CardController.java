@@ -1,7 +1,7 @@
 package br.com.controle.financeiro.controller.api;
 
-import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
-import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 import java.util.List;
 import java.util.UUID;
@@ -23,8 +23,8 @@ import br.com.controle.financeiro.service.UserService;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.hateoas.Resource;
-import org.springframework.hateoas.Resources;
+import org.springframework.hateoas.EntityModel;
+import org.springframework.hateoas.CollectionModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -38,7 +38,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping(value = "/api/card", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+@RequestMapping(value = "/api/card", produces = MediaType.APPLICATION_JSON_VALUE)
 public class CardController {
 
     private static final Logger LOG = LoggerFactory.getLogger(CardController.class);
@@ -60,38 +60,38 @@ public class CardController {
     }
 
     @GetMapping
-    public Resources<Resource<CardDTO>> allCards() {
+    public CollectionModel<EntityModel<CardDTO>> allCards() {
         LOG.debug("finding allCards");
         UserEntity owner = userService.getAuthenticatedUser();
-        final List<Resource<CardDTO>> cards =
-                cardRepository.findAllByOwner(owner).stream().map(CardDTO::fromCard).map(cardDTOResourceAssembler::toResource)
+        final List<EntityModel<CardDTO>> cards =
+                cardRepository.findAllByOwner(owner).stream().map(CardDTO::fromCard).map(cardDTOResourceAssembler::toModel)
                               .collect(Collectors.toList());
 
-        return new Resources<>(cards, linkTo(methodOn(CardController.class).allCards()).withSelfRel());
+        return new CollectionModel<>(cards, linkTo(methodOn(CardController.class).allCards()).withSelfRel());
     }
 
     @ResponseStatus(HttpStatus.CREATED)
-    @PostMapping(consumes = { MediaType.APPLICATION_JSON_UTF8_VALUE })
-    public Resource<CardDTO> newCard(@RequestBody @Valid final CardDTO card) {
+    @PostMapping(consumes = { MediaType.APPLICATION_JSON_VALUE })
+    public EntityModel<CardDTO> newCard(@RequestBody @Valid final CardDTO card) {
         LOG.debug("creating newCard");
         //TODO extract to service
         UserEntity owner = userService.getAuthenticatedUser();
         Client client = clientRepository.findByIdAndOwner(card.getClient(), owner).orElseThrow();
         Institution institution = institutionRepository.findById(card.getInstitution()).orElseThrow();
         CardDTO savedCard = CardDTO.fromCard(cardRepository.save(card.toCard(client, institution, owner)));
-        return cardDTOResourceAssembler.toResource(savedCard);
+        return cardDTOResourceAssembler.toModel(savedCard);
     }
 
     @GetMapping(path = "/{id}")
-    public Resource<CardDTO> oneCard(@PathVariable(value = "id") final UUID id) {
+    public EntityModel<CardDTO> oneCard(@PathVariable(value = "id") final UUID id) {
         LOG.debug("searching oneCard ${}", id);
         UserEntity owner = userService.getAuthenticatedUser();
         final Card savedCard = cardRepository.findByIdAndOwner(id, owner).orElseThrow(() -> new CardNotFoundException(id));
-        return cardDTOResourceAssembler.toResource(CardDTO.fromCard(savedCard));
+        return cardDTOResourceAssembler.toModel(CardDTO.fromCard(savedCard));
     }
 
     @PutMapping(path = "/{id}")
-    public Resource<CardDTO> replaceCard(@RequestBody final CardDTO newCard, @PathVariable final UUID id) {
+    public EntityModel<CardDTO> replaceCard(@RequestBody final CardDTO newCard, @PathVariable final UUID id) {
         LOG.info("replaceCard");
         //TODO verify DTO integrity
         final UserEntity owner = userService.getAuthenticatedUser();
@@ -106,7 +106,7 @@ public class CardController {
             return cardRepository.save(newCard.toCard(c, i, owner));
         });
 
-        return cardDTOResourceAssembler.toResource(CardDTO.fromCard(savedCard));
+        return cardDTOResourceAssembler.toModel(CardDTO.fromCard(savedCard));
     }
 
     @ResponseStatus(HttpStatus.NO_CONTENT)
