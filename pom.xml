@@ -10,7 +10,7 @@
     </parent>
     <groupId>br.com.controle.financeiro</groupId>
     <artifactId>gestao-financeira</artifactId>
-    <version>0.4.1-SNAPSHOT</version>
+    <version>0.4.2-SNAPSHOT</version>
     <name>Controle Financeiro</name>
     <description>Application to help stay financial health</description>
     <url>https://github.com/emegson/financasapi</url>
@@ -99,7 +99,7 @@
         <dependency>
 			<groupId>com.google.firebase</groupId>
 			<artifactId>firebase-admin</artifactId>
-			<version>6.15.0</version>
+			<version>7.0.1</version>
 		</dependency>
         <!-- https://springfox.github.io/ -->
         <!-- http://swagger.io/ -->
