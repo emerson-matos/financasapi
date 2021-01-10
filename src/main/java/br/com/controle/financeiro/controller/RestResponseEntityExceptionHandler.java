@@ -1,11 +1,6 @@
 package br.com.controle.financeiro.controller;
 
-import br.com.controle.financeiro.model.exception.BankAccountNotFoundException;
-import br.com.controle.financeiro.model.exception.CardNotFoundException;
-import br.com.controle.financeiro.model.exception.ClientNotFoundException;
-import br.com.controle.financeiro.model.exception.InstitutionNotFoundException;
 import br.com.controle.financeiro.model.exception.NotFoundException;
-import br.com.controle.financeiro.model.exception.TransactionNotFoundException;
 
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpHeaders;
@@ -25,8 +20,7 @@ public class RestResponseEntityExceptionHandler extends ResponseEntityExceptionH
     private final HttpHeaders headers = new HttpHeaders();
 
     @ResponseBody
-    @ExceptionHandler({ ClientNotFoundException.class, InstitutionNotFoundException.class, CardNotFoundException.class,
-                              BankAccountNotFoundException.class, TransactionNotFoundException.class })
+    @ExceptionHandler({NotFoundException.class})
     @ResponseStatus(HttpStatus.NOT_FOUND)
     ResponseEntity<Object> objectNotFoundHandler(NotFoundException ex, WebRequest request) {
         logException(ex);
@@ -34,7 +28,7 @@ public class RestResponseEntityExceptionHandler extends ResponseEntityExceptionH
     }
 
     @ResponseBody
-    @ExceptionHandler({ EmptyResultDataAccessException.class })
+    @ExceptionHandler({EmptyResultDataAccessException.class})
     @ResponseStatus(HttpStatus.NO_CONTENT)
     ResponseEntity<Object> objectNotFoundHandler(EmptyResultDataAccessException ex, WebRequest request) {
         logException(ex);
@@ -42,7 +36,7 @@ public class RestResponseEntityExceptionHandler extends ResponseEntityExceptionH
     }
 
     @ResponseBody
-    @ExceptionHandler({ AccessDeniedException.class })
+    @ExceptionHandler({AccessDeniedException.class})
     @ResponseStatus(HttpStatus.FORBIDDEN)
     ResponseEntity<Object> forbidden(AccessDeniedException ex, WebRequest request) {
         logException(ex);
