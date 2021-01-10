@@ -6,9 +6,8 @@ import static org.mockito.Mockito.mock;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 
 import br.com.controle.financeiro.configuration.security.auth.firebase.FirebaseTokenHolder;
-import br.com.controle.financeiro.controlefinanceiro.ControleFinanceiroApplication;
+import br.com.controle.financeiro.ControleFinanceiroApplication;
 import br.com.controle.financeiro.service.FirebaseService;
-import br.com.controle.financeiro.service.UserService;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;

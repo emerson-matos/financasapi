@@ -7,7 +7,7 @@ import static org.mockito.Mockito.when;
 import java.util.Optional;
 import java.util.UUID;
 
-import br.com.controle.financeiro.controlefinanceiro.ControleFinanceiroApplication;
+import br.com.controle.financeiro.ControleFinanceiroApplication;
 import br.com.controle.financeiro.controller.RestResponseEntityExceptionHandler;
 import br.com.controle.financeiro.controller.api.linkbuilder.ClientDTOResourceAssembler;
 import br.com.controle.financeiro.model.repository.ClientRepository;

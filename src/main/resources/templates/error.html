@@ -1,11 +1,7 @@
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<!doctype html>
-
-<html lang="en">
-
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>${message}</title>
-    <meta name="description" content="The HTML5 Herald"/>
+    <title>Something went wrong</title>
     <meta name="author" content="emerson-matos"/>
     <meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"/>
@@ -16,7 +12,7 @@
     <link href="https://fonts.googleapis.com/css?family=Roboto+Mono|Roboto:900i" rel="stylesheet"/>
     <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500" rel="stylesheet"/>
     <!-- import the Material stylesheet -->
-    <%--    <link rel="stylesheet" href="bundle.css" />--%>
+    <!--    <link rel="stylesheet" href="bundle.css" />-->
 
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css"
@@ -31,24 +27,24 @@
     <link rel="icon" type="image/png" sizes="16x16"
           href="https://cdn.glitch.com/9c389208-b279-4e96-bcbc-e5f8712d8706%2Ffavicon-16x16.png?1553712190383"/>
 </head>
-<body class=" mdc-typography mainContainer border text-center">
+<body class=" mdc-typography mainContainer border text-center" th:with="httpStatus=${T(org.springframework.http.HttpStatus).valueOf(#response.status)}">
 <div class="container-xl d-flex w-100 h-100 p-3 mx-auto flex-column">
     <header class="masthead mb-auto">
         <div class="inner">
             <h3 class="masthead-brand">Controle Financeiro</h3>
             <nav class="nav nav-masthead justify-content-center">
-                <a class="nav-link active" href="${pageContext.request.contextPath}/">Home</a>
+                <a class="nav-link" th:href="@{/}">Home</a>
                 <a class="nav-link" href="https://github.com/emerson-matos/financasapi/blob/master/README.md">Sobre</a>
-                <a class="nav-link" href="${pageContext.request.contextPath}/swagger-ui/index.html">Docs</a>
+                <a class="nav-link" th:href="@{/swagger-ui/index.html}">Docs</a>
             </nav>
         </div>
     </header>
 
     <main role="main" class="inner cover">
-        <h1>Something went wrong! </h1>
+        <h1>Something went wrong</h1>
         <h2>Our Engineers are on it</h2>
-        <h3><a href="<c:url value="/"/>">Go Home</a></h3>
-        <h4>${status}</h4>
+        <h3 th:text="${error}">404</h3>
+        <h4><a th:href="@{/}">Go Home</a></h4>
     </main>
 
     <footer class="mastfoot mt-auto">
