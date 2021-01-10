@@ -10,14 +10,13 @@
     </parent>
     <groupId>br.com.controle.financeiro</groupId>
     <artifactId>gestao-financeira</artifactId>
-    <version>0.4.2</version>
+    <version>0.4.3</version>
     <name>Controle Financeiro</name>
     <description>Application to help stay financial health</description>
     <url>https://github.com/emegson/financasapi</url>
 
     <properties>
         <java.version>11</java.version>
-        <tomcat.version>9.0.39</tomcat.version>
     </properties>
 
     <distributionManagement>
@@ -43,6 +42,10 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-data-jpa</artifactId>
 		</dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-thymeleaf</artifactId>
+        </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-validation</artifactId>
@@ -84,12 +87,6 @@
 			<groupId>org.postgresql</groupId>
 			<artifactId>postgresql</artifactId>
 			<scope>runtime</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.tomcat.embed</groupId>
-			<artifactId>tomcat-embed-jasper</artifactId>
-			<version>10.0.0</version>
-            <scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>javax.servlet</groupId>

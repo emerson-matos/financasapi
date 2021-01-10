@@ -1,10 +1,7 @@
 <!doctype html>
-
-<html lang="en">
-
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
     <title>Controle Financeiro</title>
-    <meta name="description" content="The HTML5 Herald"/>
     <meta name="author" content="emerson-matos"/>
     <meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"/>
@@ -15,7 +12,7 @@
     <link href="https://fonts.googleapis.com/css?family=Roboto+Mono|Roboto:900i" rel="stylesheet"/>
     <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500" rel="stylesheet"/>
     <!-- import the Material stylesheet -->
-    <%--    <link rel="stylesheet" href="bundle.css" />--%>
+    <!-- <link rel="stylesheet" href="bundle.css"/>    -->
 
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css"
@@ -36,9 +33,9 @@
         <div class="inner">
             <h3 class="masthead-brand">Controle Financeiro</h3>
             <nav class="nav nav-masthead justify-content-center">
-                <a class="nav-link active" href="${pageContext.request.contextPath}/">Home</a>
+                <a class="nav-link" th:href="@{/}">Home</a>
                 <a class="nav-link" href="https://github.com/emerson-matos/financasapi/blob/master/README.md">Sobre</a>
-                <a class="nav-link" href="${pageContext.request.contextPath}/swagger-ui/index.html">Docs</a>
+                <a class="nav-link" th:href="@{/swagger-ui/index.html}">Docs</a>
             </nav>
         </div>
     </header>
@@ -46,7 +43,6 @@
     <main role="main" class="inner cover">
         <h1 class="cover-heading">Controle Financeiro</h1>
         <p class="lead">Application to help stay financial health</p>
-
     </main>
 
     <footer class="mastfoot mt-auto">
@@ -54,9 +50,10 @@
             <li class="list-inline-item"><a class="nav-link" href="https://github.com/emerson-matos/"><img
                     src="https://img.icons8.com/material-sharp/26/000000/github.png" alt="github icon"/></a></li>
             <li class="list-inline-item"><a class="nav-link" href="https://www.linkedin.com/in/emerson-matos/"><img
-                    src="https://img.icons8.com/material-sharp/26/000000/linkedin.png" alt="linkedin icon" /></a></li>
+                    src="https://img.icons8.com/material-sharp/26/000000/linkedin.png" alt="linkedin icon"/></a></li>
             <li class="list-inline-item"><a class="nav-link" href="https://www.instagram.com/emerson.a.matos"><img
-                    src="https://img.icons8.com/material-sharp/26/000000/instagram-new.png" alt="instagram icon"/></a></li>
+                    src="https://img.icons8.com/material-sharp/26/000000/instagram-new.png" alt="instagram icon"/></a>
+            </li>
             <li>
                 <div class="hide">
                     <a href="https://icons8.com/icon/AZOZNnY73haj/github">icons by Icons8</a>
