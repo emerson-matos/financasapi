@@ -1,13 +1,14 @@
 dist: trusty
 language: java
 os: linux
-jdk: openjdk11
+jdk: openjdk17
 services:
   - postgresql
 cache:
   - directories:
-      - "$HOME/.m2/repository"
-      - "$HOME/.sonar/cache"
+    - $HOME/.gradle/caches/
+    - $HOME/.gradle/wrapper/
+    - $HOME/.sonar/cache/
 before_script:
   - echo "POM $POM_VERSION"
   - echo "SNAPSHOT_VERSION $SNAPSHOT_VERSION"
@@ -19,8 +20,7 @@ addons:
   sonarcloud:
     organization: emerson-matos
     token:
-      secure: qjyj9JBrqgmm1eHaaMIAxBa0XFwq8+AamHVWQ7x3WKc+jyguSdPpkH3IYoU/kxHCs0cWO8gQaT/qBe0w9qCc6EANfWuEn/E9gZOQdFSnIteEFj28FDFaxVwSh2TZLXdQOszF2be+MJIB6PBUb9II2jZs4xRPcLE2dnvyVBmFSjYfJYxIEtDKBEw4g4FWhwKFIbOZu5a2Gfe4QyTMen2UcPzJHNpywjBU9R2vNvJiklZjZ2RLWjDB6Ra4PnYMnFQwbfHbqgLZ9VrxS8+KOCfizobDts7hW9ESnAFWP44cFKNuHmB62GHYZAKUDwEqrAdSboKUSsDWnAjq8Ray3X8W3ISHfoEc7HWvHQERkJVhR6nuxhRMGON7d2N7IPLVKaoNYjAh4J3w+niG54rzGNToGUUp0YDnXIev7iUmsfp7Q7N3qPsQHgqZWsLwBwz4z80PeQthKZszithbsj+x52pwFabcE3hme4nfIrmE7AXI4NVIA/xa+cWhFbgcpvOM+Q1vIWWOtNG8+ptngB0QXBezDGCtK5Wz04/dqjdYpDYfLuf+NPj8KO227uvXn4YyiH3njJH1fv6DGt02ul8r5bcx0/q4KEVvyUSgBg7QoXDa43WQUoM4pi0HRXurSCBFMU0n6P2q41tskUHXlxQVyTMCcj3yDogm+8/S49y+A5TMxuo=
-
+      secure: $sonarcloud_secret
 jobs:
   include:
     - stage: unit tests
@@ -33,11 +33,7 @@ jobs:
       script: mvn clean package
       if: type != pull_request AND type != commit
 
-deploy:
-  provider: script
-  script: ./deploy.sh
-  on:
-    tags: true
 notifications:
   slack:
-    secure: ISruP6uQyGxTpEx7Y9iCrkl4mhVELf1mOwmj5KL96seoA2onuAbvhkfVoSfNCVTlM+2j5OIAa5rVkbee2BtNWsCdlNnZ2UbHxIeC+PQoyFRYa9Nu3Bf9dTi/g125hbU4j3qsFHXznehzlzshktDEray9VDgfh0O0BXM1c3kbsiq9cKvbCLgjCqpvkajivpo6W6P77228hAvM/CDpsWUMN8cSbhfPqcJDC793iVILkBv87RK5d7s98iJBgtFr3ys1cHn0MdEiCiKbZS7NDWvG7LQdicyn3TiraNRgWQ3uGnpXga1l+ifbSkQCSu6w4zZssDfVPsR3INIHh68O4AswrPzTPex9XJ68/k26Lez/OuDOGI/bUL96nW3xJ+FIHB4FrkrntJfEVXJIhctP8UBPjoMi8eesF/nku3PJiTjMjMey/Qt59vKpE26lU0JEhGYcYg1BlmrEMWROngw+3iZvkbFuUnNRwsBfsZOs7pefNG4K7kGTfn9Qz9cLKcTcDej4Kg/gVlW+xoKxwcJlMTHv42sPiGu57BfDXm/QLBIlVPuzbi3as2B7eE9cL6RsJBFHWPCrWXTEdCr2WBYgbxHCfUSN0WZ32moiDQ5ZX2IqxysZY1bpacKmraDv3glQlD0xPVIatJmmiV+oEMcwaNEKBTvQWZfMd53oDN6CT77WxQM=
+    secure: $SLACK_SECRET
+---
