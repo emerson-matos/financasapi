@@ -22,17 +22,9 @@ then just go to [localhost on port 8080](http://localhost:8080)
 ### Without [Docker](https://www.docker.com/):
 
 You will need to set the following environment variables:
-* FIREBASE_URL
-> If you desire to use firebase auth
 * SPRING_PROFILE
 > To spring dev tools know the actual environment, just set to dev if you don't know how it works
-* GOOGLE_CREDENTIALS
-> If you want to use google firebase credentials like a string without a json file
-* GOOGLE_APPLICATION_CREDENTIALS
-> If you want to use google firebase credentials from a json file located somewhere on your machine
 ___
-To turn firebase auth off just change the value of `br.com.controle.financeiro.firebase.enabled` to `false`
-
 After that step we will need [postgres](https://www.postgresql.org/download/), [maven](https://maven.apache.org/download.cgi) and [Java JDK 11](https://java.com/en/download/help/download_options.xml)
 
 You need to create a database and change on application.properties for your Spring Profile these properties:

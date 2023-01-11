@@ -4,11 +4,12 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
-    id("org.springframework.boot") version "2.3.4.RELEASE"
-    id("io.spring.dependency-management") version "1.0.11.RELEASE"
-    kotlin("jvm") version "1.4.32"
-    kotlin("plugin.spring") version "1.4.32"
-    kotlin("plugin.jpa") version "1.4.32"
+    id("org.springframework.boot") version "3.0.1"
+    id("io.spring.dependency-management") version "1.1.0"
+    kotlin("jvm") version "1.8.0"
+    kotlin("plugin.spring") version "1.8.0"
+    kotlin("plugin.jpa") version "1.8.0"
+    kotlin("plugin.allopen") version "1.8.0"
 }
 
 repositories {
@@ -23,37 +24,42 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-validation")
     implementation("org.springframework.boot:spring-boot-starter-actuator")
     implementation("org.springframework.boot:spring-boot-starter-hateoas")
-    implementation("org.springframework.boot:spring-boot-starter-security")
-    implementation("org.thymeleaf.extras:thymeleaf-extras-springsecurity5")
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
-    implementation("org.hibernate:hibernate-agroal:5.5.7.Final")
     implementation("javax.servlet:jstl:1.2")
+    implementation("org.hibernate:hibernate-agroal:5.5.7.Final")
+    implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.0.2")
     implementation("org.jetbrains.kotlin:kotlin-reflect")
-    implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
-    implementation("com.google.firebase:firebase-admin:7.1.0")
-    implementation("io.springfox:springfox-boot-starter:3.0.0")
     developmentOnly("org.springframework.boot:spring-boot-devtools")
     runtimeOnly("org.postgresql:postgresql")
-    testImplementation("org.springframework.boot:spring-boot-starter-test")
-    testImplementation("org.springframework.security:spring-security-test")
+    testImplementation("org.springframework.boot:spring-boot-starter-test") {
+        exclude(module = "mockito-core")
+    }
+    testImplementation("org.junit.jupiter:junit-jupiter-api")
+    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine")
+    testImplementation("com.ninja-squad:springmockk:4.0.0")
 }
 
 group = "br.com.controle.financeiro"
-version = "0.4.3"
-description = "Controle Financeiro"
-java.sourceCompatibility = JavaVersion.VERSION_11
 
-tasks.withType<JavaCompile>() {
-    options.encoding = "UTF-8"
+version = "0.4.4"
+
+description = "Controle Financeiro"
+
+java.sourceCompatibility = JavaVersion.VERSION_17
+
+allOpen {
+    annotation("jakarta.persistence.Entity")
+    annotation("jakarta.persistence.Embeddable")
+    annotation("jakarta.persistence.MappedSuperclass")
 }
+
+tasks.withType<JavaCompile>() { options.encoding = "UTF-8" }
 
 tasks.withType<KotlinCompile> {
     kotlinOptions {
         freeCompilerArgs = listOf("-Xjsr305=strict")
-        jvmTarget = "11"
+        jvmTarget = "17"
     }
 }
 
-tasks.withType<Test> {
-    useJUnitPlatform()
-}
+tasks.withType<Test> { useJUnitPlatform() }
