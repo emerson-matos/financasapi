@@ -24,13 +24,13 @@ addons:
 jobs:
   include:
     - stage: unit tests
-      script: mvn clean test
+      script: ./gradlew clean test
       if: type = commit
     - stage: unit tests
-      script: mvn clean verify sonar:sonar -Dsonar.projectKey=emerson-matos_financasapi -Pcoverage
+      script: ./gradlew sonarqube
       if: type = pull_request
     - stage: package
-      script: mvn clean package
+      script: ./gradlew assemble
       if: type != pull_request AND type != commit
 
 notifications:

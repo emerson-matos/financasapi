@@ -6,10 +6,10 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 plugins {
     id("org.springframework.boot") version "3.0.1"
     id("io.spring.dependency-management") version "1.1.0"
+    id("org.sonarqube") version "3.5.0.2730"
     kotlin("jvm") version "1.8.0"
     kotlin("plugin.spring") version "1.8.0"
     kotlin("plugin.jpa") version "1.8.0"
-    kotlin("plugin.allopen") version "1.8.0"
 }
 
 repositories {
@@ -62,4 +62,12 @@ tasks.withType<KotlinCompile> {
     }
 }
 
-tasks.withType<Test> { useJUnitPlatform() }
+tasks.withType<Test> {
+    useJUnitPlatform()
+}
+
+sonarqube {
+    properties{
+        property("sonar.projectKey", "emerson-matos_financasapi")
+    }
+}
