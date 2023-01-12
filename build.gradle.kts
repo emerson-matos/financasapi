@@ -10,6 +10,7 @@ plugins {
     kotlin("jvm") version "1.8.0"
     kotlin("plugin.spring") version "1.8.0"
     kotlin("plugin.jpa") version "1.8.0"
+    kotlin("plugin.allopen") version "1.8.0"
 }
 
 repositories {
@@ -68,6 +69,8 @@ tasks.withType<Test> {
 
 sonarqube {
     properties{
+        property("sonar.organization", "emerson-matos")
+        property("sonar.host.url", "https://sonarcloud.io")
         property("sonar.projectKey", "emerson-matos_financasapi")
     }
 }

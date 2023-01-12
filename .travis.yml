@@ -10,11 +10,8 @@ cache:
     - $HOME/.gradle/wrapper/
     - $HOME/.sonar/cache/
 before_script:
-  - echo "POM $POM_VERSION"
   - echo "SNAPSHOT_VERSION $SNAPSHOT_VERSION"
-  - psql -c 'create database controle;' -U $SPRING_DATASOURCE_USERNAME
 after_success:
-  - ./snapshot.sh
   - bash <(curl -s https://codecov.io/bash)
 addons:
   sonarcloud:
@@ -23,15 +20,9 @@ addons:
       secure: $sonarcloud_secret
 jobs:
   include:
-    - stage: unit tests
-      script: ./gradlew clean test
-      if: type = commit
-    - stage: unit tests
+    - stage: sonar
       script: ./gradlew sonarqube
       if: type = pull_request
-    - stage: package
-      script: ./gradlew assemble
-      if: type != pull_request AND type != commit
 
 notifications:
   slack:

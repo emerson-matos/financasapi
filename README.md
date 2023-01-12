@@ -1,7 +1,7 @@
 # financasapi
 [![Build Status](https://travis-ci.org/emerson-matos/financasapi.svg?branch=master)](https://travis-ci.org/emerson-matos/financasapi)
-[![codecov](https://codecov.io/gh/emerson-matos/financasapi/branch/master/graph/badge.svg)](https://codecov.io/gh/emerson-matos/financasapi)
-[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=emerson-matos_financasapi&metric=alert_status)](https://sonarcloud.io/dashboard?id=emerson-matos_financasapi)
+[![codecov](https://codecov.io/gh/emerson-matos/financasapi/branch/master/graph/badge.svg?token=9K8LRI4N0R)](https://codecov.io/gh/emerson-matos/financasapi)
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=emerson-matos_financasapi&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=emerson-matos_financasapi)
 
 ## Summary
 The objective of this project is to be able to study Spring Framework with something concrete building a backend to make financial control.
