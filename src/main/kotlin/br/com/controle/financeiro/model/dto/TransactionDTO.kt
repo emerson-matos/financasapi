@@ -16,17 +16,17 @@ import java.util.Currency
 import java.util.Locale
 import java.util.UUID
 
-class TransactionDTO(
-        val id: UUID,
+data class TransactionDTO(
         @NotBlank val name: String,
         @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
         @JsonDeserialize(using = LocalDateTimeDeserializer::class)
         val transactionDate: LocalDateTime = LocalDateTime.now(),
         val value: BigDecimal = BigDecimal.ZERO,
         val currency: Currency = Currency.getInstance(Locale("pt", "BR")),
-        val client: UUID = UUID.randomUUID(),
-        val account: UUID,
-        val card: UUID,
+        val client: UUID? = null,
+        val account: UUID? = null,
+        val card: UUID? = null,
+        val id: UUID? = null,
 ) : Serializable {
     fun toTransaction(
             client: Client,
@@ -35,7 +35,6 @@ class TransactionDTO(
             owner: UserEntity
     ): Transaction {
         return Transaction(
-                id,
                 name,
                 transactionDate,
                 value,
@@ -43,21 +42,22 @@ class TransactionDTO(
                 client,
                 accountObj,
                 cardObj,
-                owner
+                owner,
+                id,
         )
     }
 
     companion object {
         fun fromTransaction(t: Transaction): TransactionDTO {
             return TransactionDTO(
-                    t.id,
                     t.name,
                     t.transactionDate,
                     t.value,
                     t.currency,
                     t.responsible.id,
                     t.bankAccount.id,
-                    t.card.id
+                    t.card.id,
+                    t.id,
             )
         }
     }

@@ -1,25 +1,21 @@
 package br.com.controle.financeiro.controller
 
-import br.com.controle.financeiro.ControleFinanceiroApplication
+import org.junit.jupiter.api.Test
+import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
+import org.springframework.test.context.ActiveProfiles
+import org.springframework.test.web.servlet.MockMvc
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers
 
-@SpringBootTest(classes = [ControleFinanceiroApplication::class])
-@AutoConfigureMockMvc
+@WebMvcTest
 @ActiveProfiles(profiles = ["test"])
-class IndexControllerTest {
-    @Autowired
-    private val wac: WebApplicationContext? = null
-
-    @Autowired
-    private var mockMvc: MockMvc? = null
-    fun setup() {
-        mockMvc = MockMvcBuilders.webAppContextSetup(wac!!).build()
-    }
+class IndexControllerTest(@Autowired val mockMvc: MockMvc) {
 
     @Test
-    @Throws(Exception::class)
     fun greetingsOnBaseUrl() {
-        mockMvc!!.perform(MockMvcRequestBuilders.get("/"))
-            .andExpect(MockMvcResultMatchers.status().isOk)
-            .andExpect(MockMvcResultMatchers.view().name("index"))
+        mockMvc.perform(MockMvcRequestBuilders.get("/"))
+                .andExpect(MockMvcResultMatchers.status().isOk)
+                .andExpect(MockMvcResultMatchers.view().name("index"))
     }
 }

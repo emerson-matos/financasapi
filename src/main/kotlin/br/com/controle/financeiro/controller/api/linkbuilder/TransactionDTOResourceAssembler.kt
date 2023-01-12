@@ -11,14 +11,17 @@ import br.com.controle.financeiro.controller.api.TransactionController
 class TransactionDTOResourceAssembler : RepresentationModelAssembler<TransactionDTO, EntityModel<TransactionDTO>> {
     override fun toModel(entity: TransactionDTO): EntityModel<TransactionDTO> {
         return EntityModel.of(
-            entity, WebMvcLinkBuilder.linkTo(
+            entity,
+            WebMvcLinkBuilder.linkTo(
+                WebMvcLinkBuilder.methodOn(
+                    TransactionController::class.javaObjectType
+                ).oneTransaction(entity.id!!)
+            ).withSelfRel(),
+            WebMvcLinkBuilder.linkTo(
                 WebMvcLinkBuilder.methodOn(
                     TransactionController::class.java
-                ).oneTransaction(entity.id)
-            )
-                .withSelfRel(),
-            WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(TransactionController::class.java).allTransactions())
-                .withRel("transactions")
+                ).allTransactions()
+            ).withRel("transactions")
         )
     }
 }
