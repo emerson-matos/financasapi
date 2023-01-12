@@ -9,8 +9,6 @@ cache:
     - $HOME/.gradle/caches/
     - $HOME/.gradle/wrapper/
     - $HOME/.sonar/cache/
-before_script:
-  - echo "SNAPSHOT_VERSION $SNAPSHOT_VERSION"
 after_success:
   - bash <(curl -s https://codecov.io/bash)
 addons:
@@ -21,7 +19,7 @@ addons:
 jobs:
   include:
     - stage: sonar
-      script: ./gradlew sonarqube
+      script: ./gradlew sonar
       if: type = pull_request
 
 notifications:
