@@ -69,7 +69,6 @@ tasks.withType<Test> {
 
 sonarqube {
     properties {
-        property("sonar.organization", "emerson-matos")
         property("sonar.projectKey", "emerson-matos_financasapi")
         property("sonar.links.scm", "https://github.com/emerson-matos/financasapi")
     }
