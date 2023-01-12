@@ -7,6 +7,7 @@ plugins {
     id("org.springframework.boot") version "3.0.1"
     id("io.spring.dependency-management") version "1.1.0"
     id("org.sonarqube") version "3.5.0.2730"
+    id("jacoco")
     kotlin("jvm") version "1.8.0"
     kotlin("plugin.spring") version "1.8.0"
     kotlin("plugin.jpa") version "1.8.0"
@@ -54,6 +55,10 @@ allOpen {
     annotation("jakarta.persistence.MappedSuperclass")
 }
 
+jacoco {
+    toolVersion = "0.8.7"
+}
+
 tasks.withType<JavaCompile>() { options.encoding = "UTF-8" }
 
 tasks.withType<KotlinCompile> {
@@ -65,6 +70,7 @@ tasks.withType<KotlinCompile> {
 
 tasks.withType<Test> {
     useJUnitPlatform()
+    finalizedBy(tasks.jacocoTestReport)
 }
 
 sonarqube {
