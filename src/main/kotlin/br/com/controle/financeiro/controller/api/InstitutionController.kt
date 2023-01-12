@@ -74,7 +74,7 @@ class InstitutionController(
         LOG.info("replaceInstitution")
         //TODO verify DTO integrity
         val savedInstitution = institutionRepository.findById(id).map { inst: Institution ->
-            institutionRepository.save(Institution(inst.id, newInstitution.name, inst.identifier))
+            institutionRepository.save(Institution(newInstitution.name, inst.identifier,inst.id))
         }.orElseGet {
             institutionRepository.save(newInstitution.toInstitution())
         }

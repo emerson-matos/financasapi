@@ -61,8 +61,8 @@ class BankAccountController(
         LOG.debug("creating newBankAccount")
         //TODO extract to service
         val owner = userRepository.findAll().iterator().next()
-        val client = clientRepository.findByIdAndOwner(bankAccount.responsible.id, owner).orElseThrow()
-        val institution = bankAccount.institution.id.let { institutionRepository.findById(it).orElseThrow() }
+        val client = clientRepository.findByIdAndOwner(bankAccount.responsible.id!!, owner).orElseThrow()
+        val institution = bankAccount.institution.id!!.let { institutionRepository.findById(it).orElseThrow() }
         val savedBankAccountDTO: BankAccountDTO = BankAccountDTO.fromBankAccount(
             bankAccountRepository.save(
                 bankAccount.toBankAccount(client, institution, owner)

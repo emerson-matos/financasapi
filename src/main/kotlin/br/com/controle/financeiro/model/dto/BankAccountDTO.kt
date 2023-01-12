@@ -8,31 +8,31 @@ import jakarta.validation.constraints.NotBlank
 import java.io.Serializable
 import java.util.UUID
 
-class BankAccountDTO(
-        val id: UUID,
+data class BankAccountDTO(
         @NotBlank val agency: String,
         @NotBlank val number: String,
         val dac: @NotBlank String,
         val responsible: Client,
         val institution: Institution,
+        val id: UUID? = null,
 ) : Serializable {
     fun toBankAccount(
             responsible: Client,
             institution: Institution,
             owner: UserEntity
     ): BankAccount {
-        return BankAccount(id, agency, number, dac, responsible, institution, owner)
+        return BankAccount(agency, number, dac, responsible, institution, owner, id)
     }
 
     companion object {
         fun fromBankAccount(account: BankAccount): BankAccountDTO {
             return BankAccountDTO(
-                    account.id,
                     account.agency,
                     account.number,
                     account.dac,
                     account.responsible,
-                    account.institution
+                    account.institution,
+                    account.id,
             )
         }
     }

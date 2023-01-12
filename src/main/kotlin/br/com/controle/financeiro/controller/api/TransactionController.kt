@@ -58,9 +58,9 @@ class TransactionController(
         //TODO deal when an transaction doesn't belong to a card and a bank account simultaneously
         //TODO extract to service
         val owner = userRepository.findAll().iterator().next()
-        val client = clientRepository.findByIdAndOwner(transaction.client, owner).orElseThrow()
-        val account = accountRepository.findByIdAndOwner(transaction.account, owner).orElseThrow()
-        val card = cardRepository.findByIdAndOwner(transaction.card, owner).orElseThrow()
+        val client = clientRepository.findByIdAndOwner(transaction.client!!, owner).orElseThrow()
+        val account = accountRepository.findByIdAndOwner(transaction.account!!, owner).orElseThrow()
+        val card = cardRepository.findByIdAndOwner(transaction.card!!, owner).orElseThrow()
         // val savedTransaction: TransactionDTO = TransactionDTO.fromTransaction(
             // transactionRepository.save(
                // transaction.toTransaction(client, account, card, owner)

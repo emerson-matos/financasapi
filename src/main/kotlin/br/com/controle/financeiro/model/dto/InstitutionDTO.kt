@@ -1,22 +1,30 @@
 package br.com.controle.financeiro.model.dto
 
 import br.com.controle.financeiro.model.entity.Institution
+import jakarta.validation.constraints.NotBlank
 import java.io.Serializable
 import java.util.UUID
-import jakarta.validation.constraints.NotBlank
 
-class InstitutionDTO(
-        val id: UUID = UUID.randomUUID(),
+data class InstitutionDTO(
         @NotBlank val name: String,
         @NotBlank val identifier: String,
+        val id: UUID? = null,
 ) : Serializable {
     fun toInstitution(): Institution {
-        return Institution(id, identifier, name)
+        return Institution(
+                identifier,
+                name,
+                id,
+        )
     }
 
     companion object {
         fun fromInstitution(institution: Institution): InstitutionDTO {
-            return InstitutionDTO(institution.id, institution.identifier, institution.name)
+            return InstitutionDTO(
+                    institution.identifier,
+                    institution.name,
+                    institution.id,
+            )
         }
     }
 }
