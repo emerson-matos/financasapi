@@ -14,21 +14,15 @@ import java.util.UUID
 
 @Entity(name = "transaction")
 data class Transaction(
-        val name: String,
-        val transactionDate: LocalDateTime,
-        val value: BigDecimal,
-        val currency: Currency,
-        @ManyToOne(fetch = FetchType.EAGER, cascade = [CascadeType.DETACH])
-        @JoinColumn(name = "id_client")
-        val responsible: Client,
-        @ManyToOne(fetch = FetchType.EAGER, cascade = [CascadeType.DETACH])
-        @JoinColumn(name = "id_account")
-        val bankAccount: BankAccount,
-        @ManyToOne(fetch = FetchType.EAGER, cascade = [CascadeType.DETACH])
-        @JoinColumn(name = "id_card")
-        val card: Card,
-        @ManyToOne(fetch = FetchType.EAGER, cascade = [CascadeType.DETACH])
-        @JoinColumn(name = "id_user")
-        private var owner: UserEntity,
-        @Id @GeneratedValue val id: UUID? = null,
+                val name: String,
+                val transactionDate: LocalDateTime,
+                val value: BigDecimal,
+                val currency: Currency,
+                @ManyToOne(fetch = FetchType.EAGER, cascade = [CascadeType.DETACH])
+                @JoinColumn(name = "id_account")
+                val bankAccount: BankAccount,
+                @ManyToOne(fetch = FetchType.EAGER, cascade = [CascadeType.DETACH])
+                @JoinColumn(name = "id_card")
+                val card: Card,
+                @Id @GeneratedValue val id: UUID? = null,
 )

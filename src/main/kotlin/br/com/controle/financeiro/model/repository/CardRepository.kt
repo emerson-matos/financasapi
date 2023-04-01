@@ -1,12 +1,8 @@
 package br.com.controle.financeiro.model.repository
 
-import java.util.UUID
-import java.util.Optional
 import br.com.controle.financeiro.model.entity.Card
-import br.com.controle.financeiro.model.entity.UserEntity
+import java.util.UUID
 import org.springframework.data.jpa.repository.JpaRepository
+import org.springframework.data.rest.core.annotation.RepositoryRestResource
 
-interface CardRepository : JpaRepository<Card, UUID> {
-    fun findAllByOwner(owner: UserEntity): List<Card>
-    fun findByIdAndOwner(responsible: UUID, owner: UserEntity): Optional<Card>
-}
+@RepositoryRestResource interface CardRepository : JpaRepository<Card, UUID>

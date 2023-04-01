@@ -13,16 +13,10 @@ import org.springframework.data.jpa.domain.AbstractPersistable
 
 @Entity(name = "card")
 data class Card(
-        val name: String,
-        val number: String,
-        @ManyToOne(fetch = FetchType.EAGER, cascade = [CascadeType.DETACH])
-        @JoinColumn(name = "id_client")
-        val responsible: Client,
-        @ManyToOne(fetch = FetchType.EAGER, cascade = [CascadeType.DETACH])
-        @JoinColumn(name = "id_institution")
-        val institution: Institution,
-        @ManyToOne(fetch = FetchType.EAGER, cascade = [CascadeType.DETACH])
-        @JoinColumn(name = "id_user")
-        val owner: UserEntity,
-        @Id @GeneratedValue val id: UUID? = null,
+                val name: String,
+                val number: String,
+                @ManyToOne(fetch = FetchType.EAGER, cascade = [CascadeType.DETACH])
+                @JoinColumn(name = "id_institution")
+                val institution: Institution,
+                @Id @GeneratedValue val id: UUID? = null,
 ) : AbstractPersistable<UUID>(), Serializable
